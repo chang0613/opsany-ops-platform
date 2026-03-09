@@ -2,18 +2,21 @@ spring:
   application:
     name: opsany-replica-backend
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:opsany_replica}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mysql://${MYSQL_HOST:172.16.22.50}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:workflow}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:root}
+    password: ${MYSQL_PASSWORD:1qaz@WSX}
   redis:
-    host: ${REDIS_HOST:localhost}
+    host: ${REDIS_HOST:172.16.22.43}
     port: ${REDIS_PORT:6379}
-    database: ${REDIS_DATABASE:0}
+    database: ${REDIS_DATABASE:9}
+    password: ${REDIS_PASSWORD:redis-22043}
     timeout: 5000
   jpa:
     open-in-view: false
     hibernate:
       ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     properties:
       hibernate:
         format_sql: true
@@ -24,11 +27,12 @@ spring:
     port: ${RABBITMQ_PORT:5672}
     username: ${RABBITMQ_USERNAME:guest}
     password: ${RABBITMQ_PASSWORD:guest}
+    dynamic: false
     listener:
       simple:
         missing-queues-fatal: false
         default-requeue-rejected: false
-        auto-startup: ${RABBITMQ_CONSUMER_ENABLED:true}
+        auto-startup: false
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
@@ -42,12 +46,15 @@ app:
       - ${FRONTEND_ORIGIN:http://localhost:5173}
   session:
     ttl-hours: ${SESSION_TTL_HOURS:8}
+    store: ${SESSION_STORE:redis}
   cache:
     bootstrap-ttl-minutes: ${BOOTSTRAP_CACHE_TTL_MINUTES:5}
+    bootstrap-enabled: ${BOOTSTRAP_CACHE_ENABLED:true}
   seed:
     enabled: ${APP_SEED_ENABLED:true}
   messaging:
-    consumer-enabled: ${RABBITMQ_CONSUMER_ENABLED:true}
+    consumer-enabled: ${RABBITMQ_CONSUMER_ENABLED:false}
+    publish-enabled: ${RABBITMQ_PUBLISH_ENABLED:false}
     fallback-on-publish-failure: ${RABBITMQ_FALLBACK_ON_FAILURE:true}
 
 logging:

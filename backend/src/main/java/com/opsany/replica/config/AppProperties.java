@@ -30,12 +30,14 @@ public class AppProperties {
     @Setter
     public static class Session {
         private long ttlHours = 8;
+        private String store = "memory";
     }
 
     @Getter
     @Setter
     public static class Cache {
         private long bootstrapTtlMinutes = 5;
+        private boolean bootstrapEnabled = false;
     }
 
     @Getter
@@ -47,7 +49,8 @@ public class AppProperties {
     @Getter
     @Setter
     public static class Messaging {
-        private boolean consumerEnabled = true;
+        private boolean consumerEnabled = false;
+        private boolean publishEnabled = false;
         private boolean fallbackOnPublishFailure = true;
     }
 }

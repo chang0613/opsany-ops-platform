@@ -45,6 +45,9 @@ public class PlatformBootstrapService {
     }
 
     public void evictBootstrapCache(Long userId) {
+        if (!appProperties.getCache().isBootstrapEnabled()) {
+            return;
+        }
         try {
             redisTemplate.delete(cacheKey(userId));
         } catch (Exception exception) {
@@ -57,6 +60,9 @@ public class PlatformBootstrapService {
     }
 
     private Optional<ObjectNode> getCachedBootstrap(Long userId) {
+        if (!appProperties.getCache().isBootstrapEnabled()) {
+            return Optional.empty();
+        }
         try {
             String payload = redisTemplate.opsForValue().get(cacheKey(userId));
             if (payload == null || payload.trim().isEmpty()) {
@@ -184,6 +190,9 @@ public class PlatformBootstrapService {
     }
 
     private void cacheBootstrap(Long userId, ObjectNode root) {
+        if (!appProperties.getCache().isBootstrapEnabled()) {
+            return;
+        }
         try {
             redisTemplate.opsForValue().set(
                 cacheKey(userId),

@@ -1,6 +1,6 @@
 # OpsAny 1:1 复刻工程
 
-基于你要求的技术栈重建：
+基于以下技术栈重建：
 
 - 后端：`Java 8 + Spring Boot 2.7`
 - 前端：`Vue 3 + TypeScript + Vite`
@@ -8,61 +8,26 @@
 - 缓存：`Redis`
 - 消息队列：`RabbitMQ`
 
-当前工作区已经收敛为两个主项目：
+当前工作区：
 
-- `backend`：工作台聚合接口、登录、工单创建、Redis 会话、RabbitMQ 事件、MySQL 种子数据
-- `frontend`：Vue 版工作台壳子与各菜单页面，界面结构按 OpsAny 工作台 1 比 1 迁移
+- `backend`：登录、工作台聚合、工单创建、任务/消息联动
+- `frontend`：Vue 版工作台界面与导航页面
 
-## 当前完成度
+## 默认启动
 
-- 已接入演示登录：`demo / 123456.coM`
-- 已完成工作台、服务门户、工单管理、任务管理、值班、大屏、消息、订阅、流程管理、导航管理、系统设置等页面复刻
-- 已实现工单创建接口：写入 MySQL，并通过 RabbitMQ 事件链路生成任务/消息；当 RabbitMQ 不可用时会走后备同步逻辑
-- 前端已验证 `npm run build`
-- 后端已验证 `mvnw.cmd -DskipTests package`
+第一次拉代码后，后端默认直接连接共享开发环境：
 
-## 本机环境现状
+- MySQL：`172.16.22.50:3306/workflow`
+- Redis：`172.16.22.43:6379/9`
 
-- `Redis`：可用，`redis-cli ping` 返回 `PONG`
-- `MySQL`：服务在运行，但当前未拿到可用账号密码；`root` 空密码无法登录
-- `RabbitMQ`：服务在运行，但你本机之前检测到 `5672/15672` 未正常监听，建议先修复后再启用真实消费
-
-## 启动前准备
-
-1. 先在 MySQL 中创建数据库：
-
-```sql
-CREATE DATABASE opsany_replica CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-2. 准备一个可用的 MySQL 账号，并设置环境变量。
-
-PowerShell 示例：
-
-```powershell
-$env:MYSQL_HOST="localhost"
-$env:MYSQL_PORT="3306"
-$env:MYSQL_DATABASE="opsany_replica"
-$env:MYSQL_USERNAME="你的账号"
-$env:MYSQL_PASSWORD="你的密码"
-```
-
-3. 如果本机 RabbitMQ 还没修好，建议先关闭消费者启动：
-
-```powershell
-$env:RABBITMQ_CONSUMER_ENABLED="false"
-```
-
-## 启动后端
+默认启动命令：
 
 ```powershell
 cd backend
 .\mvnw.cmd spring-boot:run
 ```
 
-默认端口：`8080`
-
-## 启动前端
+前端启动命令：
 
 ```powershell
 cd frontend
@@ -70,10 +35,53 @@ npm install
 npm run dev
 ```
 
-默认端口：`5173`
+访问地址：
 
-## 登录说明
-
-- 前端地址：`http://localhost:5173`
+- 前端：`http://localhost:5173/login`
+- 后端：`http://localhost:8080`
 - 演示账号：`demo`
 - 演示密码：`123456.coM`
+
+说明：
+
+- 默认模式会使用共享 MySQL 和共享 Redis
+- RabbitMQ 默认不阻塞启动，消费者默认关闭
+- 工单事件默认走同步回填，保证本地开发可直接使用
+
+## 本地离线模式
+
+如果需要完全脱离服务器资源，可切到 `local` profile：
+
+```powershell
+$env:SPRING_PROFILES_ACTIVE="local"
+cd backend
+.\mvnw.cmd spring-boot:run
+```
+
+`local` 模式下会使用：
+
+- `H2` 内存数据库
+- 内存会话
+- 关闭 RabbitMQ 消费者
+
+## 覆盖默认配置
+
+如果需要覆盖共享环境配置，可以使用环境变量：
+
+```powershell
+$env:MYSQL_HOST="172.16.22.50"
+$env:MYSQL_PORT="3306"
+$env:MYSQL_DATABASE="workflow"
+$env:MYSQL_USERNAME="root"
+$env:MYSQL_PASSWORD="1qaz@WSX"
+$env:REDIS_HOST="172.16.22.43"
+$env:REDIS_PORT="6379"
+$env:REDIS_DATABASE="9"
+$env:REDIS_PASSWORD="redis-22043"
+```
+
+## 当前实现
+
+- 已接入演示登录：`demo / 123456.coM`
+- 已完成工作台、服务门户、工单管理、任务管理、值班、大屏、消息、订阅、流程管理、导航管理、系统设置等页面复刻
+- 已实现工单创建接口：写入数据库，并生成对应任务与消息

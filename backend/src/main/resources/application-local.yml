@@ -1,19 +1,28 @@
 spring:
+  config:
+    activate:
+      on-profile: local
   datasource:
-    url: jdbc:h2:mem:opsany_preview;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+    url: jdbc:h2:mem:opsany_local;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
     driver-class-name: org.h2.Driver
     username: sa
     password:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
   rabbitmq:
+    dynamic: false
     listener:
       simple:
         auto-startup: false
 
 app:
+  session:
+    store: memory
+  cache:
+    bootstrap-enabled: false
   messaging:
     consumer-enabled: false
+    publish-enabled: false
     fallback-on-publish-failure: true
