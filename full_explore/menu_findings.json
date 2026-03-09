@@ -1,0 +1,213 @@
+[
+  {
+    "category": "工作台",
+    "module": "概览",
+    "title": "概览 - 工作台",
+    "url": "https://demo.opsany.com/o/workbench/?login=1#/",
+    "screenshot": "full_explore/工作台_概览.png",
+    "page_data": {
+      "breadcrumbs": [],
+      "pageHeader": "工作台",
+      "cards": [],
+      "tables": [],
+      "forms": [],
+      "buttons": [
+        "控制台",
+        "工作台"
+      ],
+      "stats": [
+        {
+          "number": "0",
+          "text": ""
+        },
+        {
+          "number": "0",
+          "text": ""
+        },
+        {
+          "number": "0",
+          "text": ""
+        },
+        {
+          "number": "0",
+          "text": ""
+        },
+        {
+          "number": "0",
+          "text": ""
+        },
+        {
+          "number": "0",
+          "text": ""
+        },
+        {
+          "number": "16",
+          "text": ""
+        },
+        {
+          "number": "0",
+          "text": ""
+        }
+      ],
+      "allText": "工作台\n概览\n运维中心\n服务门户\n工单管理\n任务管理\n我的值班\n大屏展示\n消息中心\n消息管理\n订阅设置\n流程管理\n工单目录\n工单流程\nSLA管理\nAPI管理\n值班管理\n平台设置\n导航管理\n系统设置\n平台导航\n控制台工作台消息支持\n基础设施监控\n总览\n基础监控概览\n查看更多 >\n未分类\n0 台\n信息\n0 台\n警告\n0 台\n一般严重\n0 台\n严重\n0 台\n灾难\n0 台\n基础监控告警事件\n查看更多 >\n0\n未分类\n0\n信息\n0\n警告\n0\n一般严重\n0\n严重\n0\n灾难\n\n暂无告警数据\n\ndemo\n中文名：演示用户\n2026-02-27 15:44:57 星期五\n待办事项\n16\n我的提单\n0\n我的待办\n最新消息\n查看更多 >\n工单状态: 云资源申请\n2026-02-27 09:41:07\n工单状态: 0227\n2026-02-27 09:38:53\n工单状态: awe\n2026-02-26 15:37:57\n大屏展示\n查看更多 >\n数据大屏\n可查看详细的数据可视化分析\n应用大屏\n可监控应用是否告警以及健康数据分析\nCopyright © 2019-2025 OpsAny. All Rights Reserved【企业专业版】"
+    }
+  },
+  {
+    "category": "运维中心",
+    "module": "服务门户",
+    "title": "服务门户 - 工作台",
+    "url": "https://demo.opsany.com/o/workbench/?login=1#/personSetting/serviceFolder",
+    "screenshot": "full_explore/运维中心_服务门户.png",
+    "page_data": {
+      "breadcrumbs": [],
+      "pageHeader": "工作台",
+      "cards": [],
+      "tables": [],
+      "forms": [],
+      "buttons": [
+        "控制台",
+        "工作台",
+        "搜 索",
+        "提单"
+      ],
+      "stats": [],
+      "allText": "工作台\n概览\n运维中心\n服务门户\n工单管理\n任务管理\n我的值班\n大屏展示\n消息中心\n消息管理\n订阅设置\n流程管理\n工单目录\n工单流程\nSLA管理\nAPI管理\n值班管理\n平台设置\n导航管理\n系统设置\n平台导航\n控制台工作台消息支持\n服务门户运维中心>服务门户\n将所有IT部门可以提供的服务以工单的形式输出给业务用户。 了解更多 \n搜 索\n清空记录\n全部服务（7）我的收藏（2）请求管理（5）变更管理（1）事件管理（1）问题管理（0）最近提单（6）\n所有服务(7)\n默认分组(5)\n事件管理(1)\n发布工单(1)\n发布工单\n请求管理\n--\n2 人已提单\n提单\n云效执行流水线\n请求管理\n--\n2 人已提单\n提单\nNginx配置变更\n变更管理\n--\n2 人已提单\n提单\n域名解析申请\n请求管理\n--\n1 人已提单\n提单\n数据库创建申请\n请求管理\n--\n1 人已提单\n提单\n云资源申请\n请求管理\n--\n1 人已提单\n提单\n告警转工单\n事件管理\n告警转工单\n1 人已提单\n提单\n共 7 条数据\n1\n50 条/页\nCopyright © 2019-2025 OpsAny. All Rights Reserved【企业专业版】"
+    }
+  },
+  {
+    "category": "运维中心",
+    "module": "工单管理",
+    "title": "工单管理 - 工作台",
+    "url": "https://demo.opsany.com/o/workbench/?login=1#/personSetting/orderManage",
+    "screenshot": "full_explore/运维中心_工单管理.png",
+    "page_data": {
+      "breadcrumbs": [],
+      "pageHeader": "工作台",
+      "cards": [],
+      "tables": [
+        {
+          "headers": [
+            "",
+            "单号",
+            "工单标题",
+            "工单类型",
+            "提单人",
+            "当前进度",
+            "状态",
+            "预计处理时间",
+            "创建时间",
+            ""
+          ],
+          "rowCount": 10
+        },
+        {
+          "headers": [
+            "操作"
+          ],
+          "rowCount": 10
+        }
+      ],
+      "forms": [],
+      "buttons": [
+        "控制台",
+        "工作台",
+        "高级搜索",
+        "刷新",
+        "提交工单",
+        "重 置",
+        "搜 索",
+        "详情",
+        "删除",
+        "撤单"
+      ],
+      "stats": [],
+      "allText": "工作台\n概览\n运维中心\n服务门户\n工单管理\n任务管理\n我的值班\n大屏展示\n消息中心\n消息管理\n订阅设置\n流程管理\n工单目录\n工单流程\nSLA管理\nAPI管理\n值班管理\n平台设置\n导航管理\n系统设置\n平台导航\n控制台工作台消息支持\n工单管理运维中心>工单管理\n用户的工单管理，可以提交工单、处理工单，并查看工单的状态。 了解更多 \n我提交的 (16)我的待办我的已办 (2)所有工单 (16)草稿箱 (3)\n展示所有我提交的工单，右上角提交工单按钮，可以快速提交工单。\n工单标题\n\t\n高级搜索\n刷新提交工单\n\t\n单号\t\n\t\n工单标题\t\n\t\n工单类型\n\t\n提单人\n\t\n当前进度\n\t\n状态\t\n\t\n预计处理时间\t\n\t\n创建时间\t\n\t\n\n\t\n\n20260227094107744939\n\n\t\n\n云资源申请\n\n\t请求管理\t\n\n演示用户\n\n\t已结束\t已结束\t--\t2026-02-27 09:41:07\t\n\n\t\n\n20260227093853049880\n\n\t\n\n0227\n\n\t请求管理\t\n\n演示用户\n\n\t<2> 领导审批\t正在进行\t--\t2026-02-27 09:38:53\t\n\n\t\n\n20260129092345372840\n\n\t\n\n11\n\n\t变更管理\t\n\n演示用户\n\n\t已结束\t已结束\t--\t2026-01-29 09:23:45\t\n\n\t\n\n20260127111230184610\n\n\t\n\ntest\n\n\t变更管理\t\n\n演示用户\n\n\t<2> 工程师处理\t正在进行\t--\t2026-01-27 11:12:30\t\n\n\t\n\n20260119211350798938\n\n\t\n\n1\n\n\t请求管理\t\n\n演示用户\n\n\t已结束\t已结束\t--\t2026-01-19 21:13:50\t\n\n\t\n\n20260115142324176349\n\n\t\n\n测试\n\n\t请求管理\t\n\n演示用户\n\n\t已结束\t已结束\t--\t2026-01-15 14:23:24\t\n\n\t\n\n20260106160209195536\n\n\t\n\ntest001\n\n\t请求管理\t\n\n演示用户\n\n\t<2> 领导审批\t正在进行\t--\t2026-01-06 16:02:09\t\n\n\t\n\n20260105210615369726\n\n\t\n\nyetst\n\n\t请求管理\t\n\n演示用户\n\n\t已结束\t已结束\t--\t2026-01-05 21:06:15\t\n\n\t\n\n20251230145644125227\n\n\t\n\ntest\n\n\t请求管理\t\n\n演示用户\n\n\t已结束\t已结束\t--\t2025-12-30 14:56:44\t\n\n\t\n\n20251229152605768175\n\n\t\n\ntest\n\n\t变更管理\t\n\n演示用户\n\n\t<2> 工程师处理\t正在进行\t--\t2025-12-29 15:26:05\t\n操作\n\n详情删除\n详情撤单\n详情删除\n详情撤单\n详情删除\n详情删除\n详情撤单\n详情删除\n详情删除\n详情撤单\n共 16 条数据\n1\n2\n10 条/页\n跳至页\nCopyright © 2019-2025 OpsAny. All Rights Reserved【企业专业版】"
+    }
+  },
+  {
+    "category": "运维中心",
+    "module": "任务管理",
+    "title": "任务管理 - 工作台",
+    "url": "https://demo.opsany.com/o/workbench/?login=1#/personSetting/taskManage",
+    "screenshot": "full_explore/运维中心_任务管理.png",
+    "page_data": {
+      "breadcrumbs": [],
+      "pageHeader": "工作台",
+      "cards": [],
+      "tables": [
+        {
+          "headers": [
+            "任务编号",
+            "任务标题",
+            "任务来源",
+            "关联工单",
+            "状态",
+            "处理人",
+            "优先级",
+            "创建人",
+            "创建时间",
+            ""
+          ],
+          "rowCount": 0
+        },
+        {
+          "headers": [
+            "操作"
+          ],
+          "rowCount": 0
+        }
+      ],
+      "forms": [],
+      "buttons": [
+        "控制台",
+        "工作台",
+        "刷新",
+        "新建"
+      ],
+      "stats": [],
+      "allText": "工作台\n概览\n运维中心\n服务门户\n工单管理\n任务管理\n我的值班\n大屏展示\n消息中心\n消息管理\n订阅设置\n流程管理\n工单目录\n工单流程\nSLA管理\nAPI管理\n值班管理\n平台设置\n导航管理\n系统设置\n平台导航\n控制台工作台消息支持\n任务管理运维中心>任务管理任务可以和工单进行关联，从而实现工单流程和运维任务的协同。\n我的待办（0）我的已办（4）我创建的（7）所有任务（7）任务模板（0）\n任务标题\n\t\n刷新新建\n任务编号\t\n\t\n任务标题\t\n\t\n任务来源\n\t\n关联工单\n\t\n状态\t\n\t\n处理人\n\t\n优先级\t\n\t\n创建人\n\t\n创建时间\n\t\n\n暂无数据\n\n操作\nCopyright © 2019-2025 OpsAny. All Rights Reserved【企业专业版】"
+    }
+  },
+  {
+    "category": "运维中心",
+    "module": "我的值班",
+    "title": "我的值班 - 工作台",
+    "url": "https://demo.opsany.com/o/workbench/?login=1#/personSetting/myDuty",
+    "screenshot": "full_explore/运维中心_我的值班.png",
+    "page_data": {
+      "breadcrumbs": [],
+      "pageHeader": "工作台",
+      "cards": [],
+      "tables": [],
+      "forms": [],
+      "buttons": [
+        "控制台",
+        "工作台",
+        "刷新",
+        "打 卡"
+      ],
+      "stats": [],
+      "allText": "工作台\n概览\n运维中心\n服务门户\n工单管理\n任务管理\n我的值班\n大屏展示\n消息中心\n消息管理\n订阅设置\n流程管理\n工单目录\n工单流程\nSLA管理\nAPI管理\n值班管理\n平台设置\n导航管理\n系统设置\n平台导航\n控制台工作台消息支持\n我的值班运维中心>我的值班默认展示当前登录用户的值班详情，可切换至查看所有值班。\n日历视图\n列表视图\n值班人\n\t\n我的值班\n周\n月\n2026-02-23 ~ 2026-03-01\n刷新\n打 卡\n2026-02-23\n周一\n2026-02-24\n周二\n2026-02-25\n周三\n2026-02-26\n周四\n2026-02-27\n周五\n2026-02-28\n周六\n2026-03-01\n周日\nCopyright © 2019-2025 OpsAny. All Rights Reserved【企业专业版】"
+    }
+  },
+  {
+    "category": "运维中心",
+    "module": "大屏展示",
+    "title": "大屏展示 - 工作台",
+    "url": "https://demo.opsany.com/o/workbench/?login=1#/bigScreen/bigScreenList",
+    "screenshot": "full_explore/运维中心_大屏展示.png",
+    "page_data": {
+      "breadcrumbs": [],
+      "pageHeader": "工作台",
+      "cards": [],
+      "tables": [],
+      "forms": [],
+      "buttons": [
+        "控制台",
+        "工作台"
+      ],
+      "stats": [],
+      "allText": "工作台\n概览\n运维中心\n服务门户\n工单管理\n任务管理\n我的值班\n大屏展示\n消息中心\n消息管理\n订阅设置\n流程管理\n工单目录\n工单流程\nSLA管理\nAPI管理\n值班管理\n平台设置\n导航管理\n系统设置\n平台导航\n控制台工作台消息支持\n大屏展示运维中心>大屏展示\n从工单、监控、资源多个维度进行大屏展示，大屏为定制化开发，暂不支持自定义。\n进入大屏\n数据大屏\n进入大屏\n应用监控大屏\n进入大屏\n基础设施监控大屏\n进入大屏\n工单统计分析大屏\n更多大屏，敬请期待！\nCopyright © 2019-2025 OpsAny. All Rights Reserved【企业专业版】"
+    }
+  }
+]

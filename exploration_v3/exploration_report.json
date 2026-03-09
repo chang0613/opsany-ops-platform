@@ -1,0 +1,335 @@
+[
+  {
+    "category": "工作台",
+    "module": "工作台-概览",
+    "title": "概览 - 工作台",
+    "url": "https://demo.opsany.com/o/workbench/#/",
+    "screenshot": "exploration_v3/工作台_工作台-概览.png",
+    "content": "工作台\n概览\n运维中心\n服务门户\n工单管理\n任务管理\n我的值班\n大屏展示\n消息中心\n消息管理\n订阅设置\n流程管理\n工单目录\n工单流程\nSLA管理\nAPI管理\n值班管理\n平台设置\n导航管理\n系统设置\n平台导航\n控制台工作台消息支持\n总览\n基础设施监控\n资源平台概览\n查看更多 >\n云账号\n0\n云主机\n0\n物理机\n10\n虚拟机\n0\n应用分组\n0\n应用系统\n0\n应用模块\n0\n用户\n0\n管控平台概览\n查看更多 >\n主机： 8 台\n数据库： 0 台\n网络设备： 0 台\ndemo\n中文名：演示用户\n2026-02-26 15:26:55 星期四\n待办事项\n13\n我的提单\n0\n我的待办\n值班看板\n查看更多 >\n明日值班\n2026-02-27 周五\n暂无值班安排\n● 今日值班\n2026-02-26 周四\n暂无值班安排\n昨日值班\n2026-02-25 周三\n暂无值班安排\n最新消息\n查看更多 >\n\n暂无数据\n\n云管平台概览\n查看更多 >\n堡垒机概览\n查看更多 >\n资源总数\n主机资源 9\n数据库 0\n网络设备 0\n会话统计\n在线会话 0\n历史会话 36\n授权策略\n访问策略 1\n命令策略 1\n资源凭证\n密码凭证 9\nSSH凭证 0\n作业平台概览\n查看更多 >\n脚本数量 0\n我创建的 0\n分享给我的 0\n作业数量 0\n我创建的 0\n分享给我的 0\n定时作业 0\n启动 0\n暂停 0\n模板数量 0\n内置模板 0\n自定义模板 0\n基础监控概览\n查看更多 >\n未分类\n0 台\n信息\n0 台\n警告\n0 台\n一般严重\n0 台\n严重\n0 台\n灾难\n0 台\nCopyright © 2019-2025 OpsAny. All Rights Reserved【企业专业版】",
+    "status": "OK"
+  },
+  {
+    "category": "工作台",
+    "module": "工作台",
+    "title": "概览 - 工作台",
+    "url": "https://demo.opsany.com/o/workbench/#/",
+    "screenshot": "exploration_v3/工作台_工作台.png",
+    "content": "工作台\n概览\n运维中心\n服务门户\n工单管理\n任务管理\n我的值班\n大屏展示\n消息中心\n消息管理\n订阅设置\n流程管理\n工单目录\n工单流程\nSLA管理\nAPI管理\n值班管理\n平台设置\n导航管理\n系统设置\n平台导航\n控制台工作台消息支持\n总览\n基础设施监控\n资源平台概览\n查看更多 >\n云账号\n0\n云主机\n0\n物理机\n10\n虚拟机\n0\n应用分组\n0\n应用系统\n0\n应用模块\n0\n用户\n0\n管控平台概览\n查看更多 >\n主机： 8 台\n数据库： 0 台\n网络设备： 0 台\ndemo\n中文名：演示用户\n2026-02-26 15:26:59 星期四\n待办事项\n13\n我的提单\n0\n我的待办\n值班看板\n查看更多 >\n明日值班\n2026-02-27 周五\n暂无值班安排\n● 今日值班\n2026-02-26 周四\n暂无值班安排\n昨日值班\n2026-02-25 周三\n暂无值班安排\n最新消息\n查看更多 >\n\n暂无数据\n\n云管平台概览\n查看更多 >\n堡垒机概览\n查看更多 >\n资源总数\n主机资源 9\n数据库 0\n网络设备 0\n会话统计\n在线会话 0\n历史会话 36\n授权策略\n访问策略 1\n命令策略 1\n资源凭证\n密码凭证 9\nSSH凭证 0\n作业平台概览\n查看更多 >\n脚本数量 0\n我创建的 0\n分享给我的 0\n作业数量 0\n我创建的 0\n分享给我的 0\n定时作业 0\n启动 0\n暂停 0\n模板数量 0\n内置模板 0\n自定义模板 0\n基础监控概览\n查看更多 >\n未分类\n0 台\n信息\n0 台\n警告\n0 台\n一般严重\n0 台\n严重\n0 台\n灾难\n0 台\nCopyright © 2019-2025 OpsAny. All Rights Reserved【企业专业版】",
+    "status": "OK"
+  },
+  {
+    "category": "运维管理",
+    "module": "主机管理",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/host/",
+    "screenshot": "exploration_v3/运维管理_主机管理.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "主机列表",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/host/host-list/",
+    "screenshot": "exploration_v3/运维管理_主机列表.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "主机组",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/host/host-group/",
+    "screenshot": "exploration_v3/运维管理_主机组.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "容器管理",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/container/",
+    "screenshot": "exploration_v3/运维管理_容器管理.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "容器列表",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/container/pod/",
+    "screenshot": "exploration_v3/运维管理_容器列表.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "镜像仓库",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/container/image/",
+    "screenshot": "exploration_v3/运维管理_镜像仓库.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "持续集成",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/ci/",
+    "screenshot": "exploration_v3/运维管理_持续集成.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "CI流水线",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/ci/pipeline/",
+    "screenshot": "exploration_v3/运维管理_CI流水线.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "CI构建历史",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/ci/build/",
+    "screenshot": "exploration_v3/运维管理_CI构建历史.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "发布中心",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/cd/",
+    "screenshot": "exploration_v3/运维管理_发布中心.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "应用管理",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/cd/app/",
+    "screenshot": "exploration_v3/运维管理_应用管理.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "发布记录",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/cd/deploy/",
+    "screenshot": "exploration_v3/运维管理_发布记录.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "堡垒机",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/jumpserver/",
+    "screenshot": "exploration_v3/运维管理_堡垒机.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "会话管理",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/jumpserver/session/",
+    "screenshot": "exploration_v3/运维管理_会话管理.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "命令控制台",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/command/",
+    "screenshot": "exploration_v3/运维管理_命令控制台.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "监控中心",
+    "title": "概览 - 基础监控",
+    "url": "https://demo.opsany.com/o/monitor/#/",
+    "screenshot": "exploration_v3/运维管理_监控中心.png",
+    "content": "基础监控\n概览\n监控大屏\nDashboard\nDashboard列表\n监控对象\n主机监控\n网络设备\n统计报表\n告警排名\n告警事件\n平台设置\n监控模板\n平台导航\n控制台工作台消息支持\n监控主机 0 台\n0\n已启用\n0\n未启用\n网络设备\n\n暂无数据\n\n灾难\n0 台\n严重\n0 台\n一般严重\n0 台\n警告\n0 台\n信息\n0 台\n未分类\n0 台\n最新告警\n\t\n主机名称\n\t\n唯一标识\n\t\n实例类型\n\t\n分组\n\t\n严重性\n\t\n状态\n\t\n是否确认\n\t\n问题\n\t\n时间线\n\t\n持续时间\n\t\n\n暂无数据\n\n操作\nCopyright © 2019-2025 OpsAny. All Rights Reserved【企业专业版】",
+    "status": "OK"
+  },
+  {
+    "category": "运维管理",
+    "module": "主机监控",
+    "title": "",
+    "url": "https://demo.opsany.com/o/monitor/host/",
+    "screenshot": "exploration_v3/运维管理_主机监控.png",
+    "content": "Not Found\n\nThe requested resource was not found on this server.",
+    "status": "OK"
+  },
+  {
+    "category": "运维管理",
+    "module": "网络监控",
+    "title": "",
+    "url": "https://demo.opsany.com/o/monitor/network/",
+    "screenshot": "exploration_v3/运维管理_网络监控.png",
+    "content": "Not Found\n\nThe requested resource was not found on this server.",
+    "status": "OK"
+  },
+  {
+    "category": "运维管理",
+    "module": "容器监控",
+    "title": "",
+    "url": "https://demo.opsany.com/o/monitor/container/",
+    "screenshot": "exploration_v3/运维管理_容器监控.png",
+    "content": "Not Found\n\nThe requested resource was not found on this server.",
+    "status": "OK"
+  },
+  {
+    "category": "运维管理",
+    "module": "日志监控",
+    "title": "",
+    "url": "https://demo.opsany.com/o/monitor/log/",
+    "screenshot": "exploration_v3/运维管理_日志监控.png",
+    "content": "Not Found\n\nThe requested resource was not found on this server.",
+    "status": "OK"
+  },
+  {
+    "category": "运维管理",
+    "module": "告警中心",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/alarm/",
+    "screenshot": "exploration_v3/运维管理_告警中心.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "告警策略",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/alarm/policy/",
+    "screenshot": "exploration_v3/运维管理_告警策略.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "告警记录",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/alarm/record/",
+    "screenshot": "exploration_v3/运维管理_告警记录.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "告警联系人",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/alarm/contact/",
+    "screenshot": "exploration_v3/运维管理_告警联系人.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "资产管理",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/assets/",
+    "screenshot": "exploration_v3/运维管理_资产管理.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "资产列表",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/assets/device/",
+    "screenshot": "exploration_v3/运维管理_资产列表.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "IDC机房",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/assets/idc/",
+    "screenshot": "exploration_v3/运维管理_IDC机房.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "业务系统",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/assets/business/",
+    "screenshot": "exploration_v3/运维管理_业务系统.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "IP管理",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/assets/ip/",
+    "screenshot": "exploration_v3/运维管理_IP管理.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "运维管理",
+    "module": "组织架构",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/assets/org/",
+    "screenshot": "exploration_v3/运维管理_组织架构.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "系统设置",
+    "module": "知识库",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/wiki/",
+    "screenshot": "exploration_v3/系统设置_知识库.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "系统设置",
+    "module": "系统配置",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/config/",
+    "screenshot": "exploration_v3/系统设置_系统配置.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "系统设置",
+    "module": "用户管理",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/user/",
+    "screenshot": "exploration_v3/系统设置_用户管理.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "系统设置",
+    "module": "角色管理",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/user/role/",
+    "screenshot": "exploration_v3/系统设置_角色管理.png",
+    "content": "页面找不到了",
+    "status": "404"
+  },
+  {
+    "category": "系统设置",
+    "module": "审计日志",
+    "title": "页面找不到（404页）",
+    "url": "https://demo.opsany.com/o/audit/",
+    "screenshot": "exploration_v3/系统设置_审计日志.png",
+    "content": "页面找不到了",
+    "status": "404"
+  }
+]
