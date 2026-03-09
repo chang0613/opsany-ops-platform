@@ -36,6 +36,6 @@ public class NotificationMessage {
     @Column(nullable = false)
     private LocalDateTime sentAt;
 
-    @Column(nullable = false)
+    @Column(name = "is_read", nullable = false)
     private boolean read;
 }
