@@ -12,3 +12,7 @@ debug.log
 *.png
 *.jpg
 *.jpeg
+.playwright-cli/
+backend.zip
+frontend/dist/
+backend/target/

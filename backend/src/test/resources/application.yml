@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:opsany;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  rabbitmq:
+    listener:
+      simple:
+        auto-startup: false
+  redis:
+    host: localhost
+    port: 6379
+
+app:
+  seed:
+    enabled: true
+  messaging:
+    consumer-enabled: false
+    fallback-on-publish-failure: true

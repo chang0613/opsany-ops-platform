@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: opsany-replica-backend
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:opsany_replica}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:root}
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    database: ${REDIS_DATABASE:0}
+    timeout: 5000
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: Asia/Shanghai
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    listener:
+      simple:
+        missing-queues-fatal: false
+        default-requeue-rejected: false
+        auto-startup: ${RABBITMQ_CONSUMER_ENABLED:true}
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+server:
+  port: ${SERVER_PORT:8080}
+
+app:
+  cors:
+    allowed-origins:
+      - ${FRONTEND_ORIGIN:http://localhost:5173}
+  session:
+    ttl-hours: ${SESSION_TTL_HOURS:8}
+  cache:
+    bootstrap-ttl-minutes: ${BOOTSTRAP_CACHE_TTL_MINUTES:5}
+  seed:
+    enabled: ${APP_SEED_ENABLED:true}
+  messaging:
+    consumer-enabled: ${RABBITMQ_CONSUMER_ENABLED:true}
+    fallback-on-publish-failure: ${RABBITMQ_FALLBACK_ON_FAILURE:true}
+
+logging:
+  level:
+    com.opsany.replica: INFO

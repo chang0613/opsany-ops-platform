@@ -1,0 +1,1400 @@
+{
+  "menu": [
+    {
+      "group": "工作台",
+      "items": [
+        {
+          "label": "概览",
+          "route": "/"
+        }
+      ]
+    },
+    {
+      "group": "运维中心",
+      "items": [
+        {
+          "label": "服务门户",
+          "route": "/personSetting/serviceFolder"
+        },
+        {
+          "label": "工单管理",
+          "route": "/personSetting/orderManage"
+        },
+        {
+          "label": "任务管理",
+          "route": "/personSetting/taskManage"
+        },
+        {
+          "label": "我的值班",
+          "route": "/personSetting/myDuty"
+        },
+        {
+          "label": "大屏展示",
+          "route": "/bigScreen/bigScreenList"
+        }
+      ]
+    },
+    {
+      "group": "消息中心",
+      "items": [
+        {
+          "label": "消息管理",
+          "route": "/msgCenter/messageManage"
+        },
+        {
+          "label": "订阅设置",
+          "route": "/msgCenter/subscriptionSetting"
+        }
+      ]
+    },
+    {
+      "group": "流程管理",
+      "items": [
+        {
+          "label": "工单目录",
+          "route": "/serveSetting/orderDirectory"
+        },
+        {
+          "label": "工单流程",
+          "route": "/serveSetting/orderProcess"
+        },
+        {
+          "label": "SLA管理",
+          "route": "/serveSetting/slaSetting"
+        },
+        {
+          "label": "API管理",
+          "route": "/serveSetting/apiManage"
+        },
+        {
+          "label": "值班管理",
+          "route": "/serveSetting/dutyManage"
+        }
+      ]
+    },
+    {
+      "group": "平台设置",
+      "items": [
+        {
+          "label": "导航管理",
+          "route": "/serveSetting/navSetting"
+        },
+        {
+          "label": "系统设置",
+          "route": "/serveSetting/systemSetting"
+        }
+      ]
+    }
+  ],
+  "navigationGroups": [
+    {
+      "title": "技术运营",
+      "rows": [
+        {
+          "id": 1,
+          "name": "资源平台",
+          "icon": "资",
+          "creator": "admin",
+          "link": "/o/cmdb/",
+          "mobile": "否",
+          "desc": "应用和资源CMDB"
+        },
+        {
+          "id": 2,
+          "name": "管控平台",
+          "icon": "管",
+          "creator": "admin",
+          "link": "/o/control/",
+          "mobile": "否",
+          "desc": "运维资源纳管"
+        },
+        {
+          "id": 3,
+          "name": "工作台",
+          "icon": "工",
+          "creator": "admin",
+          "link": "/o/workbench/",
+          "mobile": "否",
+          "desc": "运维中心和工单管理"
+        },
+        {
+          "id": 15,
+          "name": "知识库",
+          "icon": "知",
+          "creator": "admin",
+          "link": "/o/kbase/",
+          "mobile": "否",
+          "desc": "知识库管理"
+        }
+      ]
+    },
+    {
+      "title": "自动化运维",
+      "rows": [
+        {
+          "id": 4,
+          "name": "作业平台",
+          "icon": "作",
+          "creator": "admin",
+          "link": "/o/job/",
+          "mobile": "否",
+          "desc": "自动化运维工具编排"
+        },
+        {
+          "id": 5,
+          "name": "云管平台",
+          "icon": "云",
+          "creator": "admin",
+          "link": "/o/cmp/",
+          "mobile": "否",
+          "desc": "混合云管理平台"
+        },
+        {
+          "id": 9,
+          "name": "基础监控",
+          "icon": "监",
+          "creator": "admin",
+          "link": "/o/monitor/",
+          "mobile": "否",
+          "desc": "基础监控平台"
+        },
+        {
+          "id": 16,
+          "name": "事件中心",
+          "icon": "事",
+          "creator": "admin",
+          "link": "/o/event/",
+          "mobile": "否",
+          "desc": "稳定性和故障自愈"
+        },
+        {
+          "id": 6,
+          "name": "容器平台",
+          "icon": "容",
+          "creator": "admin",
+          "link": "/o/k8s/",
+          "mobile": "否",
+          "desc": "Kubernetes多集群管理"
+        }
+      ]
+    },
+    {
+      "title": "平台管理",
+      "rows": [
+        {
+          "id": 7,
+          "name": "开发中心",
+          "icon": "开",
+          "creator": "admin",
+          "link": "/saas/list/",
+          "mobile": "否",
+          "desc": "运维开发者中心"
+        },
+        {
+          "id": 8,
+          "name": "统一权限",
+          "icon": "权",
+          "creator": "admin",
+          "link": "/o/rbac/",
+          "mobile": "否",
+          "desc": "统一权限管理平台"
+        },
+        {
+          "id": 10,
+          "name": "堡垒机",
+          "icon": "堡",
+          "creator": "admin",
+          "link": "/o/bastion/",
+          "mobile": "否",
+          "desc": "运维堡垒机"
+        },
+        {
+          "id": 11,
+          "name": "大模型开发平台",
+          "icon": "模",
+          "creator": "admin",
+          "link": "/o/llmops/",
+          "mobile": "否",
+          "desc": "大模型开发平台"
+        }
+      ]
+    },
+    {
+      "title": "DevOps",
+      "rows": [
+        {
+          "id": 12,
+          "name": "应用平台",
+          "icon": "应",
+          "creator": "admin",
+          "link": "/o/devops/",
+          "mobile": "否",
+          "desc": "应用DevOps平台"
+        },
+        {
+          "id": 13,
+          "name": "流水线",
+          "icon": "流",
+          "creator": "admin",
+          "link": "/o/pipeline/",
+          "mobile": "否",
+          "desc": "流水线编排"
+        },
+        {
+          "id": 14,
+          "name": "持续部署",
+          "icon": "部",
+          "creator": "admin",
+          "link": "/o/deploy/",
+          "mobile": "否",
+          "desc": "部署编排灵活"
+        },
+        {
+          "id": 17,
+          "name": "制品仓库",
+          "icon": "制",
+          "creator": "admin",
+          "link": "/o/repo/",
+          "mobile": "否",
+          "desc": "应用制品仓库"
+        }
+      ]
+    },
+    {
+      "title": "可观测",
+      "rows": [
+        {
+          "id": 18,
+          "name": "智能巡检",
+          "icon": "巡",
+          "creator": "admin",
+          "link": "/o/auto/",
+          "mobile": "否",
+          "desc": "运维自动化巡检"
+        },
+        {
+          "id": 19,
+          "name": "应用监控",
+          "icon": "应",
+          "creator": "admin",
+          "link": "/o/prom/",
+          "mobile": "否",
+          "desc": "应用可观测平台"
+        },
+        {
+          "id": 20,
+          "name": "日志平台",
+          "icon": "日",
+          "creator": "admin",
+          "link": "/o/log/",
+          "mobile": "否",
+          "desc": "统一日志平台"
+        },
+        {
+          "id": 21,
+          "name": "APM平台",
+          "icon": "A",
+          "creator": "admin",
+          "link": "/o/apm/",
+          "mobile": "否",
+          "desc": "应用性能监控平台"
+        }
+      ]
+    }
+  ],
+  "overviewData": {
+    "infrastructure": [
+      {
+        "label": "云账号",
+        "value": 0,
+        "color": "#4ec785"
+      },
+      {
+        "label": "云主机",
+        "value": 0,
+        "color": "#5ca8ff"
+      },
+      {
+        "label": "物理机",
+        "value": 10,
+        "color": "#7d8cff"
+      },
+      {
+        "label": "虚拟机",
+        "value": 0,
+        "color": "#f0c14b"
+      },
+      {
+        "label": "应用分组",
+        "value": 0,
+        "color": "#f9a552"
+      },
+      {
+        "label": "应用系统",
+        "value": 0,
+        "color": "#4aa4ff"
+      },
+      {
+        "label": "应用模块",
+        "value": 0,
+        "color": "#62d49f"
+      },
+      {
+        "label": "用户",
+        "value": 0,
+        "color": "#7fd7f7"
+      }
+    ],
+    "cloudVendors": [
+      {
+        "label": "天翼云",
+        "value": 0,
+        "color": "#46d38b"
+      },
+      {
+        "label": "阿里云",
+        "value": 0,
+        "color": "#2f7cff"
+      },
+      {
+        "label": "腾讯云",
+        "value": 0,
+        "color": "#29b971"
+      },
+      {
+        "label": "华为云",
+        "value": 0,
+        "color": "#3cc4e5"
+      },
+      {
+        "label": "亚马逊国际",
+        "value": 0,
+        "color": "#ffb521"
+      },
+      {
+        "label": "亚马逊中国",
+        "value": 0,
+        "color": "#83d35e"
+      },
+      {
+        "label": "金山云",
+        "value": 0,
+        "color": "#4dd77d"
+      },
+      {
+        "label": "百度云",
+        "value": 0,
+        "color": "#367ff0"
+      },
+      {
+        "label": "浪潮云",
+        "value": 0,
+        "color": "#3fd59f"
+      },
+      {
+        "label": "浪潮专有云",
+        "value": 0,
+        "color": "#f8a12d"
+      },
+      {
+        "label": "微软国际",
+        "value": 0,
+        "color": "#4cd992"
+      },
+      {
+        "label": "微软中国",
+        "value": 0,
+        "color": "#49c672"
+      }
+    ],
+    "controlPlatform": [
+      {
+        "label": "主机",
+        "value": 8,
+        "color": "#65a5ff"
+      },
+      {
+        "label": "数据库",
+        "value": 0,
+        "color": "#7dd6f7"
+      },
+      {
+        "label": "网络设备",
+        "value": 0,
+        "color": "#4bcf80"
+      }
+    ],
+    "monitorLevels": [
+      {
+        "label": "未分类",
+        "value": 0,
+        "color": "#98a1a8"
+      },
+      {
+        "label": "信息",
+        "value": 0,
+        "color": "#5b8cff"
+      },
+      {
+        "label": "警告",
+        "value": 0,
+        "color": "#f6b83f"
+      },
+      {
+        "label": "一般严重",
+        "value": 0,
+        "color": "#f5a24e"
+      },
+      {
+        "label": "严重",
+        "value": 0,
+        "color": "#ff854d"
+      },
+      {
+        "label": "灾难",
+        "value": 0,
+        "color": "#ff6464"
+      }
+    ],
+    "userPanel": {
+      "account": "demo",
+      "displayName": "演示用户",
+      "todoSubmitted": 14,
+      "todoPending": 0
+    },
+    "dutyBoard": [
+      {
+        "label": "明日值班",
+        "date": "2026-02-27 周五",
+        "text": "暂无值班安排",
+        "accent": "muted"
+      },
+      {
+        "label": "今日值班",
+        "date": "2026-02-26 周四",
+        "text": "暂无值班安排",
+        "accent": "success"
+      },
+      {
+        "label": "昨日值班",
+        "date": "2026-02-25 周三",
+        "text": "暂无值班安排",
+        "accent": "muted"
+      }
+    ],
+    "latestMessages": [
+      {
+        "title": "工单状态: 云资源申请",
+        "time": "2026-02-27 09:41:07"
+      },
+      {
+        "title": "工单状态: 0227",
+        "time": "2026-02-27 09:38:53"
+      },
+      {
+        "title": "工单状态: awe",
+        "time": "2026-02-26 15:37:57"
+      }
+    ],
+    "screenCards": [
+      {
+        "title": "数据大屏",
+        "desc": "可查看详细的数据可视化分析",
+        "accent": "green"
+      },
+      {
+        "title": "应用大屏",
+        "desc": "可监控应用是否告警以及健康数据分析",
+        "accent": "blue"
+      },
+      {
+        "title": "基础设施监控大屏",
+        "desc": "从资源视角汇总展示平台状态",
+        "accent": "teal"
+      },
+      {
+        "title": "工单统计分析大屏",
+        "desc": "查看服务请求与处理效率分析",
+        "accent": "gold"
+      }
+    ],
+    "jobStats": [
+      {
+        "label": "脚本数量",
+        "value": 0
+      },
+      {
+        "label": "作业数量",
+        "value": 0
+      },
+      {
+        "label": "定时作业数量",
+        "value": 0
+      },
+      {
+        "label": "模板数量",
+        "value": 0
+      }
+    ],
+    "bastionStats": [
+      {
+        "label": "资源总数",
+        "value": 8
+      },
+      {
+        "label": "在线会话",
+        "value": 0
+      },
+      {
+        "label": "历史会话",
+        "value": 0
+      },
+      {
+        "label": "访问策略",
+        "value": 0
+      },
+      {
+        "label": "命令策略",
+        "value": 0
+      },
+      {
+        "label": "密码凭证",
+        "value": 0
+      },
+      {
+        "label": "SSH凭证",
+        "value": 0
+      }
+    ]
+  },
+  "pages": {
+    "/": {
+      "title": "概览",
+      "breadcrumb": [
+        "工作台",
+        "概览"
+      ],
+      "intro": "工作台默认首页，聚合基础设施、待办、值班、消息和大屏入口。",
+      "kind": "overview"
+    },
+    "/personSetting/serviceFolder": {
+      "title": "服务门户",
+      "breadcrumb": [
+        "运维中心",
+        "服务门户"
+      ],
+      "intro": "将所有IT部门可以提供的服务以工单的形式输出给业务用户。",
+      "kind": "servicePortal",
+      "tabs": [
+        "全部服务(7)",
+        "我的收藏(2)",
+        "请求管理(5)",
+        "变更管理(1)",
+        "事件管理(1)",
+        "问题管理(0)",
+        "最近提单(6)"
+      ],
+      "serviceCategories": [
+        "所有服务(7)",
+        "默认分组(5)",
+        "事件管理(1)",
+        "发布工单(1)"
+      ],
+      "services": [
+        {
+          "title": "发布工单",
+          "type": "请求管理",
+          "description": "--",
+          "count": "2 人已提单"
+        },
+        {
+          "title": "云效执行流水线",
+          "type": "请求管理",
+          "description": "--",
+          "count": "2 人已提单"
+        },
+        {
+          "title": "Nginx配置变更",
+          "type": "变更管理",
+          "description": "--",
+          "count": "2 人已提单"
+        },
+        {
+          "title": "域名解析申请",
+          "type": "请求管理",
+          "description": "--",
+          "count": "1 人已提单"
+        },
+        {
+          "title": "数据库创建申请",
+          "type": "请求管理",
+          "description": "--",
+          "count": "1 人已提单"
+        },
+        {
+          "title": "云资源申请",
+          "type": "请求管理",
+          "description": "--",
+          "count": "1 人已提单"
+        },
+        {
+          "title": "告警转工单",
+          "type": "事件管理",
+          "description": "告警转工单",
+          "count": "1 人已提单"
+        }
+      ]
+    },
+    "/personSetting/orderManage": {
+      "title": "工单管理",
+      "breadcrumb": [
+        "运维中心",
+        "工单管理"
+      ],
+      "intro": "用户的工单管理，可以提交工单、处理工单，并查看工单的状态。",
+      "kind": "orders",
+      "tabs": [
+        "我提交的(16)",
+        "我的待办",
+        "我的已办(2)",
+        "所有工单(16)",
+        "草稿箱(3)"
+      ],
+      "rows": [
+        {
+          "id": "20260129092345372840",
+          "title": "11",
+          "type": "变更管理",
+          "creator": "演示用户",
+          "progress": "已结束",
+          "status": "已结束",
+          "eta": "--",
+          "createdAt": "2026-01-29 09:23"
+        },
+        {
+          "id": "2026012711230184610",
+          "title": "test",
+          "type": "变更管理",
+          "creator": "演示用户",
+          "progress": "<2> 工程师处理",
+          "status": "正在进行",
+          "eta": "--",
+          "createdAt": "2026-01-27 11:23"
+        },
+        {
+          "id": "20260119211350798938",
+          "title": "1",
+          "type": "请求管理",
+          "creator": "演示用户",
+          "progress": "已结束",
+          "status": "已结束",
+          "eta": "--",
+          "createdAt": "2026-01-19 21:13"
+        },
+        {
+          "id": "20260115142324176349",
+          "title": "测试",
+          "type": "请求管理",
+          "creator": "演示用户",
+          "progress": "已结束",
+          "status": "已结束",
+          "eta": "--",
+          "createdAt": "2026-01-15 14:23"
+        },
+        {
+          "id": "20260106160209195536",
+          "title": "test001",
+          "type": "请求管理",
+          "creator": "演示用户",
+          "progress": "<2> 领导审批",
+          "status": "正在进行",
+          "eta": "--",
+          "createdAt": "2026-01-06 16:02"
+        },
+        {
+          "id": "20260105210615369726",
+          "title": "ytest",
+          "type": "请求管理",
+          "creator": "演示用户",
+          "progress": "已结束",
+          "status": "已结束",
+          "eta": "--",
+          "createdAt": "2026-01-05 21:06"
+        },
+        {
+          "id": "20251230145644125227",
+          "title": "test",
+          "type": "请求管理",
+          "creator": "演示用户",
+          "progress": "已结束",
+          "status": "已结束",
+          "eta": "--",
+          "createdAt": "2025-12-30 14:56"
+        },
+        {
+          "id": "20251229152605768175",
+          "title": "test",
+          "type": "变更管理",
+          "creator": "演示用户",
+          "progress": "<2> 工程师处理",
+          "status": "正在进行",
+          "eta": "--",
+          "createdAt": "2025-12-29 15:26"
+        },
+        {
+          "id": "20251224174011810929",
+          "title": "teset",
+          "type": "请求管理",
+          "creator": "演示用户",
+          "progress": "已结束",
+          "status": "已结束",
+          "eta": "--",
+          "createdAt": "2025-12-24 17:40"
+        },
+        {
+          "id": "20251218174459116899",
+          "title": "---------",
+          "type": "请求管理",
+          "creator": "演示用户",
+          "progress": "<2> 工程师处理",
+          "status": "正在进行",
+          "eta": "--",
+          "createdAt": "2025-12-18 17:44"
+        }
+      ]
+    },
+    "/personSetting/taskManage": {
+      "title": "任务管理",
+      "breadcrumb": [
+        "运维中心",
+        "任务管理"
+      ],
+      "intro": "任务可以和工单进行关联，从而实现工单流程和运维任务的协同。",
+      "kind": "tasks",
+      "tabs": [
+        "我的待办(0)",
+        "我的已办(4)",
+        "我创建的(7)",
+        "所有任务(7)",
+        "任务模板(0)"
+      ],
+      "rows": [
+        {
+          "id": "TASK-20260227-001",
+          "title": "发布审批确认",
+          "source": "工单流程",
+          "ticket": "发布工单",
+          "status": "已完成",
+          "assignee": "演示用户",
+          "priority": "中",
+          "creator": "管理员",
+          "createdAt": "2026-02-27 09:40"
+        },
+        {
+          "id": "TASK-20260227-002",
+          "title": "云效流水线执行",
+          "source": "API节点",
+          "ticket": "云效执行流水线",
+          "status": "处理中",
+          "assignee": "管理员",
+          "priority": "高",
+          "creator": "管理员",
+          "createdAt": "2026-02-27 09:20"
+        },
+        {
+          "id": "TASK-20260226-003",
+          "title": "Nginx变更复核",
+          "source": "变更流程",
+          "ticket": "Nginx配置变更",
+          "status": "已完成",
+          "assignee": "演示用户",
+          "priority": "中",
+          "creator": "管理员",
+          "createdAt": "2026-02-26 16:03"
+        },
+        {
+          "id": "TASK-20260226-004",
+          "title": "域名申请配置",
+          "source": "请求流程",
+          "ticket": "域名解析申请",
+          "status": "已完成",
+          "assignee": "管理员",
+          "priority": "低",
+          "creator": "管理员",
+          "createdAt": "2026-02-26 10:16"
+        },
+        {
+          "id": "TASK-20260225-005",
+          "title": "数据库创建审核",
+          "source": "请求流程",
+          "ticket": "数据库创建申请",
+          "status": "处理中",
+          "assignee": "管理员",
+          "priority": "高",
+          "creator": "管理员",
+          "createdAt": "2026-02-25 19:40"
+        },
+        {
+          "id": "TASK-20260225-006",
+          "title": "云资源申请复核",
+          "source": "审批节点",
+          "ticket": "云资源申请",
+          "status": "已完成",
+          "assignee": "管理员",
+          "priority": "中",
+          "creator": "管理员",
+          "createdAt": "2026-02-25 15:18"
+        },
+        {
+          "id": "TASK-20260224-007",
+          "title": "告警转工单执行",
+          "source": "事件联动",
+          "ticket": "告警转工单",
+          "status": "待处理",
+          "assignee": "值班工程师",
+          "priority": "高",
+          "creator": "系统",
+          "createdAt": "2026-02-24 22:05"
+        }
+      ]
+    },
+    "/personSetting/myDuty": {
+      "title": "我的值班",
+      "breadcrumb": [
+        "运维中心",
+        "我的值班"
+      ],
+      "intro": "默认展示当前登录用户的值班详情，可切换至查看所有值班。",
+      "kind": "duty",
+      "shifts": [
+        {
+          "date": "2026-02-24",
+          "label": "周二",
+          "group": "数据库组",
+          "status": "已值班",
+          "owner": "演示用户",
+          "time": "00:00 - 23:59"
+        },
+        {
+          "date": "2026-02-25",
+          "label": "周三",
+          "group": "数据库组",
+          "status": "已值班",
+          "owner": "演示用户",
+          "time": "00:00 - 23:59"
+        },
+        {
+          "date": "2026-02-26",
+          "label": "周四",
+          "group": "数据库组",
+          "status": "今日值班",
+          "owner": "演示用户",
+          "time": "00:00 - 23:59"
+        },
+        {
+          "date": "2026-02-27",
+          "label": "周五",
+          "group": "数据库组",
+          "status": "待值班",
+          "owner": "演示用户",
+          "time": "00:00 - 23:59"
+        }
+      ]
+    },
+    "/bigScreen/bigScreenList": {
+      "title": "大屏展示",
+      "breadcrumb": [
+        "运维中心",
+        "大屏展示"
+      ],
+      "intro": "从工单、监控、资源多个维度进行大屏展示，大屏为定制化开发，暂不支持自定义。",
+      "kind": "bigScreens",
+      "screens": [
+        {
+          "title": "数据大屏",
+          "desc": "查看详细的数据可视化分析",
+          "tag": "数据分析"
+        },
+        {
+          "title": "应用监控大屏",
+          "desc": "监控应用是否告警以及健康状态",
+          "tag": "应用监控"
+        },
+        {
+          "title": "基础设施监控大屏",
+          "desc": "展示基础设施总览和告警态势",
+          "tag": "基础设施"
+        },
+        {
+          "title": "工单统计分析大屏",
+          "desc": "统计工单处理效率与服务趋势",
+          "tag": "工单分析"
+        }
+      ]
+    },
+    "/msgCenter/messageManage": {
+      "title": "消息管理",
+      "breadcrumb": [
+        "消息中心",
+        "消息管理"
+      ],
+      "intro": "管理所有平台的消息通知，可在订阅设置中设置接收范围。",
+      "kind": "messages",
+      "messageTypes": [
+        "全部消息类型(1)",
+        "APM平台",
+        "智能巡检",
+        "堡垒机",
+        "资源平台",
+        "云管平台",
+        "管控平台",
+        "持续部署",
+        "应用平台",
+        "事件中心",
+        "作业平台",
+        "容器平台",
+        "知识库",
+        "大模型开发平台",
+        "日志平台",
+        "基础监控",
+        "流水线",
+        "应用监控",
+        "工作台",
+        "其他消息"
+      ],
+      "rows": [
+        {
+          "title": "工单状态: 云资源申请",
+          "time": "2026-02-27 09:41:07",
+          "type": "工作台"
+        },
+        {
+          "title": "工单状态: 0227",
+          "time": "2026-02-27 09:38:53",
+          "type": "工作台"
+        },
+        {
+          "title": "工单状态: awe",
+          "time": "2026-02-26 15:37:57",
+          "type": "工作台"
+        },
+        {
+          "title": "部署编排执行完成通知",
+          "time": "2026-02-26 11:26:11",
+          "type": "持续部署"
+        },
+        {
+          "title": "作业执行通知",
+          "time": "2026-02-25 18:08:44",
+          "type": "作业平台"
+        }
+      ]
+    },
+    "/msgCenter/subscriptionSetting": {
+      "title": "订阅设置",
+      "breadcrumb": [
+        "消息中心",
+        "订阅设置"
+      ],
+      "intro": "消息订阅设置，请根据个人需求订阅相关消息。",
+      "kind": "subscriptions",
+      "rows": [
+        {
+          "type": "资源平台过期资源通知",
+          "source": "资源平台"
+        },
+        {
+          "type": "作业执行通知",
+          "source": "作业平台"
+        },
+        {
+          "type": "脚本执行通知",
+          "source": "作业平台"
+        },
+        {
+          "type": "文件分发通知",
+          "source": "作业平台"
+        },
+        {
+          "type": "定时作业执行通知",
+          "source": "作业平台"
+        },
+        {
+          "type": "工单待办提醒",
+          "source": "工作台"
+        },
+        {
+          "type": "工单状态提醒",
+          "source": "工作台"
+        },
+        {
+          "type": "工单结束提醒",
+          "source": "工作台"
+        },
+        {
+          "type": "工单响应提醒",
+          "source": "工作台"
+        },
+        {
+          "type": "工单处理提醒",
+          "source": "工作台"
+        },
+        {
+          "type": "值班提醒",
+          "source": "工作台"
+        },
+        {
+          "type": "部署编排执行结果通知",
+          "source": "持续部署"
+        }
+      ]
+    },
+    "/serveSetting/orderDirectory": {
+      "title": "工单目录",
+      "breadcrumb": [
+        "流程管理",
+        "工单目录"
+      ],
+      "intro": "工单和目录管理，可以通过目录将工单进行分类，然后创建工单。",
+      "kind": "orderDirectory",
+      "categories": [
+        "所有服务(7)",
+        "默认分组(5)",
+        "事件管理(1)",
+        "发布工单(1)"
+      ],
+      "rows": [
+        {
+          "name": "发布工单",
+          "type": "请求管理",
+          "scope": "全部用户",
+          "online": "已上线",
+          "version": "发布工单-流程V2",
+          "sla": "-",
+          "owner": "管理员",
+          "createdAt": "2025-12-12",
+          "desc": "标准发布申请流程"
+        },
+        {
+          "name": "云效执行流水线",
+          "type": "请求管理",
+          "scope": "组织架构",
+          "online": "已上线",
+          "version": "验证API",
+          "sla": "-",
+          "owner": "管理员",
+          "createdAt": "2025-12-12",
+          "desc": "对接云效流水线执行"
+        },
+        {
+          "name": "域名解析申请",
+          "type": "请求管理",
+          "scope": "全部用户",
+          "online": "已上线",
+          "version": "通用服务请求流程-无审批",
+          "sla": "-",
+          "owner": "管理员",
+          "createdAt": "2025-11-16",
+          "desc": "域名记录申请"
+        },
+        {
+          "name": "数据库创建申请",
+          "type": "请求管理",
+          "scope": "全部用户",
+          "online": "已上线",
+          "version": "通用服务请求流程-无审批",
+          "sla": "-",
+          "owner": "管理员",
+          "createdAt": "2025-11-16",
+          "desc": "数据库资源开通"
+        },
+        {
+          "name": "Nginx配置变更",
+          "type": "变更管理",
+          "scope": "全部用户",
+          "online": "已上线",
+          "version": "通用服务请求流程-无审批",
+          "sla": "-",
+          "owner": "管理员",
+          "createdAt": "2025-11-16",
+          "desc": "Nginx配置变更申请"
+        },
+        {
+          "name": "云资源申请",
+          "type": "请求管理",
+          "scope": "全部用户",
+          "online": "已上线",
+          "version": "通用服务请求流程-有审批",
+          "sla": "-",
+          "owner": "管理员",
+          "createdAt": "2025-11-16",
+          "desc": "云资源开通"
+        },
+        {
+          "name": "告警转工单",
+          "type": "事件管理",
+          "scope": "全部用户",
+          "online": "已上线",
+          "version": "告警转工单",
+          "sla": "-",
+          "owner": "管理员",
+          "createdAt": "2025-11-16",
+          "desc": "事件自动转工单"
+        }
+      ]
+    },
+    "/serveSetting/orderProcess": {
+      "title": "工单流程",
+      "breadcrumb": [
+        "流程管理",
+        "工单流程"
+      ],
+      "intro": "工单流程的管理，用户可以自定义流程中的节点、表单、字段等信息。",
+      "kind": "processes",
+      "tabs": [
+        "流程设计(9)",
+        "流程版本(6)",
+        "公共表单(2)",
+        "公共字段(32)",
+        "工单角色(2)"
+      ],
+      "rows": [
+        {
+          "name": "测试-全节点字段",
+          "owner": "管理员",
+          "creator": "米粒儿",
+          "updater": "管理员",
+          "status": "未发布",
+          "updatedAt": "2026-01-28",
+          "desc": "-"
+        },
+        {
+          "name": "发布工单-流程-副本",
+          "owner": "管理员",
+          "creator": "管理员",
+          "updater": "管理员",
+          "status": "未发布",
+          "updatedAt": "2025-12-18",
+          "desc": "-"
+        },
+        {
+          "name": "IT资源申请",
+          "owner": "管理员",
+          "creator": "管理员",
+          "updater": "管理员",
+          "status": "未发布",
+          "updatedAt": "2025-12-12",
+          "desc": "-"
+        },
+        {
+          "name": "验证API",
+          "owner": "管理员",
+          "creator": "管理员",
+          "updater": "管理员",
+          "status": "已发布",
+          "updatedAt": "2025-12-12",
+          "desc": "-"
+        },
+        {
+          "name": "发布工单-流程",
+          "owner": "管理员",
+          "creator": "管理员",
+          "updater": "管理员",
+          "status": "已发布",
+          "updatedAt": "2025-12-12",
+          "desc": "-"
+        },
+        {
+          "name": "网络策略开通申请",
+          "owner": "管理员",
+          "creator": "管理员",
+          "updater": "管理员",
+          "status": "未发布",
+          "updatedAt": "2025-11-21",
+          "desc": "-"
+        },
+        {
+          "name": "通用服务请求流程-无审批",
+          "owner": "管理员",
+          "creator": "管理员",
+          "updater": "管理员",
+          "status": "已发布",
+          "updatedAt": "2025-11-16",
+          "desc": "通用服务请求流程，无审批。"
+        },
+        {
+          "name": "通用服务请求流程-有审批",
+          "owner": "管理员",
+          "creator": "管理员",
+          "updater": "管理员",
+          "status": "已发布",
+          "updatedAt": "2025-11-16",
+          "desc": "通用服务请求流程，职能经理审批。"
+        },
+        {
+          "name": "告警转工单",
+          "owner": "管理员",
+          "creator": "管理员",
+          "updater": "管理员",
+          "status": "已发布",
+          "updatedAt": "2025-11-16",
+          "desc": "告警转工单。"
+        }
+      ]
+    },
+    "/serveSetting/slaSetting": {
+      "title": "SLA管理",
+      "breadcrumb": [
+        "流程管理",
+        "SLA管理"
+      ],
+      "intro": "SLA (Service Level Agreement) 服务级别协议管理，用于定义工单处理的响应时间和服务级别。",
+      "kind": "sla"
+    },
+    "/serveSetting/apiManage": {
+      "title": "API管理",
+      "breadcrumb": [
+        "流程管理",
+        "API管理"
+      ],
+      "intro": "可以自定义本平台或者对接其他平台的API，在创建工单流程中可选择API节点进行调用。",
+      "kind": "apis",
+      "tabs": [
+        "公共API(4)",
+        "全部系统(4)",
+        "作业平台(1)",
+        "流水线(1)",
+        "持续部署(1)",
+        "云效(1)"
+      ],
+      "rows": [
+        {
+          "name": "云效流水线",
+          "path": "https://openapi-rdc.aliyuncs.com/oapi/v1/flow/organizations/...",
+          "enabled": "启用",
+          "owner": "管理员",
+          "count": 3
+        },
+        {
+          "name": "执行持续部署任务-V3",
+          "path": "/api/c/compapi/deploy/run_deploy_task_v3/",
+          "enabled": "启用",
+          "owner": "管理员",
+          "count": 0
+        },
+        {
+          "name": "执行流水线任务-V3",
+          "path": "/api/c/compapi/pipeline/run_pipeline_task_v3/",
+          "enabled": "启用",
+          "owner": "管理员",
+          "count": 0
+        },
+        {
+          "name": "作业执行",
+          "path": "/api/c/compapi/job/run_task_by_id/",
+          "enabled": "启用",
+          "owner": "管理员",
+          "count": 1
+        }
+      ]
+    },
+    "/serveSetting/dutyManage": {
+      "title": "值班管理",
+      "breadcrumb": [
+        "流程管理",
+        "值班管理"
+      ],
+      "intro": "支持多个值班组进行自定义排班，排班模板可协助进行快速排班。",
+      "kind": "dutyManage",
+      "tabs": [
+        "值班日历",
+        "值班组",
+        "排班模板"
+      ],
+      "groups": [
+        {
+          "name": "数据库组",
+          "owner": "演示用户",
+          "members": 4,
+          "coverage": "7 x 24"
+        },
+        {
+          "name": "应用运维组",
+          "owner": "管理员",
+          "members": 6,
+          "coverage": "工作日"
+        },
+        {
+          "name": "基础设施组",
+          "owner": "管理员",
+          "members": 5,
+          "coverage": "7 x 24"
+        }
+      ]
+    },
+    "/serveSetting/navSetting": {
+      "title": "导航管理",
+      "breadcrumb": [
+        "平台设置",
+        "导航管理"
+      ],
+      "intro": "设置导航目录和菜单，将显示在所有平台中。",
+      "kind": "navigation"
+    },
+    "/serveSetting/systemSetting": {
+      "title": "系统设置",
+      "breadcrumb": [
+        "平台设置",
+        "系统设置"
+      ],
+      "intro": "消息通知的邮件服务器、企业微信、钉钉等集成设置。",
+      "kind": "systemSettings",
+      "cards": [
+        {
+          "title": "邮件服务器",
+          "desc": "SMTP 邮件服务器配置与告警通知发件设置",
+          "tag": "SMTP"
+        },
+        {
+          "title": "企业微信集成",
+          "desc": "企业微信应用、回调地址和消息模板配置",
+          "tag": "企业微信"
+        },
+        {
+          "title": "钉钉集成",
+          "desc": "Webhook、应用密钥和审批通知集成",
+          "tag": "钉钉"
+        },
+        {
+          "title": "短信",
+          "desc": "短信通道、签名和模板管理",
+          "tag": "短信"
+        },
+        {
+          "title": "个性化设置",
+          "desc": "站点标题、Logo、主题色和登录页配置",
+          "tag": "外观"
+        },
+        {
+          "title": "历史数据清理",
+          "desc": "按模块执行历史消息、日志和工单数据清理",
+          "tag": "维护"
+        }
+      ]
+    }
+  },
+  "shell": {
+    "productName": "工作台",
+    "platformButton": "平台导航",
+    "topNav": [
+      "控制台",
+      "工作台",
+      "消息",
+      "支持"
+    ],
+    "user": {
+      "account": "demo",
+      "displayName": "演示用户"
+    }
+  }
+}

@@ -1,0 +1,242 @@
+@import './assets/workbench.css';
+
+:root {
+  color: #2f3640;
+  background: #f3f5f7;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#app {
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+}
+
+#app {
+  width: 100%;
+}
+
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(9, 182, 95, 0.18), transparent 34%),
+    linear-gradient(135deg, #eff7f1, #f8fbf9 42%, #eef4f8);
+}
+
+.login-hero {
+  width: min(1120px, 100%);
+  display: grid;
+  grid-template-columns: 1.1fr 440px;
+  gap: 28px;
+  align-items: stretch;
+}
+
+.login-copy,
+.login-card {
+  border: 1px solid rgba(18, 42, 34, 0.08);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 24px 60px rgba(22, 40, 35, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.login-copy {
+  padding: 42px;
+  border-radius: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  color: #099954;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.login-copy h1 {
+  margin: 0;
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 1.05;
+}
+
+.login-copy p {
+  margin-top: 18px;
+  max-width: 34rem;
+  color: #55616f;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.login-hint {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 28px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #0aa95a, #0b8d4d);
+  color: #fff;
+}
+
+.login-card {
+  padding: 32px 28px;
+  border-radius: 24px;
+}
+
+.login-card-header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.login-card-header p {
+  margin: 10px 0 0;
+  color: #6a7480;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 18px;
+  color: #4a5561;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.text-area {
+  min-height: 112px;
+  resize: vertical;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #d8e0e8;
+  background: #fff;
+  font: inherit;
+}
+
+.text-area:focus {
+  outline: none;
+  border-color: #09b65f;
+  box-shadow: 0 0 0 3px rgba(9, 182, 95, 0.12);
+}
+
+.login-submit {
+  width: 100%;
+  margin-top: 22px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: #fff;
+  border: 0;
+  background: linear-gradient(135deg, #0ab55f, #088f4d);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.login-submit:disabled {
+  opacity: 0.72;
+  cursor: wait;
+}
+
+.login-error {
+  margin: 14px 0 0;
+  color: #cf4e40;
+  font-size: 13px;
+}
+
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(12, 22, 19, 0.48);
+}
+
+.modal-card {
+  width: min(640px, 100%);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 28px 80px rgba(20, 34, 53, 0.25);
+}
+
+.modal-header,
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 22px;
+  border-bottom: 1px solid #ebeff4;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.modal-header p {
+  margin: 8px 0 0;
+  color: #76818f;
+  font-size: 13px;
+}
+
+.modal-body {
+  padding: 4px 22px 22px;
+}
+
+.modal-footer {
+  border-bottom: 0;
+  border-top: 1px solid #ebeff4;
+  justify-content: flex-end;
+}
+
+.icon-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  font-size: 24px;
+  line-height: 1;
+  color: #5f6a77;
+}
+
+.loading-screen,
+.error-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.loading-card,
+.error-card {
+  width: min(540px, 100%);
+  padding: 28px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid #e4e9ef;
+  box-shadow: 0 20px 50px rgba(20, 34, 53, 0.08);
+}
+
+@media (max-width: 900px) {
+  .login-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
