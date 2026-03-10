@@ -224,6 +224,8 @@ export interface ShellConfig {
   productName: string
   platformButton: string
   topNav: string[]
+  basePath?: string
+  platformKey?: string
   user: {
     account: string
     displayName: string
@@ -242,17 +244,64 @@ export interface MenuGroup {
 
 export interface NavigationItem {
   id: number
+  itemCode: string
+  groupCode?: string
   name: string
   icon: string
   creator: string
+  creatorUsername?: string
   link: string
   mobile: string
+  mobileVisible?: boolean
   desc: string
+  sortNo?: number
+  enabled?: boolean
+  favorite?: boolean
 }
 
 export interface NavigationGroup {
+  groupCode?: string
   title: string
+  sortNo?: number
   rows: NavigationItem[]
+}
+
+export interface NavigationConfigResponse {
+  groups: NavigationGroup[]
+}
+
+export interface SaveNavigationGroupPayload {
+  groupCode?: string
+  title: string
+  sortNo: number
+}
+
+export interface SaveNavigationItemPayload {
+  itemCode?: string
+  groupCode: string
+  name: string
+  icon: string
+  link: string
+  mobileVisible: boolean
+  description: string
+  sortNo: number
+  enabled: boolean
+}
+
+export interface NavigationFavoriteState {
+  itemCode: string
+  favorite: boolean
+}
+
+export interface PlatformPageTableState {
+  tableKey: string
+  rows: Array<Record<string, unknown>>
+}
+
+export interface PlatformPageStatePayload {
+  platformKey: string
+  pageKey: string
+  tableStates: PlatformPageTableState[]
 }
 
 export interface PageData {
@@ -267,6 +316,7 @@ export interface PlatformBootstrap {
   shell: ShellConfig
   menu: MenuGroup[]
   navigationGroups: NavigationGroup[]
+  favoriteNavigations: NavigationItem[]
   overviewData: Record<string, unknown>
   pages: Record<string, PageData>
 }

@@ -3,16 +3,20 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import CreateOrderModal from '../components/CreateOrderModal.vue'
+import PlatformModulePage from '../components/PlatformModulePage.vue'
+import PlatformNavigationPanel from '../components/PlatformNavigationPanel.vue'
 import StatusBadge from '../components/StatusBadge.vue'
 import ToggleSwitch from '../components/ToggleSwitch.vue'
 import {
   createWorkOrder,
   deleteCatalog,
+  deleteNavigationItem,
   deleteMenuConfig,
   getCatalogs,
   getDutyGroups,
   getDutyShifts,
   getMenuConfig,
+  getNavigationConfig,
   getProcessDetail,
   getProcesses,
   getSubscriptions,
@@ -23,8 +27,11 @@ import {
   saveDutyGroup,
   saveDutyShift,
   saveMenuConfig,
+  saveNavigationGroup,
+  saveNavigationItem,
   saveProcessDefinition,
   saveSubscriptionsForUser,
+  toggleNavigationFavorite,
   transitionWorkOrder,
 } from '../lib/api'
 import { clearSession, getStoredUser } from '../lib/session'
@@ -33,11 +40,17 @@ import type {
   DutyShift,
   MenuConfigItem,
   MenuConfigResponse,
+  NavigationConfigResponse,
+  NavigationGroup,
+  NavigationItem,
+  NavigationFavoriteState,
   PageData,
   PlatformBootstrap,
   ProcessDefinition,
   ProcessDefinitionDetail,
   ProcessNodePayload,
+  SaveNavigationGroupPayload,
+  SaveNavigationItemPayload,
   SaveDutyGroupPayload,
   SaveDutyShiftPayload,
   SaveProcessDefinitionPayload,
@@ -79,6 +92,7 @@ const processRows = ref<ProcessDefinition[]>([])
 const dutyGroupRows = ref<DutyGroup[]>([])
 const dutyShiftRows = ref<DutyShift[]>([])
 const menuConfig = ref<MenuConfigResponse | null>(null)
+const navigationConfig = ref<NavigationConfigResponse | null>(null)
 const catalogDialogOpen = ref(false)
 const catalogSaving = ref(false)
 const processDesignerOpen = ref(false)
@@ -90,6 +104,11 @@ const dutyShiftDialogOpen = ref(false)
 const dutyShiftSaving = ref(false)
 const menuDialogOpen = ref(false)
 const menuSaving = ref(false)
+const navigationPanelOpen = ref(false)
+const navigationGroupDialogOpen = ref(false)
+const navigationGroupSaving = ref(false)
+const navigationItemDialogOpen = ref(false)
+const navigationItemSaving = ref(false)
 const toast = ref('')
 const currentTime = ref(formatNow())
 const storedUser = ref(getStoredUser())
@@ -157,6 +176,22 @@ const menuForm = reactive<MenuConfigItem>({
   visible: true,
   roleCodes: [],
 })
+const navigationGroupForm = reactive<SaveNavigationGroupPayload>({
+  groupCode: '',
+  title: '',
+  sortNo: 1,
+})
+const navigationItemForm = reactive<SaveNavigationItemPayload>({
+  itemCode: '',
+  groupCode: '',
+  name: '',
+  icon: '导',
+  link: '/',
+  mobileVisible: false,
+  description: '',
+  sortNo: 1,
+  enabled: true,
+})
 
 let clockTimer: number | undefined
 let toastTimer: number | undefined
@@ -165,6 +200,8 @@ const fallbackShell = {
   productName: '工作台',
   platformButton: '平台导航',
   topNav: ['控制台', '工作台', '消息', '支持'],
+  basePath: '/o/workbench',
+  platformKey: 'workbench',
   user: {
     account: storedUser.value?.username ?? 'demo',
     displayName: storedUser.value?.displayName ?? '演示用户',
@@ -182,14 +219,21 @@ const shell = computed(() => bootstrap.value?.shell ?? fallbackShell)
 const overviewData = computed<Record<string, any>>(() => (bootstrap.value?.overviewData ?? {}) as Record<string, any>)
 const menuGroups = computed(() => bootstrap.value?.menu ?? [])
 const navigationGroups = computed(() => bootstrap.value?.navigationGroups ?? [])
+const favoriteNavigations = computed(() => bootstrap.value?.favoriteNavigations ?? [])
+const navigationAdminGroups = computed(() => navigationConfig.value?.groups ?? navigationGroups.value)
 const messageBadge = computed(() => {
   const rows = ((bootstrap.value?.pages['/msgCenter/messageManage'] as any)?.rows ?? []) as any[]
   return rows.length > 0 ? String(rows.length) : '1'
 })
-
+const platformBasePath = computed(() => normalizeBasePath(shell.value.basePath))
 const currentRoute = computed(() => {
   if (!bootstrap.value) {
-    return route.path === '/login' ? '/' : route.path
+    return resolvePageKey(route.path, inferBasePath(route.path))
+  }
+
+  const routeKey = resolvePageKey(route.path, platformBasePath.value)
+  if (bootstrap.value.pages[routeKey]) {
+    return routeKey
   }
 
   if (bootstrap.value.pages[route.path]) {
@@ -198,6 +242,7 @@ const currentRoute = computed(() => {
 
   return '/'
 })
+const activePlatformLink = computed(() => `${platformBasePath.value}/`)
 
 const page = computed<Record<string, any>>(
   () => (bootstrap.value?.pages[currentRoute.value] ?? bootstrap.value?.pages['/'] ?? fallbackPage) as Record<string, any>,
@@ -209,6 +254,10 @@ const serviceOptions = computed(() => {
 })
 const menuRoles = computed(() => menuConfig.value?.roles ?? [])
 const menuItems = computed(() => menuConfig.value?.menus ?? [])
+const navigationGroupOptions = computed(() => navigationAdminGroups.value.map((group) => ({
+  label: group.title,
+  value: group.groupCode ?? '',
+})))
 const subscriptionUserLabel = computed(() => {
   const current = userOptions.value.find((item) => item.username === subscriptionTargetUser.value)
   return current ? `${current.displayName} (${current.username})` : subscriptionTargetUser.value
@@ -251,6 +300,64 @@ function formatNow(): string {
     weekday: 'long',
     hour12: false,
   }).format(new Date())
+}
+
+function normalizeAbsolutePath(path: string | undefined): string {
+  if (!path) {
+    return '/o/workbench'
+  }
+  let normalized = path.replace(/#/g, '/').replace(/\/+/g, '/')
+  if (normalized.length > 1 && normalized.endsWith('/')) {
+    normalized = normalized.slice(0, -1)
+  }
+  return normalized || '/o/workbench'
+}
+
+function normalizeBasePath(path: string | undefined): string {
+  const normalized = normalizeAbsolutePath(path)
+  if (!normalized.startsWith('/o/')) {
+    return '/o/workbench'
+  }
+  const segments = normalized.split('/').filter(Boolean)
+  return segments.length >= 2 ? `/o/${segments[1]}` : '/o/workbench'
+}
+
+function inferBasePath(path: string | undefined): string {
+  const normalized = normalizeAbsolutePath(path)
+  if (!normalized.startsWith('/o/')) {
+    return '/o/workbench'
+  }
+  return normalizeBasePath(normalized)
+}
+
+function resolvePageKey(path: string | undefined, basePath: string): string {
+  const normalizedPath = normalizeAbsolutePath(path)
+  const normalizedBasePath = normalizeBasePath(basePath)
+
+  if (!normalizedPath.startsWith('/o/')) {
+    return normalizedPath === '/login' ? '/' : normalizedPath
+  }
+
+  if (normalizedPath === normalizedBasePath) {
+    return '/'
+  }
+
+  if (normalizedPath.startsWith(`${normalizedBasePath}/`)) {
+    const suffix = normalizedPath.slice(normalizedBasePath.length)
+    return suffix || '/'
+  }
+
+  return '/'
+}
+
+function resolveAppRoute(path: string, basePath = platformBasePath.value): string {
+  if (!path || path === '/') {
+    return `${normalizeBasePath(basePath)}/`
+  }
+  if (path.startsWith('/o/')) {
+    return normalizeAbsolutePath(path)
+  }
+  return normalizeAbsolutePath(`${normalizeBasePath(basePath)}${path.startsWith('/') ? path : `/${path}`}`)
 }
 
 function activeTab(group: string, fallback = ''): string {
@@ -466,6 +573,24 @@ function resetMenuForm(row?: MenuConfigItem): void {
   menuForm.roleCodes = row?.roleCodes ? [...row.roleCodes] : menuRoles.value.map((role) => role.roleCode)
 }
 
+function resetNavigationGroupForm(group?: NavigationGroup): void {
+  navigationGroupForm.groupCode = group?.groupCode ?? ''
+  navigationGroupForm.title = group?.title ?? ''
+  navigationGroupForm.sortNo = group?.sortNo ?? navigationAdminGroups.value.length + 1
+}
+
+function resetNavigationItemForm(item?: NavigationItem, groupCode?: string): void {
+  navigationItemForm.itemCode = item?.itemCode ?? ''
+  navigationItemForm.groupCode = item?.groupCode ?? groupCode ?? navigationGroupOptions.value[0]?.value ?? ''
+  navigationItemForm.name = item?.name ?? ''
+  navigationItemForm.icon = item?.icon ?? '导'
+  navigationItemForm.link = item?.link ?? '/'
+  navigationItemForm.mobileVisible = item?.mobileVisible ?? item?.mobile === '是'
+  navigationItemForm.description = item?.desc ?? ''
+  navigationItemForm.sortNo = item?.sortNo ?? 1
+  navigationItemForm.enabled = item?.enabled ?? true
+}
+
 function normalizeSubscriptionRows(rows: Array<Record<string, unknown>>): SubscriptionRow[] {
   return rows.map((row) => ({
     type: String(row.type ?? row.messageType ?? ''),
@@ -511,7 +636,15 @@ async function loadMenuRows(): Promise<void> {
   menuConfig.value = await getMenuConfig()
 }
 
+async function loadNavigationRows(): Promise<void> {
+  navigationConfig.value = await getNavigationConfig()
+}
+
 async function loadRouteData(path = currentRoute.value): Promise<void> {
+  if (shell.value.platformKey !== 'workbench') {
+    return
+  }
+
   try {
     if (path === '/msgCenter/subscriptionSetting') {
       await ensureUserOptionsLoaded()
@@ -531,7 +664,7 @@ async function loadRouteData(path = currentRoute.value): Promise<void> {
       return
     }
     if (path === '/serveSetting/navSetting') {
-      await loadMenuRows()
+      await Promise.all([loadMenuRows(), loadNavigationRows()])
     }
   } catch (error) {
     await handleRequestFailure(error, '加载管理数据失败')
@@ -543,19 +676,21 @@ async function loadBootstrap(): Promise<void> {
   loadError.value = ''
 
   try {
-    bootstrap.value = await getWorkbenchBootstrap()
+    bootstrap.value = await getWorkbenchBootstrap(route.path)
     storedUser.value = {
       id: storedUser.value?.id ?? 0,
       username: bootstrap.value.shell.user.account,
       displayName: bootstrap.value.shell.user.displayName,
     }
 
-    if (!bootstrap.value.pages[route.path] && route.path !== '/') {
-      await router.replace('/')
+    const routeKey = resolvePageKey(route.path, normalizeBasePath(bootstrap.value.shell.basePath))
+    if (!bootstrap.value.pages[routeKey]) {
+      await router.replace(resolveAppRoute('/', bootstrap.value.shell.basePath))
+      return
     }
-    await loadRouteData(route.path)
+    await loadRouteData(routeKey)
   } catch (error) {
-    const message = error instanceof Error ? error.message : '加载工作台失败'
+    const message = error instanceof Error ? error.message : '加载平台失败'
     if (message === 'UNAUTHORIZED') {
       clearSession()
       await router.replace('/login')
@@ -568,10 +703,20 @@ async function loadBootstrap(): Promise<void> {
 }
 
 function navigateTo(path: string): void {
-  if (path === currentRoute.value) {
+  const target = resolveAppRoute(path)
+  if (target === normalizeAbsolutePath(route.path)) {
     return
   }
-  router.push(path)
+  router.push(target)
+}
+
+function togglePlatformNavigation(): void {
+  navigationPanelOpen.value = !navigationPanelOpen.value
+}
+
+function selectPlatformNavigation(item: NavigationItem): void {
+  navigationPanelOpen.value = false
+  navigateTo(item.link)
 }
 
 function logout(): void {
@@ -600,6 +745,31 @@ function handleAction(action: string): void {
     return
   }
 
+  if (action === '工作台') {
+    navigateTo('/o/workbench/')
+    return
+  }
+
+  if (action === '控制台') {
+    navigateTo('/o/bastion/console/console')
+    return
+  }
+
+  if (action === '消息') {
+    navigateTo('/o/workbench/msgCenter/messageManage')
+    return
+  }
+
+  if (action === '资源平台概览') {
+    navigateTo('/o/cmdb/')
+    return
+  }
+
+  if (action === shell.value.platformButton) {
+    togglePlatformNavigation()
+    return
+  }
+
   showToast(`${action} 为演示动作，后续可接入真实业务逻辑`)
 }
 
@@ -608,7 +778,7 @@ async function submitWorkOrder(payload: WorkOrderPayload): Promise<void> {
     const response = await createWorkOrder(payload)
     orderModalOpen.value = false
     await loadBootstrap()
-    await router.push('/personSetting/orderManage')
+    await router.push(resolveAppRoute('/personSetting/orderManage'))
     showToast(`工单 ${response.orderNo} 已创建`)
   } catch (error) {
     const message = error instanceof Error ? error.message : '工单创建失败'
@@ -927,6 +1097,70 @@ async function removeMenuItem(menuCode: string): Promise<void> {
   }
 }
 
+function openNavigationGroupEditor(group?: NavigationGroup): void {
+  resetNavigationGroupForm(group)
+  navigationGroupDialogOpen.value = true
+}
+
+async function saveNavigationGroupEditor(): Promise<void> {
+  navigationGroupSaving.value = true
+  try {
+    await saveNavigationGroup({ ...navigationGroupForm })
+    navigationGroupDialogOpen.value = false
+    await Promise.all([loadNavigationRows(), loadBootstrap()])
+    showToast('导航分组已保存')
+  } catch (error) {
+    await handleRequestFailure(error, '保存导航分组失败')
+  } finally {
+    navigationGroupSaving.value = false
+  }
+}
+
+function openNavigationItemEditor(item?: NavigationItem, groupCode?: string): void {
+  resetNavigationItemForm(item, groupCode)
+  navigationItemDialogOpen.value = true
+}
+
+async function saveNavigationItemEditor(): Promise<void> {
+  navigationItemSaving.value = true
+  try {
+    await saveNavigationItem({ ...navigationItemForm })
+    navigationItemDialogOpen.value = false
+    await Promise.all([loadNavigationRows(), loadBootstrap()])
+    showToast('导航入口已保存')
+  } catch (error) {
+    await handleRequestFailure(error, '保存导航入口失败')
+  } finally {
+    navigationItemSaving.value = false
+  }
+}
+
+async function removeNavigationEntry(itemCode: string): Promise<void> {
+  if (!window.confirm(`确认删除导航 ${itemCode} 吗？`)) {
+    return
+  }
+  try {
+    await deleteNavigationItem(itemCode)
+    await Promise.all([loadNavigationRows(), loadBootstrap()])
+    showToast('导航入口已删除')
+  } catch (error) {
+    await handleRequestFailure(error, '删除导航入口失败')
+  }
+}
+
+async function changeNavigationFavorite(item: NavigationItem): Promise<void> {
+  try {
+    const result: NavigationFavoriteState = await toggleNavigationFavorite(item.itemCode)
+    await Promise.all([
+      loadBootstrap(),
+      currentRoute.value === '/serveSetting/navSetting' ? loadNavigationRows() : Promise.resolve(),
+    ])
+    showToast(result.favorite ? `${item.name} 已加入收藏` : `${item.name} 已取消收藏`)
+  } catch (error) {
+    await handleRequestFailure(error, '更新收藏失败')
+  }
+}
+
 function hasMenuRole(menu: MenuConfigItem, roleCode: string): boolean {
   return menu.roleCodes.includes(roleCode)
 }
@@ -934,14 +1168,23 @@ function hasMenuRole(menu: MenuConfigItem, roleCode: string): boolean {
 watch(
   () => route.path,
   async (path) => {
+    navigationPanelOpen.value = false
     if (!bootstrap.value || path === '/login') {
       return
     }
-    if (!bootstrap.value.pages[path] && path !== '/') {
-      await router.replace('/')
+
+    const nextBasePath = inferBasePath(path)
+    if (nextBasePath !== platformBasePath.value) {
+      await loadBootstrap()
       return
     }
-    await loadRouteData(path)
+
+    const routeKey = resolvePageKey(path, platformBasePath.value)
+    if (!bootstrap.value.pages[routeKey]) {
+      await router.replace(resolveAppRoute('/'))
+      return
+    }
+    await loadRouteData(routeKey)
   },
 )
 
@@ -965,14 +1208,14 @@ onBeforeUnmount(() => {
 <template>
   <div v-if="loading && !bootstrap" class="loading-screen">
     <div class="loading-card">
-      <h2>正在加载工作台</h2>
-      <p>前端正在拉取 Spring Boot 聚合接口，并同步 MySQL / Redis / RabbitMQ 驱动出来的数据。</p>
+      <h2>正在加载平台</h2>
+      <p>前端正在拉取 Spring Boot 聚合接口，并按当前平台装配对应的菜单、页面和导航数据。</p>
     </div>
   </div>
 
   <div v-else-if="loadError && !bootstrap" class="error-screen">
     <div class="error-card">
-      <h2>工作台加载失败</h2>
+      <h2>平台加载失败</h2>
       <p>{{ loadError }}</p>
       <button class="action-btn primary" @click="loadBootstrap">重新加载</button>
     </div>
@@ -985,7 +1228,7 @@ onBeforeUnmount(() => {
         <span class="brand-title">{{ shell.productName }}</span>
       </div>
 
-      <button class="platform-switch" @click="handleAction(shell.platformButton)">
+      <button class="platform-switch" :class="{ active: navigationPanelOpen }" @click="togglePlatformNavigation()">
         <span class="platform-switch-icon">≡</span>
         <span>{{ shell.platformButton }}</span>
         <span class="platform-switch-caret">▼</span>
@@ -1006,10 +1249,19 @@ onBeforeUnmount(() => {
       </div>
     </header>
 
+    <PlatformNavigationPanel
+      v-if="navigationPanelOpen"
+      :active-link="activePlatformLink"
+      :groups="navigationGroups"
+      :favorites="favoriteNavigations"
+      @close="navigationPanelOpen = false"
+      @select="selectPlatformNavigation"
+    />
+
     <div class="layout">
       <aside class="sidebar">
         <section v-for="group in menuGroups" :key="group.group" class="menu-group">
-          <div class="menu-group-title">{{ group.group }}</div>
+          <div v-if="group.group" class="menu-group-title">{{ group.group }}</div>
           <div class="menu-items">
             <button
               v-for="item in group.items"
@@ -1839,8 +2091,44 @@ onBeforeUnmount(() => {
           </section>
 
         <section v-else-if="page.kind === 'navigation'" class="page-stack">
-          <article v-for="group in navigationGroups" :key="group.title" class="panel page-block">
-            <div class="group-header">⌄ {{ group.title }}</div>
+          <article class="panel page-block">
+            <div class="panel-header">
+              <div>
+                <h3>平台导航总览</h3>
+                <p class="panel-subtitle">头部的“平台导航”已和这里共用数据库配置，支持我的收藏和分组卡片切换。</p>
+              </div>
+              <div class="toolbar-actions">
+                <button class="action-btn" @click="navigationPanelOpen = true">预览导航</button>
+                <button class="action-btn primary" @click="openNavigationGroupEditor()">新增分组</button>
+              </div>
+            </div>
+            <div class="summary-grid navigation-summary-grid">
+              <article class="summary-panel">
+                <strong>{{ navigationAdminGroups.length }}</strong>
+                <span>导航分组</span>
+              </article>
+              <article class="summary-panel">
+                <strong>{{ navigationAdminGroups.reduce((sum, group) => sum + group.rows.length, 0) }}</strong>
+                <span>导航入口</span>
+              </article>
+              <article class="summary-panel">
+                <strong>{{ favoriteNavigations.length }}</strong>
+                <span>我的收藏</span>
+              </article>
+            </div>
+          </article>
+
+          <article v-for="group in navigationAdminGroups" :key="group.title" class="panel page-block">
+            <div class="panel-header">
+              <div>
+                <h3>{{ group.title }}</h3>
+                <p class="panel-subtitle">分组编码：{{ group.groupCode || '--' }}</p>
+              </div>
+              <div class="toolbar-actions">
+                <button class="action-btn" @click="openNavigationGroupEditor(group)">编辑分组</button>
+                <button class="action-btn primary" @click="openNavigationItemEditor(undefined, group.groupCode)">新增导航</button>
+              </div>
+            </div>
             <div class="table-wrap">
               <table class="table">
                 <thead>
@@ -1850,26 +2138,38 @@ onBeforeUnmount(() => {
                     <th>导航图标</th>
                     <th>创建用户</th>
                     <th>导航链接</th>
-                    <th>移动端是否展示</th>
+                    <th>移动端</th>
+                    <th>收藏</th>
+                    <th>状态</th>
                     <th>描述</th>
                     <th>操作</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="row in group.rows" :key="row.id">
+                  <tr v-for="row in group.rows" :key="row.itemCode">
                     <td>{{ row.id }}</td>
                     <td>{{ row.name }}</td>
                     <td><span class="nav-icon-badge">{{ row.icon }}</span></td>
                     <td>{{ row.creator }}</td>
                     <td class="monospace">{{ row.link }}</td>
-                    <td>{{ row.mobile }}</td>
+                    <td>{{ row.mobileVisible ? '是' : '否' }}</td>
+                    <td>
+                      <el-tag :type="row.favorite ? 'warning' : 'info'" effect="light" round>
+                        {{ row.favorite ? '已收藏' : '未收藏' }}
+                      </el-tag>
+                    </td>
+                    <td><StatusBadge :label="row.enabled ? '启用' : '停用'" /></td>
                     <td>{{ row.desc }}</td>
-                    <td>--</td>
+                    <td class="op-cell">
+                      <button class="mini-link" @click="changeNavigationFavorite(row)">{{ row.favorite ? '取消收藏' : '加入收藏' }}</button>
+                      <button class="mini-link" @click="openNavigationItemEditor(row)">编辑</button>
+                      <button class="mini-link" @click="removeNavigationEntry(row.itemCode)">删除</button>
+                    </td>
                   </tr>
-                  </tbody>
-                </table>
-              </div>
-            </article>
+                </tbody>
+              </table>
+            </div>
+          </article>
 
           <article class="panel page-block">
             <div class="panel-header">
@@ -1908,6 +2208,43 @@ onBeforeUnmount(() => {
                   </tr>
                 </tbody>
               </table>
+            </div>
+          </article>
+        </section>
+
+        <PlatformModulePage
+          v-else-if="page.kind === 'platformOverview' || page.kind === 'platformModule'"
+          :page="page"
+          :page-key="currentRoute"
+          :platform-key="shell.platformKey"
+          @action="handleAction"
+          @navigate="navigateTo"
+        />
+
+        <section v-else-if="page.kind === 'platformLanding'" class="page-stack">
+          <article class="panel page-block platform-landing-hero">
+            <div class="platform-landing-mark">{{ page.icon || '导' }}</div>
+            <div class="platform-landing-copy">
+              <div class="platform-landing-tag">{{ page.groupTitle }}</div>
+              <h3>{{ page.title }}</h3>
+              <p>{{ page.intro }}</p>
+              <div class="toolbar-actions">
+                <button class="action-btn primary" @click="navigationPanelOpen = true">切换其他平台</button>
+                <button class="action-btn" @click="navigateTo('/')">返回工作台</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel page-block">
+            <div class="panel-header">
+              <h3>入口能力</h3>
+              <span class="monospace">{{ page.link }}</span>
+            </div>
+            <div class="platform-highlight-list">
+              <div v-for="item in page.highlights || []" :key="item" class="platform-highlight-item">
+                <span class="platform-highlight-dot"></span>
+                <span>{{ item }}</span>
+              </div>
             </div>
           </article>
         </section>
@@ -2369,6 +2706,96 @@ onBeforeUnmount(() => {
         <div class="modal-footer">
           <el-button @click="menuDialogOpen = false">取消</el-button>
           <el-button type="success" :loading="menuSaving" @click="saveMenuEditor">保存菜单</el-button>
+        </div>
+      </template>
+    </el-dialog>
+
+    <el-dialog v-model="navigationGroupDialogOpen" width="560px" class="config-dialog">
+      <template #header>
+        <div class="modal-header">
+          <div>
+            <h3>{{ navigationGroupForm.groupCode ? '编辑导航分组' : '新增导航分组' }}</h3>
+            <p>分组会直接展示在顶部平台导航弹层中。</p>
+          </div>
+        </div>
+      </template>
+
+      <el-form label-position="top" class="modal-body">
+        <div class="form-grid">
+          <el-form-item label="分组编码">
+            <el-input v-model="navigationGroupForm.groupCode" :disabled="Boolean(navigationGroupForm.groupCode)" placeholder="留空自动生成" />
+          </el-form-item>
+          <el-form-item label="分组名称">
+            <el-input v-model="navigationGroupForm.title" />
+          </el-form-item>
+        </div>
+        <el-form-item label="排序">
+          <el-input-number v-model="navigationGroupForm.sortNo" :min="1" class="full-width" />
+        </el-form-item>
+      </el-form>
+
+      <template #footer>
+        <div class="modal-footer">
+          <el-button @click="navigationGroupDialogOpen = false">取消</el-button>
+          <el-button type="success" :loading="navigationGroupSaving" @click="saveNavigationGroupEditor">保存分组</el-button>
+        </div>
+      </template>
+    </el-dialog>
+
+    <el-dialog v-model="navigationItemDialogOpen" width="720px" class="config-dialog">
+      <template #header>
+        <div class="modal-header">
+          <div>
+            <h3>{{ navigationItemForm.itemCode ? '编辑导航入口' : '新增导航入口' }}</h3>
+            <p>这里配置的链接会同时驱动顶部平台导航和导航管理页。</p>
+          </div>
+        </div>
+      </template>
+
+      <el-form label-position="top" class="modal-body">
+        <div class="form-grid">
+          <el-form-item label="导航编码">
+            <el-input v-model="navigationItemForm.itemCode" :disabled="Boolean(navigationItemForm.itemCode)" placeholder="留空自动生成" />
+          </el-form-item>
+          <el-form-item label="所属分组">
+            <el-select v-model="navigationItemForm.groupCode" class="full-width">
+              <el-option v-for="group in navigationGroupOptions" :key="group.value" :label="group.label" :value="group.value" />
+            </el-select>
+          </el-form-item>
+        </div>
+        <div class="form-grid">
+          <el-form-item label="导航名称">
+            <el-input v-model="navigationItemForm.name" />
+          </el-form-item>
+          <el-form-item label="导航图标">
+            <el-input v-model="navigationItemForm.icon" maxlength="2" placeholder="例如：工" />
+          </el-form-item>
+        </div>
+        <div class="form-grid">
+          <el-form-item label="导航链接">
+            <el-input v-model="navigationItemForm.link" placeholder="例如：/o/cmdb/" />
+          </el-form-item>
+          <el-form-item label="排序">
+            <el-input-number v-model="navigationItemForm.sortNo" :min="1" class="full-width" />
+          </el-form-item>
+        </div>
+        <el-form-item label="描述">
+          <el-input v-model="navigationItemForm.description" type="textarea" :rows="4" />
+        </el-form-item>
+        <div class="form-grid">
+          <el-form-item label="移动端展示">
+            <el-switch v-model="navigationItemForm.mobileVisible" inline-prompt active-text="是" inactive-text="否" />
+          </el-form-item>
+          <el-form-item label="启用状态">
+            <el-switch v-model="navigationItemForm.enabled" inline-prompt active-text="启用" inactive-text="停用" />
+          </el-form-item>
+        </div>
+      </el-form>
+
+      <template #footer>
+        <div class="modal-footer">
+          <el-button @click="navigationItemDialogOpen = false">取消</el-button>
+          <el-button type="success" :loading="navigationItemSaving" @click="saveNavigationItemEditor">保存导航</el-button>
         </div>
       </template>
     </el-dialog>

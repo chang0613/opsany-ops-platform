@@ -22,6 +22,8 @@ import com.opsany.replica.domain.DutyShift;
 import com.opsany.replica.domain.MenuPermission;
 import com.opsany.replica.domain.MessageSubscription;
 import com.opsany.replica.domain.NotificationMessage;
+import com.opsany.replica.domain.PlatformNavigationGroup;
+import com.opsany.replica.domain.PlatformNavigationItem;
 import com.opsany.replica.domain.TaskRecord;
 import com.opsany.replica.domain.WorkOrder;
 import com.opsany.replica.domain.WorkOrderCatalog;
@@ -32,6 +34,7 @@ import com.opsany.replica.repository.DutyScheduleRepository;
 import com.opsany.replica.repository.MenuRepository;
 import com.opsany.replica.repository.MessageSubscriptionRepository;
 import com.opsany.replica.repository.NotificationMessageRepository;
+import com.opsany.replica.repository.PlatformNavigationRepository;
 import com.opsany.replica.repository.RoleRepository;
 import com.opsany.replica.repository.TaskRecordRepository;
 import com.opsany.replica.repository.WorkOrderProcessRepository;
@@ -56,6 +59,7 @@ public class DemoDataSeeder implements ApplicationRunner {
     private final NotificationMessageRepository notificationMessageRepository;
     private final MessageSubscriptionRepository messageSubscriptionRepository;
     private final DutyScheduleRepository dutyScheduleRepository;
+    private final PlatformNavigationRepository platformNavigationRepository;
     private final WorkOrderProcessRepository workOrderProcessRepository;
     private final WorkOrderCatalogRepository workOrderCatalogRepository;
     private final PasswordCodec passwordCodec;
@@ -69,6 +73,7 @@ public class DemoDataSeeder implements ApplicationRunner {
 
         seedRoles();
         seedMenus();
+        seedNavigations();
         seedProcesses();
         seedCatalogs();
 
@@ -76,6 +81,7 @@ public class DemoDataSeeder implements ApplicationRunner {
         ensureUser("admin", "管理员", "123456.coM", Arrays.asList("PLATFORM_ADMIN", "ENGINEER"));
 
         seedSubscriptions(demoUser.getUsername());
+        seedNavigationFavorites(demoUser.getId());
         seedDuty();
         seedWorkOrders(demoUser);
         seedTasks();
@@ -183,6 +189,69 @@ public class DemoDataSeeder implements ApplicationRunner {
             .permissionCode(permissionCode)
             .visible(true)
             .build();
+    }
+
+    private void seedNavigations() {
+        ObjectNode template = platformTemplateService.copyTemplate();
+        ArrayNode groups = (ArrayNode) template.withArray("navigationGroups");
+        if (platformNavigationRepository.countGroups() == 0) {
+            for (int index = 0; index < groups.size(); index++) {
+                JsonNode group = groups.get(index);
+                platformNavigationRepository.insertGroup(PlatformNavigationGroup.builder()
+                    .groupCode("GROUP_" + (index + 1))
+                    .title(group.path("title").asText("未命名分组"))
+                    .sortNo(index + 1)
+                    .build());
+            }
+        }
+
+        if (platformNavigationRepository.countItems() > 0) {
+            return;
+        }
+
+        for (int groupIndex = 0; groupIndex < groups.size(); groupIndex++) {
+            JsonNode group = groups.get(groupIndex);
+            ArrayNode rows = (ArrayNode) group.withArray("rows");
+            String groupCode = "GROUP_" + (groupIndex + 1);
+            for (int rowIndex = 0; rowIndex < rows.size(); rowIndex++) {
+                JsonNode row = rows.get(rowIndex);
+                String creatorUsername = row.path("creator").asText("admin");
+                String creatorDisplayName = "admin".equalsIgnoreCase(creatorUsername) ? "管理员" : creatorUsername;
+                String name = row.path("name").asText("未命名导航");
+                platformNavigationRepository.insertItem(PlatformNavigationItem.builder()
+                    .itemCode("ITEM_" + row.path("id").asInt(groupIndex * 100 + rowIndex + 1))
+                    .groupCode(groupCode)
+                    .name(name)
+                    .icon(defaultIfBlank(row.path("icon").asText(), name.substring(0, 1)))
+                    .creatorUsername(creatorUsername)
+                    .creatorDisplayName(creatorDisplayName)
+                    .link(row.path("link").asText("/"))
+                    .mobileVisible("是".equals(row.path("mobile").asText()))
+                    .description(defaultIfBlank(row.path("desc").asText(), "平台导航入口"))
+                    .sortNo(rowIndex + 1)
+                    .enabled(true)
+                    .build());
+            }
+        }
+    }
+
+    private void seedNavigationFavorites(Long userId) {
+        if (userId == null) {
+            return;
+        }
+        ensureNavigationFavorite(userId, "ITEM_1", 1);
+        ensureNavigationFavorite(userId, "ITEM_3", 2);
+        ensureNavigationFavorite(userId, "ITEM_4", 3);
+    }
+
+    private void ensureNavigationFavorite(Long userId, String itemCode, int sortNo) {
+        if (platformNavigationRepository.countFavorite(userId, itemCode) > 0) {
+            return;
+        }
+        if (platformNavigationRepository.countByItemCode(itemCode) == 0) {
+            return;
+        }
+        platformNavigationRepository.insertFavorite(userId, itemCode, sortNo);
     }
 
     private void seedProcesses() {

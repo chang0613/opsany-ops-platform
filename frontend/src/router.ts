@@ -28,7 +28,7 @@ router.beforeEach((to) => {
   }
 
   if (to.path === '/login' && token) {
-    return { path: '/' }
+    return { path: '/o/workbench/' }
   }
 
   return true

@@ -1,0 +1,942 @@
+{
+  "cmdb": {
+    "shell": {
+      "productName": "资源平台",
+      "platformButton": "平台导航",
+      "topNav": ["控制台", "工作台", "消息", "支持"],
+      "basePath": "/o/cmdb",
+      "platformKey": "cmdb",
+      "user": {
+        "account": "demo",
+        "displayName": "演示用户"
+      }
+    },
+    "menu": [
+      {
+        "group": "",
+        "items": [
+          { "label": "概览", "route": "/" },
+          { "label": "资源搜索", "route": "/search" }
+        ]
+      },
+      {
+        "group": "视图",
+        "items": [
+          { "label": "应用视图", "route": "/view/businessView" },
+          { "label": "主机视图", "route": "/view/propertyView" },
+          { "label": "物理视图", "route": "/view/physicalView" }
+        ]
+      },
+      {
+        "group": "仓库",
+        "items": [
+          { "label": "资源仓库", "route": "/resource/repository" },
+          { "label": "标签管理", "route": "/model/tagConnection" },
+          { "label": "自动采集", "route": "/resource/automaticAcquisition" }
+        ]
+      },
+      {
+        "group": "模型",
+        "items": [
+          { "label": "资源模型", "route": "/model/resourceModel" },
+          { "label": "关系拓扑", "route": "/model/relationship" }
+        ]
+      },
+      {
+        "group": "资源",
+        "items": [
+          { "label": "资源发现", "route": "/resourcesOper/resourceScan" },
+          { "label": "孤岛分析", "route": "/resourcesOper/islandAnalysis" },
+          { "label": "资源授权", "route": "/resourcesOper/resourceAuth" }
+        ]
+      },
+      {
+        "group": "平台",
+        "items": [
+          { "label": "操作审计", "route": "/setting/operational" }
+        ]
+      }
+    ],
+    "pages": {
+      "/": {
+        "title": "概览",
+        "breadcrumb": ["资源平台", "概览"],
+        "intro": "统一呈现资源纳管、模型关系与仓库数据，切换平台后左侧菜单与首页模块都会同步切换。",
+        "kind": "platformOverview",
+        "stats": [
+          { "label": "主机资源", "value": "0", "hint": "物理机 / 虚拟机 / 云主机" },
+          { "label": "模型总数", "value": "62", "hint": "资产 / 应用 / 组织模型" },
+          { "label": "组织资源", "value": "0", "hint": "用户 / 组织 / 团队" },
+          { "label": "应用", "value": "0", "hint": "应用系统 / 服务模块" }
+        ],
+        "cards": [
+          { "title": "应用视图", "desc": "从业务分组和应用系统角度查看资源拓扑。", "meta": "按应用归集", "accent": "green", "route": "/view/businessView" },
+          { "title": "主机视图", "desc": "对主机、云主机和虚拟机进行统一检索与视图管理。", "meta": "多云统一视图", "accent": "blue", "route": "/view/propertyView" },
+          { "title": "资源仓库", "desc": "沉淀资源实例、标签与自动采集任务。", "meta": "支撑 CMDB 持久化", "accent": "teal", "route": "/resource/repository" }
+        ],
+        "tables": [
+          {
+            "title": "应用资源使用排名",
+            "subtitle": "按应用名称查看主机数与服务数排名。",
+            "columns": ["应用名称", "所属业务", "主机数", "服务数"],
+            "rows": [],
+            "emptyText": "暂无数据"
+          },
+          {
+            "title": "资源占比统计",
+            "subtitle": "按资源类型汇总当前纳管情况。",
+            "filters": ["全部", "公有云", "私有云"],
+            "columns": ["资源类型", "数量", "占比"],
+            "rows": [
+              ["云账号", "0", "0%"],
+              ["云主机", "0", "0%"],
+              ["物理机", "0", "0%"],
+              ["应用系统", "0", "0%"]
+            ]
+          }
+        ]
+      },
+      "/search": {
+        "title": "资源搜索",
+        "breadcrumb": ["资源平台", "资源搜索"],
+        "intro": "统一资源搜索入口，支持按模型、标签和环境快速筛选。",
+        "kind": "platformModule",
+        "actions": ["保存搜索视图"],
+        "searchPlaceholder": "请输入资源名称、IP、标签或模型关键字",
+        "filters": ["全部资源", "应用系统", "主机", "数据库", "网络设备"],
+        "cards": [
+          { "title": "按模型搜索", "desc": "快速切入应用、资源、组织等模型集合。", "meta": "支持模糊检索", "accent": "green" },
+          { "title": "按标签搜索", "desc": "根据业务域、环境、负责人等标签收敛结果。", "meta": "多条件组合", "accent": "gold" }
+        ],
+        "tables": [
+          {
+            "title": "最近搜索记录",
+            "columns": ["关键字", "命中范围", "更新时间"],
+            "rows": [
+              ["生产主机", "主机资源", "今天 10:32"],
+              ["数据库", "数据库管理", "昨天 18:20"]
+            ]
+          },
+          {
+            "title": "资源检索结果",
+            "columns": ["资源名称", "资源类型", "IP/地址", "业务域", "状态"],
+            "rows": [
+              ["pay-api-prod-01", "云主机", "172.16.21.31", "支付业务", "已纳管"],
+              ["order-mysql-primary", "数据库", "172.16.30.12", "订单业务", "已纳管"],
+              ["gateway-switch-01", "网络设备", "172.16.10.2", "基础设施", "待校验"]
+            ]
+          }
+        ]
+      },
+      "/view/businessView": {
+        "title": "应用视图",
+        "breadcrumb": ["资源平台", "视图", "应用视图"],
+        "intro": "从业务架构角度组织应用系统、服务模块与主机资源关系。",
+        "kind": "platformModule",
+        "cards": [
+          { "title": "应用分组", "desc": "按照业务域整理应用系统与服务模块。", "meta": "0 个分组", "accent": "green" },
+          { "title": "服务模块", "desc": "汇总应用模块与部署实例映射关系。", "meta": "0 个模块", "accent": "blue" }
+        ],
+        "tables": [
+          {
+            "title": "应用视图清单",
+            "columns": ["名称", "所属业务", "服务数", "主机数"],
+            "rows": []
+          }
+        ]
+      },
+      "/view/propertyView": {
+        "title": "主机视图",
+        "breadcrumb": ["资源平台", "视图", "主机视图"],
+        "intro": "按主机和计算资源维度查看实例、云厂商与环境信息。",
+        "kind": "platformModule",
+        "stats": [
+          { "label": "公有云", "value": "0", "hint": "阿里云 / 腾讯云 / 华为云" },
+          { "label": "私有云", "value": "0", "hint": "OpenStack / VMware" },
+          { "label": "裸金属", "value": "0", "hint": "物理机" }
+        ],
+        "tables": [
+          {
+            "title": "主机资源列表",
+            "columns": ["主机名", "IP", "云厂商", "环境", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/view/physicalView": {
+        "title": "物理视图",
+        "breadcrumb": ["资源平台", "视图", "物理视图"],
+        "intro": "聚合机柜、机房与物理设备关系，便于从基础设施层追踪资源。",
+        "kind": "platformModule",
+        "cards": [
+          { "title": "机房", "desc": "管理机房与区域信息。", "meta": "0 个机房", "accent": "teal" },
+          { "title": "机柜", "desc": "查看机柜占用与设备归属。", "meta": "0 个机柜", "accent": "blue" }
+        ],
+        "tables": [
+          {
+            "title": "物理设备视图",
+            "columns": ["设备名称", "设备类型", "所属机房", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/resource/repository": {
+        "title": "资源仓库",
+        "breadcrumb": ["资源平台", "仓库", "资源仓库"],
+        "intro": "资源仓库用于持久化资源实例与元数据，是 CMDB 的核心数据面。",
+        "kind": "platformModule",
+        "actions": ["导入资源", "新建实例"],
+        "tables": [
+          {
+            "title": "仓库资源概览",
+            "columns": ["资源类型", "数量", "最近更新时间", "说明"],
+            "rows": [
+              ["应用系统", "0", "--", "应用系统与业务服务关系"],
+              ["主机资源", "0", "--", "云主机 / 虚拟机 / 物理机"],
+              ["网络设备", "0", "--", "交换机 / 路由器 / 防火墙"]
+            ]
+          }
+        ]
+      },
+      "/model/tagConnection": {
+        "title": "标签管理",
+        "breadcrumb": ["资源平台", "仓库", "标签管理"],
+        "intro": "维护环境、业务域、负责人等标签并建立资源关联。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "标签列表",
+            "columns": ["标签名称", "标签类型", "关联资源数", "更新时间"],
+            "rows": [
+              ["生产", "环境标签", "0", "--"],
+              ["核心业务", "业务标签", "0", "--"]
+            ]
+          }
+        ]
+      },
+      "/resource/automaticAcquisition": {
+        "title": "自动采集",
+        "breadcrumb": ["资源平台", "仓库", "自动采集"],
+        "intro": "连接云厂商与采集源，自动同步实例信息与变更。",
+        "kind": "platformModule",
+        "actions": ["新增采集任务", "立即同步"],
+        "cards": [
+          { "title": "云账号同步", "desc": "按账号周期拉取云主机、网络和云资源。", "meta": "0 条任务", "accent": "green" },
+          { "title": "主机扫描", "desc": "通过网络扫描识别基础设施与孤岛资源。", "meta": "0 条任务", "accent": "gold" }
+        ],
+        "tables": [
+          {
+            "title": "采集任务列表",
+            "columns": ["任务名称", "采集范围", "执行周期", "最近结果"],
+            "rows": [
+              ["阿里云账号同步", "阿里云华东账号", "每 30 分钟", "成功"],
+              ["IDC 网络扫描", "172.16.10.0/24", "每天 02:00", "执行中"]
+            ]
+          }
+        ]
+      },
+      "/model/resourceModel": {
+        "title": "资源模型",
+        "breadcrumb": ["资源平台", "模型", "资源模型"],
+        "intro": "定义资源模型字段、约束和默认展示规则。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "模型清单",
+            "columns": ["模型名称", "分类", "字段数", "状态"],
+            "rows": [
+              ["主机", "资产模型", "18", "已启用"],
+              ["应用系统", "应用模型", "12", "已启用"],
+              ["组织用户", "组织模型", "9", "已启用"]
+            ]
+          }
+        ]
+      },
+      "/model/relationship": {
+        "title": "关系拓扑",
+        "breadcrumb": ["资源平台", "模型", "关系拓扑"],
+        "intro": "梳理应用、主机、数据库和网络之间的关系拓扑。",
+        "kind": "platformModule",
+        "actions": ["新建拓扑视图"],
+        "cards": [
+          { "title": "应用依赖图", "desc": "从业务系统往下钻取到模块和实例。", "meta": "支持全链路展示", "accent": "blue" },
+          { "title": "关系校验", "desc": "检查孤立关系、重复关系与模型冲突。", "meta": "自动分析", "accent": "teal" }
+        ],
+        "tables": [
+          {
+            "title": "拓扑视图列表",
+            "columns": ["视图名称", "关系节点数", "最近更新时间", "状态"],
+            "rows": [
+              ["支付链路拓扑", "28", "今天 11:24", "已发布"],
+              ["订单域依赖图", "16", "昨天 19:08", "草稿"]
+            ]
+          }
+        ]
+      },
+      "/resourcesOper/resourceScan": {
+        "title": "资源发现",
+        "breadcrumb": ["资源平台", "资源", "资源发现"],
+        "intro": "通过扫描或代理自动发现新资源，并纳入管理范围。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "发现任务",
+            "columns": ["任务名称", "扫描范围", "最近执行", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/resourcesOper/islandAnalysis": {
+        "title": "孤岛分析",
+        "breadcrumb": ["资源平台", "资源", "孤岛分析"],
+        "intro": "识别未归属业务、无拓扑关系或缺少标签的孤岛资源。",
+        "kind": "platformModule",
+        "stats": [
+          { "label": "孤岛主机", "value": "0", "hint": "无应用归属" },
+          { "label": "孤岛数据库", "value": "0", "hint": "无实例关系" },
+          { "label": "孤岛网络", "value": "0", "hint": "无业务标签" }
+        ],
+        "tables": [
+          {
+            "title": "孤岛资源列表",
+            "columns": ["资源名称", "资源类型", "问题描述", "处理状态"],
+            "rows": [
+              ["legacy-cache-01", "Redis", "缺少业务域标签", "待处理"],
+              ["dev-baremetal-02", "物理机", "未建立应用关系", "已确认"]
+            ]
+          }
+        ]
+      },
+      "/resourcesOper/resourceAuth": {
+        "title": "资源授权",
+        "breadcrumb": ["资源平台", "资源", "资源授权"],
+        "intro": "按角色和业务域控制资源查看、编辑和同步权限。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "授权策略",
+            "columns": ["策略名称", "授权对象", "资源范围", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/setting/operational": {
+        "title": "操作审计",
+        "breadcrumb": ["资源平台", "平台", "操作审计"],
+        "intro": "记录资源平台中的配置修改、导入导出和模型调整行为。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "审计日志",
+            "columns": ["操作用户", "操作对象", "动作", "时间"],
+            "rows": []
+          }
+        ]
+      }
+    }
+  },
+  "job": {
+    "shell": {
+      "productName": "作业平台",
+      "platformButton": "平台导航",
+      "topNav": ["控制台", "工作台", "消息", "支持"],
+      "basePath": "/o/job",
+      "platformKey": "job",
+      "user": {
+        "account": "demo",
+        "displayName": "演示用户"
+      }
+    },
+    "menu": [
+      {
+        "group": "",
+        "items": [
+          { "label": "概览", "route": "/" }
+        ]
+      },
+      {
+        "group": "运维",
+        "items": [
+          { "label": "工具市场", "route": "/scene/appMarket" },
+          { "label": "脚本执行", "route": "/scene/scriptExecution" },
+          { "label": "文件分发", "route": "/scene/fileExecution" }
+        ]
+      },
+      {
+        "group": "状态",
+        "items": [
+          { "label": "内置模板", "route": "/stateManage/internalState" },
+          { "label": "模板列表", "route": "/stateManage/stateLibrary" },
+          { "label": "状态历史", "route": "/stateManage/stateHistory" }
+        ]
+      },
+      {
+        "group": "作业",
+        "items": [
+          { "label": "作业编排", "route": "/job/jobManage" },
+          { "label": "定时作业", "route": "/job/timeJob" },
+          { "label": "执行历史", "route": "/job/executeHistory" }
+        ]
+      },
+      {
+        "group": "平台",
+        "items": [
+          { "label": "脚本仓库", "route": "/config/scriptManage" },
+          { "label": "资源管理", "route": "/market/toolMarket" }
+        ]
+      }
+    ],
+    "pages": {
+      "/": {
+        "title": "概览",
+        "breadcrumb": ["作业平台", "概览"],
+        "intro": "自动化运维执行中心，切换平台后聚焦脚本、作业、定时任务和执行历史。",
+        "kind": "platformOverview",
+        "stats": [
+          { "label": "脚本数量", "value": "0", "hint": "我创建的 0 / 分享给我的 0" },
+          { "label": "编排数量", "value": "0", "hint": "我创建的 0 / 分享给我的 0" },
+          { "label": "定时作业", "value": "0", "hint": "启动 0 / 暂停 0" },
+          { "label": "本月任务数", "value": "0", "hint": "脚本执行 / 文件分发 / 编排" }
+        ],
+        "cards": [
+          { "title": "脚本仓库", "desc": "沉淀脚本资产并支持分享、版本与审核。", "meta": "统一脚本治理", "accent": "green", "route": "/config/scriptManage" },
+          { "title": "作业编排", "desc": "通过节点编排实现多步骤自动化执行。", "meta": "支持审批与回调", "accent": "blue", "route": "/job/jobManage" },
+          { "title": "定时作业", "desc": "将编排能力编入周期任务和定时执行。", "meta": "支持窗口期执行", "accent": "gold", "route": "/job/timeJob" }
+        ],
+        "tables": [
+          {
+            "title": "最近任务执行记录",
+            "columns": ["操作用户", "作业名称", "执行时间", "总耗时(秒)"],
+            "rows": [],
+            "emptyText": "暂无数据"
+          },
+          {
+            "title": "作业执行统计",
+            "columns": ["当前状态", "数量"],
+            "rows": [
+              ["等待中", "0"],
+              ["执行中", "0"],
+              ["成功", "0"],
+              ["失败", "0"]
+            ]
+          }
+        ]
+      },
+      "/scene/appMarket": {
+        "title": "工具市场",
+        "breadcrumb": ["作业平台", "运维", "工具市场"],
+        "intro": "汇总常用运维工具模版和执行场景，支持快速装配执行流程。",
+        "kind": "platformModule",
+        "actions": ["新建工具模版"],
+        "cards": [
+          { "title": "应用发布", "desc": "预置发布、回滚与灰度执行模板。", "meta": "标准发布链路", "accent": "green" },
+          { "title": "配置校验", "desc": "在执行前完成主机、脚本和变量校验。", "meta": "降低误操作", "accent": "teal" }
+        ],
+        "tables": [
+          {
+            "title": "工具模版",
+            "columns": ["模版名称", "适用场景", "负责人", "状态"],
+            "rows": [
+              ["Java 服务发布", "应用发布", "管理员", "已发布"],
+              ["Nginx 配置校验", "配置校验", "演示用户", "已发布"]
+            ]
+          }
+        ]
+      },
+      "/scene/scriptExecution": {
+        "title": "脚本执行",
+        "breadcrumb": ["作业平台", "运维", "脚本执行"],
+        "intro": "选择主机、脚本和参数后即时执行脚本任务。",
+        "kind": "platformModule",
+        "actions": ["立即执行", "保存模板"],
+        "tables": [
+          {
+            "title": "执行模板",
+            "columns": ["模板名称", "脚本类型", "最近执行", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/scene/fileExecution": {
+        "title": "文件分发",
+        "breadcrumb": ["作业平台", "运维", "文件分发"],
+        "intro": "面向多台主机执行文件推送、回收和版本同步。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "分发任务",
+            "columns": ["任务名称", "目标主机", "文件数量", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/stateManage/internalState": {
+        "title": "内置模板",
+        "breadcrumb": ["作业平台", "状态", "内置模板"],
+        "intro": "维护平台内置状态模版，支撑自动化作业复用。",
+        "kind": "platformModule",
+        "actions": ["新增内置模板"],
+        "cards": [
+          { "title": "系统巡检模板", "desc": "内置巡检和校验步骤。", "meta": "开箱即用", "accent": "blue" },
+          { "title": "部署模板", "desc": "预置发布、回滚和依赖准备节点。", "meta": "可复制改造", "accent": "gold" }
+        ],
+        "tables": [
+          {
+            "title": "内置模板列表",
+            "columns": ["模板名称", "分类", "节点数", "状态"],
+            "rows": [
+              ["系统巡检模板", "巡检", "8", "已启用"],
+              ["发布回滚模板", "发布", "12", "已启用"]
+            ]
+          }
+        ]
+      },
+      "/stateManage/stateLibrary": {
+        "title": "模板列表",
+        "breadcrumb": ["作业平台", "状态", "模板列表"],
+        "intro": "集中查看可复用的状态模板和版本信息。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "模板库",
+            "columns": ["模板名称", "分类", "版本", "更新时间"],
+            "rows": []
+          }
+        ]
+      },
+      "/stateManage/stateHistory": {
+        "title": "状态历史",
+        "breadcrumb": ["作业平台", "状态", "状态历史"],
+        "intro": "记录模板执行和状态变更的历史结果。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "执行历史",
+            "columns": ["模板名称", "执行对象", "开始时间", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/job/jobManage": {
+        "title": "作业编排",
+        "breadcrumb": ["作业平台", "作业", "作业编排"],
+        "intro": "通过拖拽式节点编排构建自动化执行流程。",
+        "kind": "platformModule",
+        "actions": ["新建编排", "导入作业"],
+        "tables": [
+          {
+            "title": "编排列表",
+            "columns": ["作业名称", "负责人", "最近发布时间", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/job/timeJob": {
+        "title": "定时作业",
+        "breadcrumb": ["作业平台", "作业", "定时作业"],
+        "intro": "将脚本、编排和分发任务纳入周期执行计划。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "调度计划",
+            "columns": ["计划名称", "触发方式", "最近执行", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/job/executeHistory": {
+        "title": "执行历史",
+        "breadcrumb": ["作业平台", "作业", "执行历史"],
+        "intro": "回看每次自动化执行的目标、耗时和结果详情。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "作业记录",
+            "columns": ["作业名称", "执行人", "开始时间", "结果"],
+            "rows": []
+          }
+        ]
+      },
+      "/config/scriptManage": {
+        "title": "脚本仓库",
+        "breadcrumb": ["作业平台", "平台", "脚本仓库"],
+        "intro": "统一维护脚本版本、审核与共享权限。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "脚本列表",
+            "columns": ["脚本名称", "语言", "版本", "更新时间"],
+            "rows": []
+          }
+        ]
+      },
+      "/market/toolMarket": {
+        "title": "资源管理",
+        "breadcrumb": ["作业平台", "平台", "资源管理"],
+        "intro": "管理执行节点、主机分组和工具接入关系。",
+        "kind": "platformModule",
+        "actions": ["新增执行节点"],
+        "cards": [
+          { "title": "执行节点", "desc": "汇总可执行节点与代理状态。", "meta": "0 台节点", "accent": "green" },
+          { "title": "主机分组", "desc": "按业务和环境维护执行目标集合。", "meta": "0 个分组", "accent": "blue" }
+        ],
+        "tables": [
+          {
+            "title": "执行节点列表",
+            "columns": ["节点名称", "节点类型", "最近心跳", "状态"],
+            "rows": [
+              ["job-agent-prod-01", "Agent", "今天 14:20", "在线"],
+              ["job-agent-staging-01", "Agent", "今天 14:18", "在线"]
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "control": {
+    "shell": {
+      "productName": "管控平台",
+      "platformButton": "平台导航",
+      "topNav": ["控制台", "工作台", "消息", "支持"],
+      "basePath": "/o/control",
+      "platformKey": "control",
+      "user": {
+        "account": "demo",
+        "displayName": "演示用户"
+      }
+    },
+    "menu": [
+      {
+        "group": "",
+        "items": [
+          { "label": "概览", "route": "/" }
+        ]
+      },
+      {
+        "group": "纳管中心",
+        "items": [
+          { "label": "主机管理", "route": "/node/manage" },
+          { "label": "数据库管理", "route": "/controller/databaseManagement" },
+          { "label": "网络设备", "route": "/network/equipment" }
+        ]
+      },
+      {
+        "group": "平台",
+        "items": [
+          { "label": "操作审计", "route": "/setting/operational" }
+        ]
+      }
+    ],
+    "pages": {
+      "/": {
+        "title": "概览",
+        "breadcrumb": ["管控平台", "概览"],
+        "intro": "围绕纳管资产、网络设备和数据库统一构建运维控制面。",
+        "kind": "platformOverview",
+        "stats": [
+          { "label": "主机", "value": "0 台", "hint": "统一纳管主机" },
+          { "label": "数据库", "value": "0 台", "hint": "数据库实例纳管" },
+          { "label": "网络设备", "value": "0 台", "hint": "交换机 / 路由器 / 防火墙" }
+        ],
+        "cards": [
+          { "title": "主机管理", "desc": "查看纳管主机、状态与接入方式。", "meta": "统一纳管入口", "accent": "blue", "route": "/node/manage" },
+          { "title": "数据库管理", "desc": "对数据库资产进行接入、分类和权限分配。", "meta": "统一数据资产面板", "accent": "teal", "route": "/controller/databaseManagement" },
+          { "title": "网络设备", "desc": "管理网络设备与运维配置。", "meta": "网络统一视图", "accent": "gold", "route": "/network/equipment" }
+        ],
+        "tables": [
+          {
+            "title": "纳管资产分布",
+            "columns": ["资产类型", "数量", "说明"],
+            "rows": [
+              ["主机", "0", "含物理机和虚拟机"],
+              ["数据库", "0", "含 MySQL / Redis / 其他"],
+              ["网络设备", "0", "含交换机 / 路由器"]
+            ]
+          }
+        ]
+      },
+      "/node/manage": {
+        "title": "主机管理",
+        "breadcrumb": ["管控平台", "纳管中心", "主机管理"],
+        "intro": "统一维护主机纳管、授权和标签信息。",
+        "kind": "platformModule",
+        "actions": ["新增主机", "批量导入"],
+        "tables": [
+          {
+            "title": "纳管主机列表",
+            "columns": ["主机名称", "IP", "环境", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/controller/databaseManagement": {
+        "title": "数据库管理",
+        "breadcrumb": ["管控平台", "纳管中心", "数据库管理"],
+        "intro": "管理数据库实例、账号策略与归属关系。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "数据库实例",
+            "columns": ["实例名称", "类型", "所属业务", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/network/equipment": {
+        "title": "网络设备",
+        "breadcrumb": ["管控平台", "纳管中心", "网络设备"],
+        "intro": "聚合网络设备清单、接入状态与维护信息。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "设备清单",
+            "columns": ["设备名称", "设备类型", "所属区域", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/setting/operational": {
+        "title": "操作审计",
+        "breadcrumb": ["管控平台", "平台", "操作审计"],
+        "intro": "记录纳管对象变更、授权调整和配置操作。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "审计日志",
+            "columns": ["操作用户", "目标对象", "操作", "时间"],
+            "rows": []
+          }
+        ]
+      }
+    }
+  },
+  "bastion": {
+    "shell": {
+      "productName": "堡垒机",
+      "platformButton": "平台导航",
+      "topNav": ["控制台", "工作台", "消息", "支持"],
+      "basePath": "/o/bastion",
+      "platformKey": "bastion",
+      "user": {
+        "account": "demo",
+        "displayName": "演示用户"
+      }
+    },
+    "menu": [
+      {
+        "group": "",
+        "items": [
+          { "label": "概览", "route": "/" }
+        ]
+      },
+      {
+        "group": "安全资源",
+        "items": [
+          { "label": "主机授权", "route": "/safe/authorizationHost" },
+          { "label": "数据库授权", "route": "/safe/authorizationDatabase" },
+          { "label": "网络授权", "route": "/safe/authNetwork" }
+        ]
+      },
+      {
+        "group": "会话审计",
+        "items": [
+          { "label": "在线会话", "route": "/auditManagement/online" },
+          { "label": "历史会话", "route": "/auditManagement/historical" }
+        ]
+      },
+      {
+        "group": "访问策略",
+        "items": [
+          { "label": "访问策略", "route": "/accessPolicy/visitPolicy" },
+          { "label": "命令策略", "route": "/accessPolicy/commandPolicy" }
+        ]
+      },
+      {
+        "group": "凭证管理",
+        "items": [
+          { "label": "密码凭证", "route": "/voucherManagement/password" },
+          { "label": "SSH凭证", "route": "/voucherManagement/ssh" }
+        ]
+      }
+    ],
+    "pages": {
+      "/": {
+        "title": "概览",
+        "breadcrumb": ["堡垒机", "概览"],
+        "intro": "统一呈现受控资源、会话审计和授权策略，是参考站中“控制台”入口落到的主界面。",
+        "kind": "platformOverview",
+        "stats": [
+          { "label": "资源总数", "value": "0", "hint": "主机 / 数据库 / 网络设备" },
+          { "label": "在线会话", "value": "0", "hint": "实时连接会话" },
+          { "label": "历史会话", "value": "0", "hint": "历史审计回放" },
+          { "label": "访问策略", "value": "0", "hint": "访问与命令控制策略" }
+        ],
+        "cards": [
+          { "title": "主机授权", "desc": "授权主机资源给指定用户和角色。", "meta": "资源授权入口", "accent": "green", "route": "/safe/authorizationHost" },
+          { "title": "在线会话", "desc": "实时查看登录会话与命令执行情况。", "meta": "支持即时断开", "accent": "blue", "route": "/auditManagement/online" },
+          { "title": "命令策略", "desc": "控制允许执行的命令和危险命令拦截。", "meta": "高风险指令保护", "accent": "gold", "route": "/accessPolicy/commandPolicy" }
+        ],
+        "tables": [
+          {
+            "title": "资源与策略统计",
+            "columns": ["分类", "数量", "说明"],
+            "rows": [
+              ["主机资源", "0", "受控主机资产"],
+              ["数据库", "0", "受控数据库资产"],
+              ["网络设备", "0", "受控网络设备"],
+              ["密码凭证", "0", "账号密码凭证"],
+              ["SSH凭证", "0", "密钥凭证"]
+            ]
+          }
+        ]
+      },
+      "/console/console": {
+        "title": "概览",
+        "breadcrumb": ["堡垒机", "概览"],
+        "intro": "统一呈现受控资源、会话审计和授权策略，是参考站中“控制台”入口落到的主界面。",
+        "kind": "platformOverview",
+        "stats": [
+          { "label": "资源总数", "value": "0", "hint": "主机 / 数据库 / 网络设备" },
+          { "label": "在线会话", "value": "0", "hint": "实时连接会话" },
+          { "label": "历史会话", "value": "0", "hint": "历史审计回放" },
+          { "label": "访问策略", "value": "0", "hint": "访问与命令控制策略" }
+        ],
+        "cards": [
+          { "title": "主机授权", "desc": "授权主机资源给指定用户和角色。", "meta": "资源授权入口", "accent": "green", "route": "/safe/authorizationHost" },
+          { "title": "在线会话", "desc": "实时查看登录会话与命令执行情况。", "meta": "支持即时断开", "accent": "blue", "route": "/auditManagement/online" },
+          { "title": "命令策略", "desc": "控制允许执行的命令和危险命令拦截。", "meta": "高风险指令保护", "accent": "gold", "route": "/accessPolicy/commandPolicy" }
+        ],
+        "tables": [
+          {
+            "title": "资源与策略统计",
+            "columns": ["分类", "数量", "说明"],
+            "rows": [
+              ["主机资源", "0", "受控主机资产"],
+              ["数据库", "0", "受控数据库资产"],
+              ["网络设备", "0", "受控网络设备"],
+              ["密码凭证", "0", "账号密码凭证"],
+              ["SSH凭证", "0", "密钥凭证"]
+            ]
+          }
+        ]
+      },
+      "/safe/authorizationHost": {
+        "title": "主机授权",
+        "breadcrumb": ["堡垒机", "安全资源", "主机授权"],
+        "intro": "管理主机资源授权对象、授权范围和到期策略。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "主机授权列表",
+            "columns": ["资源名称", "授权对象", "到期时间", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/safe/authorizationDatabase": {
+        "title": "数据库授权",
+        "breadcrumb": ["堡垒机", "安全资源", "数据库授权"],
+        "intro": "细化数据库实例授权和账号访问控制。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "数据库授权列表",
+            "columns": ["实例名称", "授权对象", "权限等级", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/safe/authNetwork": {
+        "title": "网络授权",
+        "breadcrumb": ["堡垒机", "安全资源", "网络授权"],
+        "intro": "纳入网络设备账号与授权范围管理。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "网络设备授权",
+            "columns": ["设备名称", "授权对象", "设备类型", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/auditManagement/online": {
+        "title": "在线会话",
+        "breadcrumb": ["堡垒机", "会话审计", "在线会话"],
+        "intro": "实时追踪当前连接会话和登录行为。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "在线会话列表",
+            "columns": ["用户", "目标资源", "登录时间", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/auditManagement/historical": {
+        "title": "历史会话",
+        "breadcrumb": ["堡垒机", "会话审计", "历史会话"],
+        "intro": "支持按时间和用户查询会话历史与审计结果。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "历史会话记录",
+            "columns": ["用户", "目标资源", "结束时间", "结果"],
+            "rows": []
+          }
+        ]
+      },
+      "/accessPolicy/visitPolicy": {
+        "title": "访问策略",
+        "breadcrumb": ["堡垒机", "访问策略", "访问策略"],
+        "intro": "配置登录窗口期、可访问资源与审批规则。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "访问策略列表",
+            "columns": ["策略名称", "授权对象", "资源范围", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/accessPolicy/commandPolicy": {
+        "title": "命令策略",
+        "breadcrumb": ["堡垒机", "访问策略", "命令策略"],
+        "intro": "控制命令黑白名单、审批和高危指令阻断。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "命令策略列表",
+            "columns": ["策略名称", "适用对象", "拦截规则", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/voucherManagement/password": {
+        "title": "密码凭证",
+        "breadcrumb": ["堡垒机", "凭证管理", "密码凭证"],
+        "intro": "集中托管账号密码与更新策略。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "密码凭证列表",
+            "columns": ["凭证名称", "关联资源", "更新时间", "状态"],
+            "rows": []
+          }
+        ]
+      },
+      "/voucherManagement/ssh": {
+        "title": "SSH凭证",
+        "breadcrumb": ["堡垒机", "凭证管理", "SSH凭证"],
+        "intro": "统一维护 SSH 密钥凭证与投递策略。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "SSH 凭证列表",
+            "columns": ["凭证名称", "关联资源", "更新时间", "状态"],
+            "rows": []
+          }
+        ]
+      }
+    }
+  }
+}

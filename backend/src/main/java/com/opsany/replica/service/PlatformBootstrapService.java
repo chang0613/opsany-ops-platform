@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,8 @@ import com.opsany.replica.domain.TaskRecord;
 import com.opsany.replica.domain.WorkOrder;
 import com.opsany.replica.domain.WorkOrderCatalog;
 import com.opsany.replica.domain.WorkOrderProcessDefinition;
+import com.opsany.replica.dto.NavigationGroupDto;
+import com.opsany.replica.dto.NavigationItemDto;
 import com.opsany.replica.repository.AppUserRepository;
 import com.opsany.replica.repository.NotificationMessageRepository;
 import com.opsany.replica.repository.TaskRecordRepository;
@@ -41,12 +44,14 @@ public class PlatformBootstrapService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PlatformBootstrapService.class);
     private static final String BOOTSTRAP_CACHE_KEY_PREFIX = "opsany:bootstrap:";
 
-    private final PlatformTemplateService platformTemplateService;
+    private final PlatformShellTemplateService platformShellTemplateService;
     private final MenuPermissionService menuPermissionService;
     private final MessageSubscriptionService messageSubscriptionService;
     private final DutyScheduleService dutyScheduleService;
     private final WorkOrderCatalogService workOrderCatalogService;
     private final WorkOrderProcessService workOrderProcessService;
+    private final PlatformNavigationService platformNavigationService;
+    private final PlatformPageStateService platformPageStateService;
     private final WorkOrderRepository workOrderRepository;
     private final TaskRecordRepository taskRecordRepository;
     private final NotificationMessageRepository notificationMessageRepository;
@@ -55,8 +60,11 @@ public class PlatformBootstrapService {
     private final ObjectMapper objectMapper;
     private final AppProperties appProperties;
 
-    public ObjectNode getBootstrap(SessionUser sessionUser) {
-        return getCachedBootstrap(sessionUser.getUserId()).orElseGet(() -> buildAndCacheBootstrap(sessionUser));
+    public ObjectNode getBootstrap(SessionUser sessionUser, String requestPath) {
+        List<NavigationGroupDto> navigationGroups = platformNavigationService.getNavigationGroups(sessionUser.getUserId());
+        PlatformContext context = resolvePlatformContext(requestPath, navigationGroups);
+        return getCachedBootstrap(sessionUser.getUserId(), context.getPlatformKey())
+            .orElseGet(() -> buildAndCacheBootstrap(sessionUser, context, navigationGroups));
     }
 
     public void evictBootstrapCache(Long userId) {
@@ -64,7 +72,10 @@ public class PlatformBootstrapService {
             return;
         }
         try {
-            redisTemplate.delete(cacheKey(userId));
+            Set<String> keys = redisTemplate.keys(BOOTSTRAP_CACHE_KEY_PREFIX + userId + ":*");
+            if (keys != null && !keys.isEmpty()) {
+                redisTemplate.delete(keys);
+            }
         } catch (Exception exception) {
             LOGGER.warn("Failed to evict bootstrap cache: {}", exception.getMessage());
         }
@@ -78,17 +89,25 @@ public class PlatformBootstrapService {
     }
 
     public void evictAllBootstrapCaches() {
-        for (Long userId : appUserRepository.findAllUserIds()) {
-            evictBootstrapCache(userId);
+        if (!appProperties.getCache().isBootstrapEnabled()) {
+            return;
+        }
+        try {
+            Set<String> keys = redisTemplate.keys(BOOTSTRAP_CACHE_KEY_PREFIX + "*");
+            if (keys != null && !keys.isEmpty()) {
+                redisTemplate.delete(keys);
+            }
+        } catch (Exception exception) {
+            LOGGER.warn("Failed to evict all bootstrap caches: {}", exception.getMessage());
         }
     }
 
-    private Optional<ObjectNode> getCachedBootstrap(Long userId) {
+    private Optional<ObjectNode> getCachedBootstrap(Long userId, String platformKey) {
         if (!appProperties.getCache().isBootstrapEnabled()) {
             return Optional.empty();
         }
         try {
-            String payload = redisTemplate.opsForValue().get(cacheKey(userId));
+            String payload = redisTemplate.opsForValue().get(cacheKey(userId, platformKey));
             if (payload == null || payload.trim().isEmpty()) {
                 return Optional.empty();
             }
@@ -99,26 +118,55 @@ public class PlatformBootstrapService {
         }
     }
 
-    private ObjectNode buildAndCacheBootstrap(SessionUser sessionUser) {
-        ObjectNode root = platformTemplateService.copyTemplate();
-        List<MenuPermission> menus = menuPermissionService.findMenusByUserId(sessionUser.getUserId());
-        patchShell(root, sessionUser);
-        patchMenus(root, menus);
-        filterPages(root, menus);
-        patchCatalogs(root);
-        patchOverview(root, sessionUser);
-        patchOrders(root, sessionUser);
-        patchTasks(root, sessionUser);
-        patchMessages(root);
-        patchSubscriptions(root, sessionUser);
-        patchDuty(root, sessionUser);
-        patchProcesses(root);
-        cacheBootstrap(sessionUser.getUserId(), root);
+    private ObjectNode buildAndCacheBootstrap(
+        SessionUser sessionUser,
+        PlatformContext context,
+        List<NavigationGroupDto> navigationGroups
+    ) {
+        ObjectNode root = platformShellTemplateService.copyTemplate(
+            context.getPlatformKey(),
+            context.getPlatformName(),
+            context.getPlatformDescription(),
+            context.getBasePath()
+        );
+        patchShell(root, sessionUser, context);
+        patchNavigation(root, navigationGroups);
+        platformPageStateService.ensureTableKeys(root.with("pages"));
+
+        if ("workbench".equals(context.getPlatformKey())) {
+            List<MenuPermission> menus = menuPermissionService.findMenusByUserId(sessionUser.getUserId());
+            patchMenus(root, menus);
+            filterPages(root, menus);
+            patchCatalogs(root);
+            patchOverview(root, sessionUser);
+            patchOrders(root, sessionUser);
+            patchTasks(root, sessionUser);
+            patchMessages(root);
+            patchSubscriptions(root, sessionUser);
+            patchDuty(root, sessionUser);
+            patchProcesses(root);
+        }
+
+        platformPageStateService.applyState(root, context.getPlatformKey());
+        cacheBootstrap(sessionUser.getUserId(), context.getPlatformKey(), root);
         return root;
     }
 
-    private void patchShell(ObjectNode root, SessionUser sessionUser) {
-        ObjectNode userNode = (ObjectNode) root.with("shell").with("user");
+    private void patchShell(ObjectNode root, SessionUser sessionUser, PlatformContext context) {
+        ObjectNode shellNode = root.with("shell");
+        shellNode.put("productName", context.getPlatformName());
+        shellNode.put("platformButton", "平台导航");
+        shellNode.put("basePath", context.getBasePath());
+        shellNode.put("platformKey", context.getPlatformKey());
+        if (!shellNode.has("topNav") || !shellNode.get("topNav").isArray()) {
+            ArrayNode topNav = shellNode.putArray("topNav");
+            topNav.add("控制台");
+            topNav.add("工作台");
+            topNav.add("消息");
+            topNav.add("支持");
+        }
+
+        ObjectNode userNode = (ObjectNode) shellNode.with("user");
         userNode.put("account", sessionUser.getUsername());
         userNode.put("displayName", sessionUser.getDisplayName());
     }
@@ -430,13 +478,55 @@ public class PlatformBootstrapService {
         page.set("rows", rows);
     }
 
-    private void cacheBootstrap(Long userId, ObjectNode root) {
+    private void patchNavigation(ObjectNode root, List<NavigationGroupDto> groups) {
+        ArrayNode groupArray = objectMapper.createArrayNode();
+        ArrayNode favorites = objectMapper.createArrayNode();
+
+        for (NavigationGroupDto group : groups) {
+            ObjectNode groupNode = objectMapper.createObjectNode();
+            groupNode.put("groupCode", group.getGroupCode());
+            groupNode.put("title", group.getTitle());
+            groupNode.put("sortNo", group.getSortNo() == null ? 0 : group.getSortNo());
+            ArrayNode rows = objectMapper.createArrayNode();
+
+            for (NavigationItemDto item : group.getRows()) {
+                ObjectNode row = objectMapper.createObjectNode();
+                row.put("id", item.getId() == null ? 0 : item.getId());
+                row.put("itemCode", item.getItemCode());
+                row.put("groupCode", item.getGroupCode());
+                row.put("name", item.getName());
+                row.put("icon", defaultText(item.getIcon(), firstCharacter(item.getName(), "导")));
+                row.put("creator", defaultText(item.getCreatorDisplayName(), item.getCreatorUsername()));
+                row.put("creatorUsername", defaultText(item.getCreatorUsername(), "system"));
+                row.put("link", item.getLink());
+                row.put("mobileVisible", Boolean.TRUE.equals(item.getMobileVisible()));
+                row.put("mobile", Boolean.TRUE.equals(item.getMobileVisible()) ? "是" : "否");
+                row.put("desc", defaultText(item.getDescription(), "平台导航入口"));
+                row.put("sortNo", item.getSortNo() == null ? 0 : item.getSortNo());
+                row.put("enabled", Boolean.TRUE.equals(item.getEnabled()));
+                row.put("favorite", Boolean.TRUE.equals(item.getFavorite()));
+                rows.add(row);
+
+                if (Boolean.TRUE.equals(item.getFavorite())) {
+                    favorites.add(row.deepCopy());
+                }
+            }
+
+            groupNode.set("rows", rows);
+            groupArray.add(groupNode);
+        }
+
+        root.set("navigationGroups", groupArray);
+        root.set("favoriteNavigations", favorites);
+    }
+
+    private void cacheBootstrap(Long userId, String platformKey, ObjectNode root) {
         if (!appProperties.getCache().isBootstrapEnabled()) {
             return;
         }
         try {
             redisTemplate.opsForValue().set(
-                cacheKey(userId),
+                cacheKey(userId, platformKey),
                 objectMapper.writeValueAsString(root),
                 Duration.ofMinutes(appProperties.getCache().getBootstrapTtlMinutes())
             );
@@ -449,12 +539,16 @@ public class PlatformBootstrapService {
         return sessionUser.getRoleCodes() != null && sessionUser.getRoleCodes().contains("PLATFORM_ADMIN");
     }
 
-    private String cacheKey(Long userId) {
-        return BOOTSTRAP_CACHE_KEY_PREFIX + userId;
+    private String cacheKey(Long userId, String platformKey) {
+        return BOOTSTRAP_CACHE_KEY_PREFIX + userId + ":" + defaultText(platformKey, "workbench");
     }
 
     private String defaultText(String value, String fallback) {
         return value == null || value.trim().isEmpty() ? fallback : value;
+    }
+
+    private String firstCharacter(String value, String fallback) {
+        return value == null || value.trim().isEmpty() ? fallback : value.substring(0, 1);
     }
 
     private ArrayNode buildCategoryArray(int total, Map<String, Integer> categoryCounter) {
@@ -464,5 +558,111 @@ public class PlatformBootstrapService {
             arrayNode.add(entry.getKey() + "(" + entry.getValue() + ")");
         }
         return arrayNode;
+    }
+
+    private PlatformContext resolvePlatformContext(String requestPath, List<NavigationGroupDto> navigationGroups) {
+        String basePath = resolveBasePath(requestPath);
+        String platformKey = extractPlatformKey(basePath);
+        NavigationItemDto currentItem = findNavigationItem(navigationGroups, basePath);
+        String fallbackName = fallbackPlatformName(platformKey);
+        String platformName = currentItem == null ? fallbackName : defaultText(currentItem.getName(), fallbackName);
+        String platformDescription = currentItem == null
+            ? platformName + " 平台入口"
+            : defaultText(currentItem.getDescription(), platformName + " 平台入口");
+        return new PlatformContext(platformKey, basePath, platformName, platformDescription);
+    }
+
+    private NavigationItemDto findNavigationItem(List<NavigationGroupDto> navigationGroups, String basePath) {
+        String normalizedBasePath = resolveBasePath(basePath);
+        for (NavigationGroupDto group : navigationGroups) {
+            for (NavigationItemDto item : group.getRows()) {
+                if (normalizedBasePath.equals(resolveBasePath(item.getLink()))) {
+                    return item;
+                }
+            }
+        }
+        return null;
+    }
+
+    private String resolveBasePath(String requestPath) {
+        String normalizedPath = normalizePath(requestPath);
+        if (!normalizedPath.startsWith("/o/")) {
+            return "/o/workbench";
+        }
+
+        String[] segments = normalizedPath.split("/");
+        if (segments.length < 3 || segments[2] == null || segments[2].trim().isEmpty()) {
+            return "/o/workbench";
+        }
+        return "/o/" + segments[2];
+    }
+
+    private String extractPlatformKey(String basePath) {
+        String[] segments = resolveBasePath(basePath).split("/");
+        return segments.length >= 3 ? defaultText(segments[2], "workbench") : "workbench";
+    }
+
+    private String normalizePath(String value) {
+        if (value == null || value.trim().isEmpty() || "/".equals(value.trim())) {
+            return "/o/workbench";
+        }
+        String normalized = value.trim().replace('#', '/');
+        while (normalized.contains("//")) {
+            normalized = normalized.replace("//", "/");
+        }
+        if (normalized.endsWith("/") && normalized.length() > 1) {
+            normalized = normalized.substring(0, normalized.length() - 1);
+        }
+        return normalized;
+    }
+
+    private String fallbackPlatformName(String platformKey) {
+        if ("cmdb".equals(platformKey)) {
+            return "资源平台";
+        }
+        if ("job".equals(platformKey)) {
+            return "作业平台";
+        }
+        if ("control".equals(platformKey)) {
+            return "管控平台";
+        }
+        if ("bastion".equals(platformKey)) {
+            return "堡垒机";
+        }
+        if ("workbench".equals(platformKey)) {
+            return "工作台";
+        }
+        return platformKey == null || platformKey.trim().isEmpty() ? "平台" : platformKey.toUpperCase();
+    }
+
+    private static final class PlatformContext {
+
+        private final String platformKey;
+        private final String basePath;
+        private final String platformName;
+        private final String platformDescription;
+
+        private PlatformContext(String platformKey, String basePath, String platformName, String platformDescription) {
+            this.platformKey = platformKey;
+            this.basePath = basePath;
+            this.platformName = platformName;
+            this.platformDescription = platformDescription;
+        }
+
+        private String getPlatformKey() {
+            return platformKey;
+        }
+
+        private String getBasePath() {
+            return basePath;
+        }
+
+        private String getPlatformName() {
+            return platformName;
+        }
+
+        private String getPlatformDescription() {
+            return platformDescription;
+        }
     }
 }

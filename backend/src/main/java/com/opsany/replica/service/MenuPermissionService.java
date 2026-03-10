@@ -33,7 +33,13 @@ public class MenuPermissionService {
 
     public String resolveLandingRoute(Long userId) {
         String route = menuRepository.findFirstRouteByUserId(userId);
-        return route == null || route.trim().isEmpty() ? "/" : route;
+        if (!StringUtils.hasText(route) || "/".equals(route.trim())) {
+            return "/o/workbench/";
+        }
+        if (route.startsWith("/o/")) {
+            return route;
+        }
+        return "/o/workbench" + route;
     }
 
     public MenuConfigResponse getMenuConfig() {

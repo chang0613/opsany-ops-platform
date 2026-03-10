@@ -5,10 +5,15 @@ import type {
   LoginResponse,
   MenuConfigItem,
   MenuConfigResponse,
+  NavigationConfigResponse,
+  NavigationFavoriteState,
   MessageSubscriptionPayload,
+  PlatformPageStatePayload,
   PlatformBootstrap,
   ProcessDefinition,
   ProcessDefinitionDetail,
+  SaveNavigationGroupPayload,
+  SaveNavigationItemPayload,
   SaveDutyGroupPayload,
   SaveDutyShiftPayload,
   SaveProcessDefinitionPayload,
@@ -70,8 +75,9 @@ export function getCurrentUser(): Promise<UserProfile> {
   return request<UserProfile>('/api/auth/me')
 }
 
-export function getWorkbenchBootstrap(): Promise<PlatformBootstrap> {
-  return request<PlatformBootstrap>('/api/workbench/bootstrap')
+export function getWorkbenchBootstrap(path?: string): Promise<PlatformBootstrap> {
+  const query = path ? `?path=${encodeURIComponent(path)}` : ''
+  return request<PlatformBootstrap>(`/api/workbench/bootstrap${query}`)
 }
 
 export function getUsers(): Promise<UserOption[]> {
@@ -187,5 +193,42 @@ export function saveMenuConfig(payload: MenuConfigItem): Promise<MenuConfigItem>
 export function deleteMenuConfig(menuCode: string): Promise<void> {
   return request(`/api/workbench/menu-config/menus/${menuCode}`, {
     method: 'DELETE',
+  })
+}
+
+export function getNavigationConfig(): Promise<NavigationConfigResponse> {
+  return request<NavigationConfigResponse>('/api/workbench/navigation-config')
+}
+
+export function saveNavigationGroup(payload: SaveNavigationGroupPayload): Promise<{ groupCode: string; title: string }> {
+  return request('/api/workbench/navigation-config/groups', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function saveNavigationItem(payload: SaveNavigationItemPayload): Promise<void> {
+  return request('/api/workbench/navigation-config/items', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function deleteNavigationItem(itemCode: string): Promise<void> {
+  return request(`/api/workbench/navigation-config/items/${itemCode}`, {
+    method: 'DELETE',
+  })
+}
+
+export function toggleNavigationFavorite(itemCode: string): Promise<NavigationFavoriteState> {
+  return request<NavigationFavoriteState>(`/api/workbench/navigation-config/favorites/${itemCode}`, {
+    method: 'POST',
+  })
+}
+
+export function savePlatformPageState(payload: PlatformPageStatePayload): Promise<void> {
+  return request('/api/workbench/platform-pages/state', {
+    method: 'PUT',
+    body: JSON.stringify(payload),
   })
 }
