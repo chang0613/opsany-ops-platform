@@ -24,6 +24,7 @@ import com.opsany.replica.domain.MessageSubscription;
 import com.opsany.replica.domain.NotificationMessage;
 import com.opsany.replica.domain.TaskRecord;
 import com.opsany.replica.domain.WorkOrder;
+import com.opsany.replica.domain.WorkOrderCatalog;
 import com.opsany.replica.domain.WorkOrderProcessDefinition;
 import com.opsany.replica.domain.WorkOrderProcessNode;
 import com.opsany.replica.repository.AppUserRepository;
@@ -34,6 +35,7 @@ import com.opsany.replica.repository.NotificationMessageRepository;
 import com.opsany.replica.repository.RoleRepository;
 import com.opsany.replica.repository.TaskRecordRepository;
 import com.opsany.replica.repository.WorkOrderProcessRepository;
+import com.opsany.replica.repository.WorkOrderCatalogRepository;
 import com.opsany.replica.repository.WorkOrderRepository;
 import com.opsany.replica.security.PasswordCodec;
 
@@ -55,6 +57,7 @@ public class DemoDataSeeder implements ApplicationRunner {
     private final MessageSubscriptionRepository messageSubscriptionRepository;
     private final DutyScheduleRepository dutyScheduleRepository;
     private final WorkOrderProcessRepository workOrderProcessRepository;
+    private final WorkOrderCatalogRepository workOrderCatalogRepository;
     private final PasswordCodec passwordCodec;
 
     @Override
@@ -67,6 +70,7 @@ public class DemoDataSeeder implements ApplicationRunner {
         seedRoles();
         seedMenus();
         seedProcesses();
+        seedCatalogs();
 
         AppUser demoUser = ensureUser("demo", "演示用户", "123456.coM", Arrays.asList("PLATFORM_ADMIN", "REQUESTER"));
         ensureUser("admin", "管理员", "123456.coM", Arrays.asList("PLATFORM_ADMIN", "ENGINEER"));
@@ -208,6 +212,41 @@ public class DemoDataSeeder implements ApplicationRunner {
         workOrderProcessRepository.insertNode(node("REQUESTER_CONFIRM", "申请人确认", "CONFIRM", 4, "REQUESTER", "END_DONE", "ENGINEER_HANDLE"));
         workOrderProcessRepository.insertNode(node("END_DONE", "已完成", "END", 5, "END", null, null));
         workOrderProcessRepository.insertNode(node("END_REJECTED", "已驳回", "END", 6, "END", null, null));
+    }
+
+    private void seedCatalogs() {
+        if (workOrderCatalogRepository.count() > 0) {
+            return;
+        }
+        ObjectNode template = platformTemplateService.copyTemplate();
+        ObjectNode page = (ObjectNode) template.with("pages").get("/serveSetting/orderDirectory");
+        ArrayNode rows = page.withArray("rows");
+        for (int index = 0; index < rows.size(); index++) {
+            JsonNode row = rows.get(index);
+            seedCatalogRow(row, index);
+        }
+    }
+
+    private void seedCatalogRow(JsonNode row, int index) {
+        String ownerDisplayName = row.path("owner").asText("管理员");
+        String ownerUsername = "管理员".equals(ownerDisplayName) ? "admin" : "demo";
+        WorkOrderCatalog catalog = WorkOrderCatalog.builder()
+            .catalogCode("CATALOG_" + (index + 1))
+            .name(row.path("name").asText("未命名目录"))
+            .category(defaultIfBlank(row.path("type").asText(), "默认分组"))
+            .type(defaultIfBlank(row.path("type").asText(), "请求管理"))
+            .scope(defaultIfBlank(row.path("scope").asText(), "全部用户"))
+            .online(!row.path("online").asText("").contains("未"))
+            .processCode(WorkOrderProcessService.DEFAULT_PROCESS_CODE)
+            .slaName(defaultIfBlank(row.path("sla").asText(), "-"))
+            .ownerUsername(ownerUsername)
+            .ownerDisplayName(ownerDisplayName)
+            .description(defaultIfBlank(row.path("desc").asText(), "-"))
+            .sortNo(index + 1)
+            .createdAt(DateFormats.parseFlexible(row.path("createdAt").asText()))
+            .updatedAt(DateFormats.parseFlexible(row.path("createdAt").asText()))
+            .build();
+        workOrderCatalogRepository.insert(catalog);
     }
 
     private WorkOrderProcessNode node(

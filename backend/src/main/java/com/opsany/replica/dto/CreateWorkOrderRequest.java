@@ -17,6 +17,8 @@ public class CreateWorkOrderRequest {
     @NotBlank(message = "工单类型不能为空")
     private String type;
 
+    private String catalogCode;
+    private String processCode;
     private String serviceName;
     private String description;
     private String priority;

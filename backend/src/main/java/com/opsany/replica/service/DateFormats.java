@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 public final class DateFormats {
 
+    public static final DateTimeFormatter DAY_PRECISION = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public static final DateTimeFormatter SECOND_PRECISION = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public static final DateTimeFormatter MINUTE_PRECISION = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -21,6 +22,10 @@ public final class DateFormats {
         }
         try {
             return LocalDateTime.parse(value, MINUTE_PRECISION);
+        } catch (Exception ignored) {
+        }
+        try {
+            return LocalDateTime.parse(value + " 00:00:00", SECOND_PRECISION);
         } catch (Exception ignored) {
         }
         return LocalDateTime.now();

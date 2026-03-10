@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.opsany.replica.domain.AppUser;
+import com.opsany.replica.dto.UserOption;
 
 @Mapper
 public interface AppUserRepository {
@@ -35,6 +36,15 @@ public interface AppUserRepository {
         "order by r.sort_no asc, r.role_code asc"
     })
     List<String> findRoleCodes(@Param("userId") Long userId);
+
+    @Select({
+        "select id, username, display_name as displayName",
+        "from app_users where enabled = 1 order by username asc"
+    })
+    List<UserOption> findAllUserOptions();
+
+    @Select("select id from app_users order by id asc")
+    List<Long> findAllUserIds();
 
     @Select("select count(1) from app_users where username = #{username}")
     long countByUsername(@Param("username") String username);

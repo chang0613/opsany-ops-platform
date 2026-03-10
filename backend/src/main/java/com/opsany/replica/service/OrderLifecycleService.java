@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.opsany.replica.config.AppProperties;
 import com.opsany.replica.domain.WorkOrder;
+import com.opsany.replica.domain.WorkOrderCatalog;
 import com.opsany.replica.domain.WorkOrderHistory;
 import com.opsany.replica.domain.WorkOrderProcessNode;
 import com.opsany.replica.dto.CreateWorkOrderRequest;
@@ -31,6 +32,7 @@ public class OrderLifecycleService {
     private final WorkOrderRepository workOrderRepository;
     private final WorkOrderHistoryRepository workOrderHistoryRepository;
     private final WorkOrderProcessService workOrderProcessService;
+    private final WorkOrderCatalogService workOrderCatalogService;
     private final WorkOrderEventPublisher workOrderEventPublisher;
     private final WorkOrderProjectionService workOrderProjectionService;
     private final PlatformBootstrapService platformBootstrapService;
@@ -39,19 +41,21 @@ public class OrderLifecycleService {
     @Transactional
     public WorkOrder createOrder(CreateWorkOrderRequest request, SessionUser sessionUser) {
         LocalDateTime now = LocalDateTime.now();
-        WorkOrderProcessNode startNode = workOrderProcessService.resolveStartNode(WorkOrderProcessService.DEFAULT_PROCESS_CODE);
+        WorkOrderCatalog catalog = resolveCatalog(request);
+        String processCode = resolveProcessCode(request, catalog);
+        WorkOrderProcessNode startNode = workOrderProcessService.resolveStartNode(processCode);
         WorkOrderProcessNode activeNode = resolveActiveStartNode(startNode);
 
         WorkOrder workOrder = WorkOrder.builder()
             .orderNo(nextOrderNo(now))
             .title(request.getTitle())
-            .type(request.getType())
+            .type(resolveOrderType(request, catalog))
             .creatorUsername(sessionUser.getUsername())
             .creatorDisplayName(sessionUser.getDisplayName())
             .progress(activeNode.getNodeName())
             .status(statusForNode(activeNode.getNodeCode()))
             .priority(defaultIfBlank(request.getPriority(), "中"))
-            .serviceName(defaultIfBlank(request.getServiceName(), request.getTitle()))
+            .serviceName(resolveServiceName(request, catalog))
             .description(defaultIfBlank(request.getDescription(), "通过 Vue3 + Spring Boot 重建的模拟工单"))
             .estimatedAt("--")
             .createdAt(now)
@@ -245,6 +249,43 @@ public class OrderLifecycleService {
             return creatorDisplayName;
         }
         return "管理员";
+    }
+
+    private WorkOrderCatalog resolveCatalog(CreateWorkOrderRequest request) {
+        if (StringUtils.hasText(request.getCatalogCode())) {
+            WorkOrderCatalog catalog = workOrderCatalogService.findByCatalogCode(request.getCatalogCode());
+            if (catalog != null) {
+                return catalog;
+            }
+        }
+        if (StringUtils.hasText(request.getServiceName())) {
+            return workOrderCatalogService.findByName(request.getServiceName());
+        }
+        return null;
+    }
+
+    private String resolveProcessCode(CreateWorkOrderRequest request, WorkOrderCatalog catalog) {
+        if (StringUtils.hasText(request.getProcessCode())) {
+            return request.getProcessCode();
+        }
+        if (catalog != null && StringUtils.hasText(catalog.getProcessCode())) {
+            return catalog.getProcessCode();
+        }
+        return WorkOrderProcessService.DEFAULT_PROCESS_CODE;
+    }
+
+    private String resolveOrderType(CreateWorkOrderRequest request, WorkOrderCatalog catalog) {
+        if (StringUtils.hasText(request.getType())) {
+            return request.getType();
+        }
+        return catalog == null ? "请求管理" : defaultIfBlank(catalog.getType(), "请求管理");
+    }
+
+    private String resolveServiceName(CreateWorkOrderRequest request, WorkOrderCatalog catalog) {
+        if (catalog != null && StringUtils.hasText(catalog.getName())) {
+            return catalog.getName();
+        }
+        return defaultIfBlank(request.getServiceName(), request.getTitle());
     }
 
     private String nextOrderNo(LocalDateTime now) {

@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.Delete;
 
 import com.opsany.replica.domain.WorkOrderProcessDefinition;
 import com.opsany.replica.domain.WorkOrderProcessNode;
@@ -62,6 +63,9 @@ public interface WorkOrderProcessRepository {
     })
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertNode(WorkOrderProcessNode node);
+
+    @Delete("delete from work_order_process_nodes where process_code = #{processCode}")
+    int deleteNodesByProcessCode(@Param("processCode") String processCode);
 
     @Select({
         "select id, process_code, node_code, node_name, node_type, sort_no, assignee_role, next_approve_node, next_reject_node",

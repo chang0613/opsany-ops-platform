@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.Delete;
 
 import com.opsany.replica.domain.MenuPermission;
 
@@ -24,11 +26,37 @@ public interface MenuRepository {
     })
     int insert(MenuPermission menuPermission);
 
+    @Update({
+        "update app_menus set group_name = #{groupName}, group_sort_no = #{groupSortNo}, label = #{label},",
+        "route = #{route}, icon = #{icon}, sort_no = #{sortNo}, permission_code = #{permissionCode}, visible = #{visible}",
+        "where menu_code = #{menuCode}"
+    })
+    int update(MenuPermission menuPermission);
+
     @Select("select count(1) from app_role_menus where role_code = #{roleCode} and menu_code = #{menuCode}")
     long countRoleMenu(@Param("roleCode") String roleCode, @Param("menuCode") String menuCode);
 
     @Insert("insert into app_role_menus(role_code, menu_code) values(#{roleCode}, #{menuCode})")
     int grantRoleMenu(@Param("roleCode") String roleCode, @Param("menuCode") String menuCode);
+
+    @Delete("delete from app_role_menus where menu_code = #{menuCode}")
+    int deleteRoleMenusByMenuCode(@Param("menuCode") String menuCode);
+
+    @Delete("delete from app_menus where menu_code = #{menuCode}")
+    int deleteMenuByCode(@Param("menuCode") String menuCode);
+
+    @Select({
+        "select id, menu_code, group_name, group_sort_no, label, route, icon, sort_no, permission_code, visible",
+        "from app_menus order by group_sort_no asc, sort_no asc"
+    })
+    List<MenuPermission> findAllMenus();
+
+    @Select({
+        "select role_code from app_role_menus",
+        "where menu_code = #{menuCode}",
+        "order by role_code asc"
+    })
+    List<String> findRoleCodesByMenuCode(@Param("menuCode") String menuCode);
 
     @Select({
         "select m.id, m.menu_code, m.group_name, m.group_sort_no, m.label, m.route, m.icon, m.sort_no,",

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.opsany.replica.domain.WorkOrderProcessDefinition;
 import com.opsany.replica.domain.WorkOrderProcessNode;
+import com.opsany.replica.dto.ProcessDefinitionDetailResponse;
 import com.opsany.replica.dto.SaveProcessDefinitionRequest;
 import com.opsany.replica.security.AuthInterceptor;
 import com.opsany.replica.security.SessionUser;
@@ -29,6 +30,11 @@ public class ProcessController {
     @GetMapping
     public List<WorkOrderProcessDefinition> list() {
         return workOrderProcessService.listDefinitions();
+    }
+
+    @GetMapping("/{processCode}")
+    public ProcessDefinitionDetailResponse detail(@PathVariable String processCode) {
+        return workOrderProcessService.getDetail(processCode);
     }
 
     @GetMapping("/{processCode}/nodes")

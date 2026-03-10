@@ -70,6 +70,9 @@ public interface WorkOrderRepository {
     @Select("select count(1) from work_orders where creator_username = #{creatorUsername}")
     long countByCreatorUsername(@Param("creatorUsername") String creatorUsername);
 
+    @Select("select count(1) from work_orders where service_name = #{serviceName}")
+    long countByServiceName(@Param("serviceName") String serviceName);
+
     @Select("select count(1) from work_orders")
     long count();
 }

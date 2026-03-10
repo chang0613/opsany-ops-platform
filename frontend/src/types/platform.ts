@@ -13,6 +13,8 @@ export interface LoginResponse {
 export interface WorkOrderPayload {
   title: string
   type: string
+  catalogCode?: string
+  processCode?: string
   serviceName?: string
   description?: string
   priority?: string
@@ -71,6 +73,151 @@ export interface MessageSubscriptionPayload {
   mailEnabled: boolean
   wxEnabled: boolean
   dingEnabled: boolean
+}
+
+export interface UserOption {
+  id: number
+  username: string
+  displayName: string
+}
+
+export interface WorkOrderCatalog {
+  id: number
+  catalogCode: string
+  name: string
+  category: string
+  type: string
+  scope: string
+  online: boolean
+  processCode: string
+  slaName: string
+  ownerUsername: string
+  ownerDisplayName: string
+  description: string
+  sortNo: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface SaveWorkOrderCatalogPayload {
+  catalogCode?: string
+  name: string
+  category: string
+  type: string
+  scope: string
+  online: boolean
+  processCode: string
+  slaName: string
+  ownerUsername: string
+  description: string
+  sortNo: number
+}
+
+export interface ProcessNodePayload {
+  nodeCode: string
+  nodeName: string
+  nodeType: string
+  sortNo: number
+  assigneeRole: string
+  nextApproveNode?: string
+  nextRejectNode?: string
+}
+
+export interface ProcessDefinition {
+  id: number
+  processCode: string
+  name: string
+  category: string
+  version: number
+  status: string
+  owner: string
+  creator: string
+  updater: string
+  updatedAt: string
+  description: string
+  definitionJson?: string
+}
+
+export interface ProcessDefinitionDetail {
+  definition: ProcessDefinition
+  nodes: ProcessNodePayload[]
+}
+
+export interface SaveProcessDefinitionPayload {
+  processCode?: string
+  name: string
+  category: string
+  status: string
+  description: string
+  definitionJson?: string
+  nodes: ProcessNodePayload[]
+}
+
+export interface DutyGroup {
+  id: number
+  name: string
+  ownerUsername: string
+  ownerDisplayName: string
+  members: number
+  coverage: string
+  description?: string
+}
+
+export interface DutyShift {
+  id: number
+  groupId: number
+  groupName: string
+  dutyDate: string
+  dateLabel: string
+  shiftLabel: string
+  shiftTime: string
+  ownerUsername: string
+  ownerDisplayName: string
+  status: string
+}
+
+export interface SaveDutyGroupPayload {
+  id?: number
+  name: string
+  ownerUsername: string
+  members: number
+  coverage: string
+  description: string
+}
+
+export interface SaveDutyShiftPayload {
+  id?: number
+  groupId: number
+  dutyDate: string
+  shiftTime: string
+  ownerUsername: string
+  status: string
+}
+
+export interface AppRole {
+  roleCode: string
+  roleName: string
+  description?: string
+  sortNo: number
+}
+
+export interface MenuConfigItem {
+  id?: number
+  menuCode: string
+  groupName: string
+  groupSortNo: number
+  label: string
+  route: string
+  icon?: string
+  sortNo: number
+  permissionCode?: string
+  visible: boolean
+  roleCodes: string[]
+}
+
+export interface MenuConfigResponse {
+  roles: AppRole[]
+  menus: MenuConfigItem[]
 }
 
 export interface ShellConfig {

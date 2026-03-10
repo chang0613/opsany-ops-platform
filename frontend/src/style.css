@@ -315,6 +315,85 @@ body {
   width: 100%;
 }
 
+.toolbar-user-select {
+  width: 240px;
+}
+
+.config-dialog .el-dialog__header {
+  margin-right: 0;
+  padding: 20px 22px 0;
+}
+
+.config-dialog .el-dialog__body {
+  padding: 8px 22px 8px;
+}
+
+.config-dialog .el-dialog__footer {
+  padding: 0 22px 20px;
+}
+
+.process-designer-drawer .el-drawer__header {
+  margin-bottom: 0;
+  padding: 22px 24px 0;
+}
+
+.process-designer-drawer .el-drawer__body {
+  padding: 16px 24px;
+}
+
+.process-designer-drawer .el-drawer__footer {
+  padding: 0 24px 22px;
+}
+
+.process-flow-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.process-node-card,
+.node-editor-card {
+  padding: 16px;
+  border: 1px solid #e6ecf2;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 248, 245, 0.96));
+}
+
+.process-node-index {
+  color: #788592;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.process-node-name {
+  margin-top: 8px;
+  color: #23303a;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.process-node-meta,
+.process-node-link {
+  margin-top: 6px;
+  color: #66717d;
+  font-size: 13px;
+}
+
+.process-node-link.reject,
+.danger-link {
+  color: #d1495b;
+}
+
+.node-editor-card + .node-editor-card {
+  margin-top: 14px;
+}
+
+.duty-table-wrap,
+.panel + .duty-table-wrap {
+  margin-top: 18px;
+}
+
 .icon-close {
   width: 36px;
   height: 36px;

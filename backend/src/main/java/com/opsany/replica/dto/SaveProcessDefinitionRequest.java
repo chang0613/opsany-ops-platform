@@ -1,5 +1,7 @@
 package com.opsany.replica.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,4 +17,5 @@ public class SaveProcessDefinitionRequest {
     private String status;
     private String description;
     private String definitionJson;
+    private List<ProcessNodePayload> nodes;
 }

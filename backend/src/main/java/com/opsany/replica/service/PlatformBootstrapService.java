@@ -24,6 +24,7 @@ import com.opsany.replica.domain.MessageSubscription;
 import com.opsany.replica.domain.NotificationMessage;
 import com.opsany.replica.domain.TaskRecord;
 import com.opsany.replica.domain.WorkOrder;
+import com.opsany.replica.domain.WorkOrderCatalog;
 import com.opsany.replica.domain.WorkOrderProcessDefinition;
 import com.opsany.replica.repository.AppUserRepository;
 import com.opsany.replica.repository.NotificationMessageRepository;
@@ -44,6 +45,7 @@ public class PlatformBootstrapService {
     private final MenuPermissionService menuPermissionService;
     private final MessageSubscriptionService messageSubscriptionService;
     private final DutyScheduleService dutyScheduleService;
+    private final WorkOrderCatalogService workOrderCatalogService;
     private final WorkOrderProcessService workOrderProcessService;
     private final WorkOrderRepository workOrderRepository;
     private final TaskRecordRepository taskRecordRepository;
@@ -75,6 +77,12 @@ public class PlatformBootstrapService {
         }
     }
 
+    public void evictAllBootstrapCaches() {
+        for (Long userId : appUserRepository.findAllUserIds()) {
+            evictBootstrapCache(userId);
+        }
+    }
+
     private Optional<ObjectNode> getCachedBootstrap(Long userId) {
         if (!appProperties.getCache().isBootstrapEnabled()) {
             return Optional.empty();
@@ -97,6 +105,7 @@ public class PlatformBootstrapService {
         patchShell(root, sessionUser);
         patchMenus(root, menus);
         filterPages(root, menus);
+        patchCatalogs(root);
         patchOverview(root, sessionUser);
         patchOrders(root, sessionUser);
         patchTasks(root, sessionUser);
@@ -176,6 +185,69 @@ public class PlatformBootstrapService {
                 arrayNode.add(node);
             });
             overviewData.set("latestMessages", arrayNode);
+        }
+    }
+
+    private void patchCatalogs(ObjectNode root) {
+        List<WorkOrderCatalog> onlineCatalogs = workOrderCatalogService.listOnlineCatalogs();
+        List<WorkOrderCatalog> allCatalogs = workOrderCatalogService.listAll();
+
+        if (root.with("pages").has("/personSetting/serviceFolder")) {
+            ObjectNode page = (ObjectNode) root.with("pages").get("/personSetting/serviceFolder");
+            ArrayNode services = objectMapper.createArrayNode();
+            Map<String, Integer> categoryCounter = new LinkedHashMap<String, Integer>();
+            for (WorkOrderCatalog catalog : onlineCatalogs) {
+                ObjectNode node = objectMapper.createObjectNode();
+                node.put("title", catalog.getName());
+                node.put("type", catalog.getType());
+                node.put("description", defaultText(catalog.getDescription(), "--"));
+                node.put("count", workOrderRepository.countByServiceName(catalog.getName()) + " 人已提单");
+                services.add(node);
+                String category = defaultText(catalog.getCategory(), "默认分组");
+                categoryCounter.put(category, categoryCounter.containsKey(category) ? categoryCounter.get(category) + 1 : 1);
+            }
+            page.set("services", services);
+            page.set("serviceCategories", buildCategoryArray(onlineCatalogs.size(), categoryCounter));
+
+            ArrayNode tabs = objectMapper.createArrayNode();
+            tabs.add("全部服务(" + onlineCatalogs.size() + ")");
+            tabs.add("我的收藏(0)");
+            for (Map.Entry<String, Integer> entry : categoryCounter.entrySet()) {
+                tabs.add(entry.getKey() + "(" + entry.getValue() + ")");
+            }
+            page.set("tabs", tabs);
+        }
+
+        if (root.with("pages").has("/serveSetting/orderDirectory")) {
+            ObjectNode page = (ObjectNode) root.with("pages").get("/serveSetting/orderDirectory");
+            ArrayNode rows = objectMapper.createArrayNode();
+            Map<String, String> processNames = new LinkedHashMap<String, String>();
+            for (WorkOrderProcessDefinition definition : workOrderProcessService.listDefinitions()) {
+                processNames.put(definition.getProcessCode(), definition.getName());
+            }
+            Map<String, Integer> categoryCounter = new LinkedHashMap<String, Integer>();
+            for (WorkOrderCatalog catalog : allCatalogs) {
+                String category = defaultText(catalog.getCategory(), "默认分组");
+                categoryCounter.put(category, categoryCounter.containsKey(category) ? categoryCounter.get(category) + 1 : 1);
+
+                ObjectNode node = objectMapper.createObjectNode();
+                node.put("catalogCode", catalog.getCatalogCode());
+                node.put("name", catalog.getName());
+                node.put("type", catalog.getType());
+                node.put("category", category);
+                node.put("scope", catalog.getScope());
+                node.put("online", Boolean.TRUE.equals(catalog.getOnline()) ? "已上线" : "未上线");
+                node.put("version", defaultText(processNames.get(catalog.getProcessCode()), defaultText(catalog.getProcessCode(), "-")));
+                node.put("processCode", catalog.getProcessCode());
+                node.put("sla", defaultText(catalog.getSlaName(), "-"));
+                node.put("owner", catalog.getOwnerDisplayName());
+                node.put("ownerUsername", catalog.getOwnerUsername());
+                node.put("createdAt", catalog.getCreatedAt().format(DateFormats.DAY_PRECISION));
+                node.put("desc", defaultText(catalog.getDescription(), "-"));
+                rows.add(node);
+            }
+            page.set("rows", rows);
+            page.set("categories", buildCategoryArray(allCatalogs.size(), categoryCounter));
         }
     }
 
@@ -314,9 +386,26 @@ public class PlatformBootstrapService {
                 node.put("owner", group.getOwnerDisplayName());
                 node.put("members", group.getMembers());
                 node.put("coverage", group.getCoverage());
+                node.put("description", defaultText(group.getDescription(), "-"));
                 groups.add(node);
             }
             dutyManagePage.set("groups", groups);
+
+            ArrayNode shifts = objectMapper.createArrayNode();
+            for (DutyShift shift : dutyScheduleService.listAllShifts()) {
+                ObjectNode node = objectMapper.createObjectNode();
+                node.put("id", shift.getId());
+                node.put("groupId", shift.getGroupId());
+                node.put("group", shift.getGroupName());
+                node.put("date", shift.getDutyDate().toString());
+                node.put("label", shift.getDateLabel());
+                node.put("time", shift.getShiftTime());
+                node.put("owner", shift.getOwnerDisplayName());
+                node.put("ownerUsername", shift.getOwnerUsername());
+                node.put("status", shift.getStatus());
+                shifts.add(node);
+            }
+            dutyManagePage.set("shifts", shifts);
         }
     }
 
@@ -366,5 +455,14 @@ public class PlatformBootstrapService {
 
     private String defaultText(String value, String fallback) {
         return value == null || value.trim().isEmpty() ? fallback : value;
+    }
+
+    private ArrayNode buildCategoryArray(int total, Map<String, Integer> categoryCounter) {
+        ArrayNode arrayNode = objectMapper.createArrayNode();
+        arrayNode.add("所有服务(" + total + ")");
+        for (Map.Entry<String, Integer> entry : categoryCounter.entrySet()) {
+            arrayNode.add(entry.getKey() + "(" + entry.getValue() + ")");
+        }
+        return arrayNode;
     }
 }

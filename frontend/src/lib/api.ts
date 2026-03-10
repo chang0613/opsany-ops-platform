@@ -1,9 +1,21 @@
 import { clearSession, getToken } from './session'
 import type {
+  DutyGroup,
+  DutyShift,
   LoginResponse,
+  MenuConfigItem,
+  MenuConfigResponse,
   MessageSubscriptionPayload,
   PlatformBootstrap,
+  ProcessDefinition,
+  ProcessDefinitionDetail,
+  SaveDutyGroupPayload,
+  SaveDutyShiftPayload,
+  SaveProcessDefinitionPayload,
+  SaveWorkOrderCatalogPayload,
+  UserOption,
   UserProfile,
+  WorkOrderCatalog,
   WorkOrderDetailResponse,
   WorkOrderPayload,
   WorkOrderTransitionPayload,
@@ -62,6 +74,10 @@ export function getWorkbenchBootstrap(): Promise<PlatformBootstrap> {
   return request<PlatformBootstrap>('/api/workbench/bootstrap')
 }
 
+export function getUsers(): Promise<UserOption[]> {
+  return request<UserOption[]>('/api/workbench/users')
+}
+
 export function createWorkOrder(payload: WorkOrderPayload): Promise<{ orderNo: string; title: string; status: string }> {
   return request('/api/workbench/orders', {
     method: 'POST',
@@ -87,5 +103,89 @@ export function saveSubscriptions(payload: MessageSubscriptionPayload[]): Promis
   return request('/api/workbench/subscriptions', {
     method: 'PUT',
     body: JSON.stringify(payload),
+  })
+}
+
+export function getSubscriptions(username?: string): Promise<Array<Record<string, unknown>>> {
+  const query = username ? `?username=${encodeURIComponent(username)}` : ''
+  return request<Array<Record<string, unknown>>>(`/api/workbench/subscriptions${query}`)
+}
+
+export function saveSubscriptionsForUser(payload: MessageSubscriptionPayload[], username?: string): Promise<void> {
+  const query = username ? `?username=${encodeURIComponent(username)}` : ''
+  return request(`/api/workbench/subscriptions${query}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function getCatalogs(): Promise<WorkOrderCatalog[]> {
+  return request<WorkOrderCatalog[]>('/api/workbench/catalogs')
+}
+
+export function saveCatalog(payload: SaveWorkOrderCatalogPayload): Promise<WorkOrderCatalog> {
+  return request<WorkOrderCatalog>('/api/workbench/catalogs', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function deleteCatalog(catalogCode: string): Promise<void> {
+  return request(`/api/workbench/catalogs/${catalogCode}`, {
+    method: 'DELETE',
+  })
+}
+
+export function getProcesses(): Promise<ProcessDefinition[]> {
+  return request<ProcessDefinition[]>('/api/workbench/processes')
+}
+
+export function getProcessDetail(processCode: string): Promise<ProcessDefinitionDetail> {
+  return request<ProcessDefinitionDetail>(`/api/workbench/processes/${processCode}`)
+}
+
+export function saveProcessDefinition(payload: SaveProcessDefinitionPayload): Promise<ProcessDefinition> {
+  return request<ProcessDefinition>('/api/workbench/processes', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function getDutyGroups(): Promise<DutyGroup[]> {
+  return request<DutyGroup[]>('/api/workbench/duty/groups')
+}
+
+export function getDutyShifts(): Promise<DutyShift[]> {
+  return request<DutyShift[]>('/api/workbench/duty/shifts')
+}
+
+export function saveDutyGroup(payload: SaveDutyGroupPayload): Promise<DutyGroup> {
+  return request<DutyGroup>('/api/workbench/duty/groups', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function saveDutyShift(payload: SaveDutyShiftPayload): Promise<DutyShift> {
+  return request<DutyShift>('/api/workbench/duty/shifts', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function getMenuConfig(): Promise<MenuConfigResponse> {
+  return request<MenuConfigResponse>('/api/workbench/menu-config')
+}
+
+export function saveMenuConfig(payload: MenuConfigItem): Promise<MenuConfigItem> {
+  return request<MenuConfigItem>('/api/workbench/menu-config/menus', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function deleteMenuConfig(menuCode: string): Promise<void> {
+  return request(`/api/workbench/menu-config/menus/${menuCode}`, {
+    method: 'DELETE',
   })
 }

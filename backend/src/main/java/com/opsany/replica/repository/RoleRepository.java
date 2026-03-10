@@ -5,11 +5,21 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
+import com.opsany.replica.domain.AppRole;
+
 @Mapper
 public interface RoleRepository {
 
     @Select("select count(1) from app_roles where role_code = #{roleCode}")
     long countByRoleCode(@Param("roleCode") String roleCode);
+
+    @Select({
+        "select role_code, role_name, description, sort_no",
+        "from app_roles order by sort_no asc, role_code asc"
+    })
+    List<AppRole> findAllRoles();
 
     @Insert({
         "insert into app_roles(role_code, role_name, description, sort_no)",
