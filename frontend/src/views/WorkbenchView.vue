@@ -5,9 +5,14 @@ import { useRoute, useRouter } from 'vue-router'
 import CreateOrderModal from '../components/CreateOrderModal.vue'
 import StatusBadge from '../components/StatusBadge.vue'
 import ToggleSwitch from '../components/ToggleSwitch.vue'
-import { createWorkOrder, getWorkbenchBootstrap } from '../lib/api'
+import { createWorkOrder, getWorkbenchBootstrap, getWorkOrderDetail, saveSubscriptions, transitionWorkOrder } from '../lib/api'
 import { clearSession, getStoredUser } from '../lib/session'
-import type { PageData, PlatformBootstrap, WorkOrderPayload } from '../types/platform'
+import type {
+  PageData,
+  PlatformBootstrap,
+  WorkOrderDetailResponse,
+  WorkOrderPayload,
+} from '../types/platform'
 
 const route = useRoute()
 const router = useRouter()
@@ -16,6 +21,12 @@ const bootstrap = ref<PlatformBootstrap | null>(null)
 const loading = ref(true)
 const loadError = ref('')
 const orderModalOpen = ref(false)
+const orderDetailOpen = ref(false)
+const orderDetailLoading = ref(false)
+const orderTransitioning = ref(false)
+const selectedOrderNo = ref('')
+const orderComment = ref('')
+const orderDetail = ref<WorkOrderDetailResponse | null>(null)
 const toast = ref('')
 const currentTime = ref(formatNow())
 const storedUser = ref(getStoredUser())
@@ -86,6 +97,32 @@ const serviceOptions = computed(() => {
   return services.map((item) => item.title)
 })
 
+const orderActionOptions = computed(() => {
+  const nodeCode = orderDetail.value?.order.currentNodeCode ?? ''
+  if (nodeCode === 'TRIAGE') {
+    return [
+      { label: '受理工单', action: 'APPROVE', type: 'success' as const },
+      { label: '驳回工单', action: 'REJECT', type: 'danger' as const },
+    ]
+  }
+
+  if (nodeCode === 'ENGINEER_HANDLE') {
+    return [
+      { label: '提交确认', action: 'APPROVE', type: 'success' as const },
+      { label: '驳回工单', action: 'REJECT', type: 'danger' as const },
+    ]
+  }
+
+  if (nodeCode === 'REQUESTER_CONFIRM') {
+    return [
+      { label: '确认完成', action: 'CONFIRM', type: 'success' as const },
+      { label: '重新处理', action: 'REOPEN', type: 'warning' as const },
+    ]
+  }
+
+  return []
+})
+
 function formatNow(): string {
   return new Intl.DateTimeFormat('zh-CN', {
     year: 'numeric',
@@ -119,6 +156,10 @@ function setToggle(id: string, value: boolean): void {
   toggles[id] = value
 }
 
+function subscriptionToggleKey(index: number, channel: string): string {
+  return `subscription-${index}-${channel}`
+}
+
 function showToast(message: string): void {
   toast.value = message
   if (toastTimer) {
@@ -127,6 +168,67 @@ function showToast(message: string): void {
   toastTimer = window.setTimeout(() => {
     toast.value = ''
   }, 1800)
+}
+
+function orderPrimaryActionLabel(status: string): string {
+  if (status.includes('待受理')) {
+    return '受理'
+  }
+  if (status.includes('待确认')) {
+    return '确认'
+  }
+  if (status.includes('处理')) {
+    return '处理'
+  }
+  return '查看'
+}
+
+function historyActionLabel(action: string): string {
+  if (action === 'SUBMIT') {
+    return '提交工单'
+  }
+  if (action === 'REJECT') {
+    return '驳回'
+  }
+  if (action === 'REOPEN') {
+    return '重新处理'
+  }
+  if (action === 'CONFIRM') {
+    return '确认完成'
+  }
+  if (action === 'APPROVE') {
+    return '流转通过'
+  }
+  return action
+}
+
+function timelineTone(action: string): 'success' | 'warning' | 'danger' | 'primary' | 'info' {
+  if (action === 'REJECT') {
+    return 'danger'
+  }
+  if (action === 'REOPEN') {
+    return 'warning'
+  }
+  if (action === 'SUBMIT') {
+    return 'primary'
+  }
+  if (action === 'CONFIRM' || action === 'APPROVE') {
+    return 'success'
+  }
+  return 'info'
+}
+
+function statusTagType(status: string): 'success' | 'warning' | 'info' | 'danger' {
+  if (status.includes('完成')) {
+    return 'success'
+  }
+  if (status.includes('驳回')) {
+    return 'danger'
+  }
+  if (status.includes('待')) {
+    return 'warning'
+  }
+  return 'info'
 }
 
 async function loadBootstrap(): Promise<void> {
@@ -140,6 +242,7 @@ async function loadBootstrap(): Promise<void> {
       username: bootstrap.value.shell.user.account,
       displayName: bootstrap.value.shell.user.displayName,
     }
+    syncSubscriptionToggles()
 
     if (!bootstrap.value.pages[route.path] && route.path !== '/') {
       await router.replace('/')
@@ -175,6 +278,16 @@ function handleAction(action: string): void {
     return
   }
 
+  if (action === '全部开') {
+    void updateAllSubscriptions(true)
+    return
+  }
+
+  if (action === '全部关') {
+    void updateAllSubscriptions(false)
+    return
+  }
+
   if (action === '退出登录') {
     logout()
     return
@@ -197,6 +310,124 @@ async function submitWorkOrder(payload: WorkOrderPayload): Promise<void> {
       await router.replace('/login')
       return
     }
+    showToast(message)
+  }
+}
+
+function closeOrderDetail(): void {
+  orderDetailOpen.value = false
+  orderDetail.value = null
+  orderComment.value = ''
+  selectedOrderNo.value = ''
+}
+
+async function openOrderDetail(orderNo: string): Promise<void> {
+  selectedOrderNo.value = orderNo
+  orderComment.value = ''
+  orderDetailOpen.value = true
+  orderDetailLoading.value = true
+
+  try {
+    orderDetail.value = await getWorkOrderDetail(orderNo)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '加载工单详情失败'
+    if (message === 'UNAUTHORIZED') {
+      clearSession()
+      await router.replace('/login')
+      return
+    }
+    showToast(message)
+  } finally {
+    orderDetailLoading.value = false
+  }
+}
+
+async function submitOrderTransition(action: string): Promise<void> {
+  if (!selectedOrderNo.value) {
+    return
+  }
+
+  orderTransitioning.value = true
+  try {
+    const response = await transitionWorkOrder(selectedOrderNo.value, {
+      action,
+      comment: orderComment.value || undefined,
+    })
+    await loadBootstrap()
+    await openOrderDetail(selectedOrderNo.value)
+    orderComment.value = ''
+    showToast(`工单 ${response.orderNo} 已更新为 ${response.status}`)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '工单流转失败'
+    if (message === 'UNAUTHORIZED') {
+      clearSession()
+      await router.replace('/login')
+      return
+    }
+    showToast(message)
+  } finally {
+    orderTransitioning.value = false
+  }
+}
+
+function syncSubscriptionToggles(): void {
+  const rows = ((bootstrap.value?.pages['/msgCenter/subscriptionSetting'] as any)?.rows ?? []) as Array<Record<string, any>>
+  rows.forEach((row, index) => {
+    toggles[subscriptionToggleKey(index, 'site')] = Boolean(row.siteEnabled)
+    toggles[subscriptionToggleKey(index, 'sms')] = Boolean(row.smsEnabled)
+    toggles[subscriptionToggleKey(index, 'mail')] = Boolean(row.mailEnabled)
+    toggles[subscriptionToggleKey(index, 'wx')] = Boolean(row.wxEnabled)
+    toggles[subscriptionToggleKey(index, 'dd')] = Boolean(row.dingEnabled)
+  })
+}
+
+async function updateSubscriptionToggle(index: number, field: string, channel: string, value: boolean): Promise<void> {
+  setToggle(subscriptionToggleKey(index, channel), value)
+
+  const rows = ((bootstrap.value?.pages['/msgCenter/subscriptionSetting'] as any)?.rows ?? []) as Array<Record<string, any>>
+  const row = rows[index]
+  if (!row) {
+    return
+  }
+
+  row[field] = value
+  await persistSubscriptions(rows)
+}
+
+async function updateAllSubscriptions(value: boolean): Promise<void> {
+  const rows = ((bootstrap.value?.pages['/msgCenter/subscriptionSetting'] as any)?.rows ?? []) as Array<Record<string, any>>
+  rows.forEach((row, index) => {
+    row.siteEnabled = value
+    row.smsEnabled = value
+    row.mailEnabled = value
+    row.wxEnabled = value
+    row.dingEnabled = value
+    toggles[subscriptionToggleKey(index, 'site')] = value
+    toggles[subscriptionToggleKey(index, 'sms')] = value
+    toggles[subscriptionToggleKey(index, 'mail')] = value
+    toggles[subscriptionToggleKey(index, 'wx')] = value
+    toggles[subscriptionToggleKey(index, 'dd')] = value
+  })
+
+  await persistSubscriptions(rows)
+}
+
+async function persistSubscriptions(rows: Array<Record<string, any>>): Promise<void> {
+  try {
+    await saveSubscriptions(
+      rows.map((row) => ({
+        messageType: String(row.type ?? ''),
+        source: String(row.source ?? ''),
+        siteEnabled: Boolean(row.siteEnabled),
+        smsEnabled: Boolean(row.smsEnabled),
+        mailEnabled: Boolean(row.mailEnabled),
+        wxEnabled: Boolean(row.wxEnabled),
+        dingEnabled: Boolean(row.dingEnabled),
+      })),
+    )
+    showToast('订阅设置已保存')
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '保存订阅设置失败'
     showToast(message)
   }
 }
@@ -614,8 +845,8 @@ onBeforeUnmount(() => {
                   <td>{{ row.eta }}</td>
                   <td>{{ row.createdAt }}</td>
                   <td class="op-cell">
-                    <button class="mini-link" @click="handleAction('详情')">详情</button>
-                    <button class="mini-link" @click="handleAction('删除')">删除</button>
+                    <button class="mini-link" @click="openOrderDetail(String(row.id))">详情</button>
+                    <button class="mini-link" @click="openOrderDetail(String(row.id))">{{ orderPrimaryActionLabel(String(row.status)) }}</button>
                     <button class="mini-link" @click="handleAction('撤单')">撤单</button>
                   </td>
                 </tr>
@@ -805,8 +1036,8 @@ onBeforeUnmount(() => {
               </span>
             </div>
             <div class="toolbar-actions">
-              <button class="action-btn" @click="handleAction('全部开')">全部开</button>
-              <button class="action-btn danger" @click="handleAction('全部关')">全部关</button>
+              <button class="action-btn" @click="updateAllSubscriptions(true)">全部开</button>
+              <button class="action-btn danger" @click="updateAllSubscriptions(false)">全部关</button>
             </div>
           </div>
 
@@ -827,11 +1058,11 @@ onBeforeUnmount(() => {
                 <tr v-for="(row, index) in page.rows || []" :key="row.type">
                   <td>{{ row.type }}</td>
                   <td>{{ row.source }}</td>
-                  <td><ToggleSwitch :model-value="toggleValue(`subscription-${index}-site`)" @update:model-value="setToggle(`subscription-${index}-site`, $event)" /></td>
-                  <td><ToggleSwitch :model-value="toggleValue(`subscription-${index}-sms`)" @update:model-value="setToggle(`subscription-${index}-sms`, $event)" /></td>
-                  <td><ToggleSwitch :model-value="toggleValue(`subscription-${index}-mail`)" @update:model-value="setToggle(`subscription-${index}-mail`, $event)" /></td>
-                  <td><ToggleSwitch :model-value="toggleValue(`subscription-${index}-wx`)" @update:model-value="setToggle(`subscription-${index}-wx`, $event)" /></td>
-                  <td><ToggleSwitch :model-value="toggleValue(`subscription-${index}-dd`)" @update:model-value="setToggle(`subscription-${index}-dd`, $event)" /></td>
+                  <td><ToggleSwitch :model-value="toggleValue(subscriptionToggleKey(Number(index), 'site'))" @update:model-value="updateSubscriptionToggle(Number(index), 'siteEnabled', 'site', $event)" /></td>
+                  <td><ToggleSwitch :model-value="toggleValue(subscriptionToggleKey(Number(index), 'sms'))" @update:model-value="updateSubscriptionToggle(Number(index), 'smsEnabled', 'sms', $event)" /></td>
+                  <td><ToggleSwitch :model-value="toggleValue(subscriptionToggleKey(Number(index), 'mail'))" @update:model-value="updateSubscriptionToggle(Number(index), 'mailEnabled', 'mail', $event)" /></td>
+                  <td><ToggleSwitch :model-value="toggleValue(subscriptionToggleKey(Number(index), 'wx'))" @update:model-value="updateSubscriptionToggle(Number(index), 'wxEnabled', 'wx', $event)" /></td>
+                  <td><ToggleSwitch :model-value="toggleValue(subscriptionToggleKey(Number(index), 'dd'))" @update:model-value="updateSubscriptionToggle(Number(index), 'dingEnabled', 'dd', $event)" /></td>
                 </tr>
               </tbody>
             </table>
@@ -1112,6 +1343,97 @@ onBeforeUnmount(() => {
     </div>
 
     <div v-if="toast" class="toast">{{ toast }}</div>
+
+    <el-drawer
+      v-model="orderDetailOpen"
+      class="order-detail-drawer"
+      direction="rtl"
+      size="560px"
+      @close="closeOrderDetail"
+    >
+      <template #header>
+        <div class="order-detail-header">
+          <div>
+            <h3>{{ orderDetail?.order.title ?? '工单详情' }}</h3>
+            <p>{{ orderDetail?.order.orderNo ?? selectedOrderNo }}</p>
+          </div>
+          <el-tag
+            v-if="orderDetail"
+            :type="statusTagType(orderDetail.order.status)"
+            effect="light"
+            round
+          >
+            {{ orderDetail.order.status }}
+          </el-tag>
+        </div>
+      </template>
+
+      <div v-if="orderDetailLoading" class="drawer-loading">
+        <el-skeleton :rows="8" animated />
+      </div>
+
+      <template v-else-if="orderDetail">
+        <div class="drawer-section">
+          <el-descriptions :column="2" border>
+            <el-descriptions-item label="工单单号">{{ orderDetail.order.orderNo }}</el-descriptions-item>
+            <el-descriptions-item label="工单类型">{{ orderDetail.order.type }}</el-descriptions-item>
+            <el-descriptions-item label="当前节点">{{ orderDetail.order.currentNodeName }}</el-descriptions-item>
+            <el-descriptions-item label="当前处理人">{{ orderDetail.order.currentHandler }}</el-descriptions-item>
+            <el-descriptions-item label="优先级">{{ orderDetail.order.priority }}</el-descriptions-item>
+            <el-descriptions-item label="服务名称">{{ orderDetail.order.serviceName }}</el-descriptions-item>
+            <el-descriptions-item label="创建人">{{ orderDetail.order.creatorDisplayName }}</el-descriptions-item>
+            <el-descriptions-item label="创建时间">{{ orderDetail.order.createdAt }}</el-descriptions-item>
+            <el-descriptions-item label="描述" :span="2">{{ orderDetail.order.description }}</el-descriptions-item>
+          </el-descriptions>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-section-title">处理意见</div>
+          <el-input
+            v-model="orderComment"
+            type="textarea"
+            :rows="4"
+            placeholder="可选，记录本次受理、处理或确认意见"
+          />
+          <p v-if="!orderActionOptions.length" class="drawer-tip">当前节点已到结束态，如需继续处理可在后端流程定义中扩展节点。</p>
+        </div>
+
+        <div class="drawer-section">
+          <div class="drawer-section-title">流转记录</div>
+          <el-timeline>
+            <el-timeline-item
+              v-for="item in orderDetail.histories"
+              :key="item.id"
+              :timestamp="item.createdAt"
+              :type="timelineTone(item.action)"
+            >
+              <div class="history-card">
+                <div class="history-title">{{ item.operatorDisplayName }} · {{ historyActionLabel(item.action) }}</div>
+                <div class="history-status">{{ item.fromStatus || '新建' }} -> {{ item.toStatus }}</div>
+                <div v-if="item.comment" class="history-comment">{{ item.comment }}</div>
+              </div>
+            </el-timeline-item>
+          </el-timeline>
+        </div>
+      </template>
+
+      <div v-else class="drawer-empty">未获取到工单详情。</div>
+
+      <template #footer>
+        <div class="order-detail-footer">
+          <el-button @click="closeOrderDetail">关闭</el-button>
+          <el-button
+            v-for="action in orderActionOptions"
+            :key="action.action"
+            :type="action.type"
+            :loading="orderTransitioning"
+            @click="submitOrderTransition(action.action)"
+          >
+            {{ action.label }}
+          </el-button>
+        </div>
+      </template>
+    </el-drawer>
 
     <CreateOrderModal
       :open="orderModalOpen"

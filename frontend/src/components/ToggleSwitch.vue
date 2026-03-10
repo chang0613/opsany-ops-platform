@@ -7,14 +7,17 @@ const emit = defineEmits<{
   'update:modelValue': [value: boolean]
 }>()
 
-function toggle() {
-  emit('update:modelValue', !props.modelValue)
+function toggle(value: string | number | boolean) {
+  emit('update:modelValue', Boolean(value))
 }
 </script>
 
 <template>
-  <button class="toggle-switch" :class="{ on: modelValue }" @click="toggle">
-    <span class="toggle-handle"></span>
-    <span class="toggle-text">{{ modelValue ? '开' : '关' }}</span>
-  </button>
+  <el-switch
+    :model-value="modelValue"
+    inline-prompt
+    active-text="开"
+    inactive-text="关"
+    @change="toggle"
+  />
 </template>

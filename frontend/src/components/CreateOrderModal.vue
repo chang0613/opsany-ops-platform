@@ -42,61 +42,66 @@ function submit() {
 </script>
 
 <template>
-  <Teleport to="body">
-    <div v-if="open" class="modal-mask" @click.self="emit('close')">
-      <div class="modal-card">
-        <div class="modal-header">
-          <div>
-            <h3>提交工单</h3>
-            <p>这一步会写入 MySQL，并通过 RabbitMQ 触发任务和消息。</p>
-          </div>
-          <button class="icon-close" @click="emit('close')">×</button>
-        </div>
-
-        <div class="modal-body">
-          <label class="form-field">
-            <span>工单标题</span>
-            <input v-model="form.title" class="text-input" placeholder="请输入工单标题" />
-          </label>
-
-          <div class="form-grid">
-            <label class="form-field">
-              <span>工单类型</span>
-              <select v-model="form.type" class="select-input">
-                <option>请求管理</option>
-                <option>变更管理</option>
-                <option>事件管理</option>
-              </select>
-            </label>
-
-            <label class="form-field">
-              <span>优先级</span>
-              <select v-model="form.priority" class="select-input">
-                <option>高</option>
-                <option>中</option>
-                <option>低</option>
-              </select>
-            </label>
-          </div>
-
-          <label class="form-field">
-            <span>关联服务</span>
-            <select v-model="form.serviceName" class="select-input">
-              <option v-for="item in services" :key="item" :value="item">{{ item }}</option>
-            </select>
-          </label>
-
-          <label class="form-field">
-            <span>工单说明</span>
-            <textarea v-model="form.description" class="text-area" placeholder="补充工单背景、目标和实施说明"></textarea>
-          </label>
-        </div>
-
-        <div class="modal-footer">
-          <button class="action-btn" @click="emit('close')">取消</button>
-          <button class="action-btn primary" :disabled="!form.title.trim()" @click="submit">提交工单</button>
+  <el-dialog
+    :model-value="open"
+    width="640px"
+    destroy-on-close
+    class="order-dialog"
+    @close="emit('close')"
+  >
+    <template #header>
+      <div class="modal-header">
+        <div>
+          <h3>提交工单</h3>
+          <p>这一步会写入 MySQL，并通过 RabbitMQ 触发任务和消息。</p>
         </div>
       </div>
-    </div>
-  </Teleport>
+    </template>
+
+    <el-form label-position="top" class="modal-body">
+      <el-form-item label="工单标题">
+        <el-input v-model="form.title" placeholder="请输入工单标题" />
+      </el-form-item>
+
+      <div class="form-grid">
+        <el-form-item label="工单类型">
+          <el-select v-model="form.type" class="full-width">
+            <el-option label="请求管理" value="请求管理" />
+            <el-option label="变更管理" value="变更管理" />
+            <el-option label="事件管理" value="事件管理" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="优先级">
+          <el-select v-model="form.priority" class="full-width">
+            <el-option label="高" value="高" />
+            <el-option label="中" value="中" />
+            <el-option label="低" value="低" />
+          </el-select>
+        </el-form-item>
+      </div>
+
+      <el-form-item label="关联服务">
+        <el-select v-model="form.serviceName" class="full-width">
+          <el-option v-for="item in services" :key="item" :label="item" :value="item" />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="工单说明">
+        <el-input
+          v-model="form.description"
+          type="textarea"
+          :rows="4"
+          placeholder="补充工单背景、目标和实施说明"
+        />
+      </el-form-item>
+    </el-form>
+
+    <template #footer>
+      <div class="modal-footer">
+        <el-button @click="emit('close')">取消</el-button>
+        <el-button type="success" :disabled="!form.title.trim()" @click="submit">提交工单</el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>

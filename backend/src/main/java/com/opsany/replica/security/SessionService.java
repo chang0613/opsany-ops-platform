@@ -16,7 +16,6 @@ import org.springframework.util.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opsany.replica.config.AppProperties;
-import com.opsany.replica.domain.AppUser;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +32,8 @@ public class SessionService {
     private final AppProperties appProperties;
     private final Map<String, InMemorySession> inMemorySessions = new ConcurrentHashMap<String, InMemorySession>();
 
-    public String createSession(AppUser user) {
+    public String createSession(SessionUser sessionUser) {
         String token = UUID.randomUUID().toString().replace("-", "");
-        SessionUser sessionUser = new SessionUser(user.getId(), user.getUsername(), user.getDisplayName());
         String payload = serialize(sessionUser);
 
         if (shouldUseRedis()) {

@@ -136,11 +136,8 @@ body {
 .login-submit {
   width: 100%;
   margin-top: 22px;
-  padding: 12px 16px;
+  min-height: 46px;
   border-radius: 12px;
-  color: #fff;
-  border: 0;
-  background: linear-gradient(135deg, #0ab55f, #088f4d);
   font-size: 15px;
   font-weight: 700;
 }
@@ -150,10 +147,12 @@ body {
   cursor: wait;
 }
 
-.login-error {
-  margin: 14px 0 0;
-  color: #cf4e40;
-  font-size: 13px;
+.login-alert {
+  margin-top: 14px;
+}
+
+.full-width {
+  width: 100%;
 }
 
 .modal-mask {
@@ -202,6 +201,118 @@ body {
   border-bottom: 0;
   border-top: 1px solid #ebeff4;
   justify-content: flex-end;
+}
+
+.order-dialog .el-dialog__header {
+  margin-right: 0;
+  padding: 20px 22px 0;
+}
+
+.order-dialog .el-dialog__body {
+  padding: 8px 22px 8px;
+}
+
+.order-dialog .el-dialog__footer {
+  padding: 0 22px 20px;
+}
+
+.order-dialog .el-textarea__inner,
+.order-dialog .el-input__wrapper,
+.login-card .el-input__wrapper,
+.login-card .el-select__wrapper {
+  border-radius: 10px;
+}
+
+.order-dialog .el-button--success,
+.login-submit.el-button--success {
+  background: linear-gradient(135deg, #0ab55f, #088f4d);
+  border-color: #088f4d;
+}
+
+.order-detail-drawer .el-drawer__header {
+  margin-bottom: 0;
+  padding: 22px 24px 0;
+}
+
+.order-detail-drawer .el-drawer__body {
+  padding: 16px 24px;
+}
+
+.order-detail-drawer .el-drawer__footer {
+  padding: 0 24px 22px;
+}
+
+.order-detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.order-detail-header h3 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.order-detail-header p {
+  margin: 8px 0 0;
+  color: #73808d;
+  font-size: 13px;
+}
+
+.drawer-section {
+  margin-top: 18px;
+}
+
+.drawer-section:first-child {
+  margin-top: 0;
+}
+
+.drawer-section-title {
+  margin-bottom: 10px;
+  color: #2b3540;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.drawer-loading,
+.drawer-empty {
+  padding: 8px 0 20px;
+}
+
+.drawer-empty,
+.drawer-tip {
+  color: #6a7580;
+  font-size: 13px;
+}
+
+.drawer-tip {
+  margin: 10px 0 0;
+}
+
+.history-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.history-title {
+  color: #26323c;
+  font-weight: 700;
+}
+
+.history-status,
+.history-comment {
+  color: #66717d;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.order-detail-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  width: 100%;
 }
 
 .icon-close {

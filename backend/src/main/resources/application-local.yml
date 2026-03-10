@@ -7,15 +7,17 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: update
   rabbitmq:
     dynamic: false
     listener:
       simple:
         auto-startup: false
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    jdbc-type-for-null: 'NULL'
+  type-aliases-package: com.opsany.replica.domain
 
 app:
   session:

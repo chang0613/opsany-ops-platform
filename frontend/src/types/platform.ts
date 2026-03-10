@@ -18,6 +18,61 @@ export interface WorkOrderPayload {
   priority?: string
 }
 
+export interface WorkOrderTransitionPayload {
+  action: string
+  comment?: string
+}
+
+export interface WorkOrderDetail {
+  id: number
+  orderNo: string
+  title: string
+  type: string
+  creatorUsername: string
+  creatorDisplayName: string
+  progress: string
+  status: string
+  priority: string
+  serviceName: string
+  description: string
+  estimatedAt: string
+  createdAt: string
+  updatedAt: string
+  processCode: string
+  currentNodeCode: string
+  currentNodeName: string
+  currentHandler: string
+}
+
+export interface WorkOrderHistoryEntry {
+  id: number
+  orderNo: string
+  action: string
+  fromStatus: string | null
+  toStatus: string
+  fromNodeCode: string | null
+  toNodeCode: string
+  operatorUsername: string
+  operatorDisplayName: string
+  comment: string | null
+  createdAt: string
+}
+
+export interface WorkOrderDetailResponse {
+  order: WorkOrderDetail
+  histories: WorkOrderHistoryEntry[]
+}
+
+export interface MessageSubscriptionPayload {
+  messageType: string
+  source: string
+  siteEnabled: boolean
+  smsEnabled: boolean
+  mailEnabled: boolean
+  wxEnabled: boolean
+  dingEnabled: boolean
+}
+
 export interface ShellConfig {
   productName: string
   platformButton: string

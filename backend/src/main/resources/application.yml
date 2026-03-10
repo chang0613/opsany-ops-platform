@@ -12,16 +12,6 @@ spring:
     database: ${REDIS_DATABASE:9}
     password: ${REDIS_PASSWORD:redis-22043}
     timeout: 5000
-  jpa:
-    open-in-view: false
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    properties:
-      hibernate:
-        format_sql: true
-        jdbc:
-          time_zone: Asia/Shanghai
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
     port: ${RABBITMQ_PORT:5672}
@@ -36,6 +26,11 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    jdbc-type-for-null: 'NULL'
+  type-aliases-package: com.opsany.replica.domain
 
 server:
   port: ${SERVER_PORT:8080}

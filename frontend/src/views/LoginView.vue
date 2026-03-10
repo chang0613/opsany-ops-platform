@@ -54,19 +54,19 @@ async function submit() {
 
         <label class="form-field">
           <span>用户名</span>
-          <input v-model="username" class="text-input" placeholder="请输入用户名" />
+          <el-input v-model="username" size="large" placeholder="请输入用户名" />
         </label>
 
         <label class="form-field">
           <span>密码</span>
-          <input v-model="password" class="text-input" type="password" placeholder="请输入密码" />
+          <el-input v-model="password" size="large" type="password" show-password placeholder="请输入密码" />
         </label>
 
-        <p v-if="errorMessage" class="login-error">{{ errorMessage }}</p>
+        <el-alert v-if="errorMessage" :closable="false" type="error" class="login-alert" :title="errorMessage" />
 
-        <button class="login-submit" :disabled="submitting">
+        <el-button class="login-submit" type="success" size="large" native-type="submit" :loading="submitting">
           {{ submitting ? '登录中...' : '立即登录' }}
-        </button>
+        </el-button>
       </form>
     </section>
   </main>

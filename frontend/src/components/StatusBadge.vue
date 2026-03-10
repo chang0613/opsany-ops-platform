@@ -13,12 +13,12 @@ const tone = computed(() => {
     return 'warning'
   }
   if (props.label.includes('未') || props.label.includes('暂停') || props.label.includes('关闭')) {
-    return 'muted'
+    return 'info'
   }
-  return 'pink'
+  return 'danger'
 })
 </script>
 
 <template>
-  <span class="status-badge" :class="tone">{{ label }}</span>
+  <el-tag :type="tone" effect="light" round>{{ label }}</el-tag>
 </template>
