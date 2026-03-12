@@ -320,3 +320,4 @@ export interface PlatformBootstrap {
   overviewData: Record<string, unknown>
   pages: Record<string, PageData>
 }
+

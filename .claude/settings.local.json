@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__ide__getDiagnostics",
+      "Bash(./mvnw compile:*)",
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(taskkill:*)",
+      "Bash(mvn spring-boot:run:*)",
+      "Bash(netstat -ano)",
+      "Bash(python3:*)",
+      "Bash(xargs grep:*)",
+      "Bash(pkill:*)",
+      "Bash(fuser:*)",
+      "Bash(ss:*)",
+      "Bash(cmd.exe:*)"
+    ]
+  }
+}

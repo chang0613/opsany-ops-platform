@@ -232,3 +232,4 @@ export function savePlatformPageState(payload: PlatformPageStatePayload): Promis
     body: JSON.stringify(payload),
   })
 }
+

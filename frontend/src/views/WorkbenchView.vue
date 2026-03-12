@@ -192,7 +192,6 @@ const navigationItemForm = reactive<SaveNavigationItemPayload>({
   sortNo: 1,
   enabled: true,
 })
-
 let clockTimer: number | undefined
 let toastTimer: number | undefined
 
@@ -1263,16 +1262,18 @@ onBeforeUnmount(() => {
         <section v-for="group in menuGroups" :key="group.group" class="menu-group">
           <div v-if="group.group" class="menu-group-title">{{ group.group }}</div>
           <div class="menu-items">
-            <button
-              v-for="item in group.items"
-              :key="item.route"
-              class="menu-item"
-              :class="{ active: isActiveRoute(item.route) }"
-              @click="navigateTo(item.route)"
-            >
-              <span class="menu-icon">{{ item.label.slice(0, 1) }}</span>
-              <span>{{ item.label }}</span>
-            </button>
+            <template v-for="item in group.items" :key="item.route || item.label">
+              <div v-if="!item.route" class="menu-subgroup-title">{{ item.label }}</div>
+              <button
+                v-else
+                class="menu-item"
+                :class="{ active: isActiveRoute(item.route) }"
+                @click="navigateTo(item.route)"
+              >
+                <span class="menu-icon">{{ item.label.slice(0, 1) }}</span>
+                <span>{{ item.label }}</span>
+              </button>
+            </template>
           </div>
         </section>
       </aside>
@@ -2211,7 +2212,6 @@ onBeforeUnmount(() => {
             </div>
           </article>
         </section>
-
         <PlatformModulePage
           v-else-if="page.kind === 'platformOverview' || page.kind === 'platformModule'"
           :page="page"

@@ -1341,6 +1341,685 @@
       "intro": "设置导航目录和菜单，将显示在所有平台中。",
       "kind": "navigation"
     },
+    "/monitor/serviceProbe": {
+      "title": "全链路服务探测",
+      "breadcrumb": ["监控管理", "监控数据采集", "全链路服务探测"],
+      "intro": "通过HTTP/DNS/TCP等协议对分布式服务进行全链路探测，实时掌握可用性和响应时间，支持自定义探测频率、超时阈值和告警联动，提供SLA统计和多维度告警分析。",
+      "kind": "platformModule",
+      "stats": [
+        { "label": "探测任务总数", "value": "0", "hint": "HTTP / DNS / TCP" },
+        { "label": "探测正常", "value": "0", "hint": "最近一次成功" },
+        { "label": "探测异常", "value": "0", "hint": "需关注处理" },
+        { "label": "平均可用率", "value": "—", "hint": "近7日统计" }
+      ],
+      "tables": [
+        {
+          "key": "service_probes",
+          "title": "探测任务列表",
+          "subtitle": "展示所有服务探测任务及最近探测结果",
+          "readOnly": true,
+          "columns": [
+            { "key": "name", "label": "探测名称" },
+            { "key": "probeType", "label": "探测类型" },
+            { "key": "targetUrl", "label": "探测目标" },
+            { "key": "protocol", "label": "协议" },
+            { "key": "intervalSeconds", "label": "周期(s)" },
+            { "key": "timeoutMs", "label": "超时(ms)" },
+            { "key": "status", "label": "状态" },
+            { "key": "lastResult", "label": "最近结果" },
+            { "key": "description", "label": "说明" }
+          ],
+          "rows": []
+        }
+      ]
+    },
+    "/monitor/infraMetrics": {
+      "title": "硬件与基础设施采集",
+      "breadcrumb": ["监控管理", "监控数据采集", "硬件与基础设施采集"],
+      "intro": "通过IPMI/Redfish/SNMP采集服务器硬件CPU温度、风扇转速、磁盘S.M.A.R.T.、存储设备和UPS指标，支持硬件资产自动发现和故障预测（压缩算法），并通过Agent/SSH采集主机CPU、内存、磁盘、网络等基础设施指标。",
+      "kind": "platformModule",
+      "stats": [
+        { "label": "纳管服务器", "value": "24", "hint": "物理机 + 虚拟机" },
+        { "label": "IPMI在线", "value": "12", "hint": "硬件带外采集" },
+        { "label": "Agent在线", "value": "20", "hint": "操作系统指标" },
+        { "label": "采集异常", "value": "2", "hint": "需检查排查" }
+      ],
+      "tables": [
+        {
+          "key": "infra_servers",
+          "title": "服务器采集列表",
+          "readOnly": true,
+          "columns": [
+            { "key": "hostname", "label": "主机名" },
+            { "key": "ip", "label": "管理IP" },
+            { "key": "model", "label": "型号" },
+            { "key": "cpuUsage", "label": "CPU%" },
+            { "key": "memUsage", "label": "内存%" },
+            { "key": "diskUsage", "label": "磁盘%" },
+            { "key": "cpuTemp", "label": "CPU温度(℃)" },
+            { "key": "collectMethod", "label": "采集方式" },
+            { "key": "status", "label": "状态" }
+          ],
+          "rows": [
+            { "hostname": "prod-app-01", "ip": "10.10.1.11", "model": "Dell R740", "cpuUsage": "34%", "memUsage": "58%", "diskUsage": "42%", "cpuTemp": "48", "collectMethod": "Agent+IPMI", "status": "采集正常" },
+            { "hostname": "prod-app-02", "ip": "10.10.1.12", "model": "Dell R740", "cpuUsage": "41%", "memUsage": "62%", "diskUsage": "45%", "cpuTemp": "51", "collectMethod": "Agent+IPMI", "status": "采集正常" },
+            { "hostname": "prod-db-01", "ip": "10.10.2.11", "model": "HPE DL380", "cpuUsage": "67%", "memUsage": "78%", "diskUsage": "71%", "cpuTemp": "55", "collectMethod": "Agent+IPMI", "status": "采集正常" },
+            { "hostname": "prod-db-02", "ip": "10.10.2.12", "model": "HPE DL380", "cpuUsage": "12%", "memUsage": "44%", "diskUsage": "68%", "cpuTemp": "47", "collectMethod": "Agent+IPMI", "status": "采集正常" },
+            { "hostname": "prod-k8s-node01", "ip": "10.10.3.11", "model": "Lenovo SR650", "cpuUsage": "55%", "memUsage": "72%", "diskUsage": "38%", "cpuTemp": "52", "collectMethod": "Agent", "status": "采集正常" },
+            { "hostname": "prod-k8s-node02", "ip": "10.10.3.12", "model": "Lenovo SR650", "cpuUsage": "48%", "memUsage": "69%", "diskUsage": "41%", "cpuTemp": "50", "collectMethod": "Agent", "status": "采集正常" },
+            { "hostname": "test-vm-01", "ip": "192.168.10.21", "model": "VM(KVM)", "cpuUsage": "8%", "memUsage": "31%", "diskUsage": "22%", "cpuTemp": "—", "collectMethod": "Agent", "status": "采集正常" },
+            { "hostname": "bastion-01", "ip": "10.0.0.10", "model": "VM(VMware)", "cpuUsage": "5%", "memUsage": "28%", "diskUsage": "19%", "cpuTemp": "—", "collectMethod": "Agent", "status": "采集异常" }
+          ]
+        }
+      ]
+    },
+    "/monitor/containerMetrics": {
+      "title": "容器与K8s采集",
+      "breadcrumb": ["监控管理", "监控数据采集", "容器与K8s采集"],
+      "intro": "通过实时采集容器CPU/内存/网络指标，结合Kubernetes自动发现Pod并展示资源使用和健康状态，汇聚集群资源水位、事件和日志，支持Prometheus Operator集成和自动负载告警。",
+      "kind": "platformModule",
+      "stats": [
+        { "label": "K8s集群", "value": "3", "hint": "生产/测试/预发" },
+        { "label": "Node节点", "value": "18", "hint": "工作节点总数" },
+        { "label": "运行Pod", "value": "142", "hint": "Running状态" },
+        { "label": "告警Pod", "value": "5", "hint": "OOMKilled/重启" }
+      ],
+      "tables": [
+        {
+          "key": "k8s_clusters",
+          "title": "集群资源概览",
+          "readOnly": true,
+          "columns": [
+            { "key": "cluster", "label": "集群名称" },
+            { "key": "nodes", "label": "节点数" },
+            { "key": "pods", "label": "Pod数" },
+            { "key": "cpuRequest", "label": "CPU申请" },
+            { "key": "memRequest", "label": "内存申请" },
+            { "key": "cpuUsage", "label": "CPU使用率" },
+            { "key": "memUsage", "label": "内存使用率" },
+            { "key": "status", "label": "集群状态" }
+          ],
+          "rows": [
+            { "cluster": "prod-k8s-cluster", "nodes": "12", "pods": "98", "cpuRequest": "78%", "memRequest": "72%", "cpuUsage": "64%", "memUsage": "68%", "status": "健康" },
+            { "cluster": "test-k8s-cluster", "nodes": "4", "pods": "31", "cpuRequest": "45%", "memRequest": "51%", "cpuUsage": "38%", "memUsage": "44%", "status": "健康" },
+            { "cluster": "staging-k8s-cluster", "nodes": "2", "pods": "13", "cpuRequest": "32%", "memRequest": "38%", "cpuUsage": "25%", "memUsage": "34%", "status": "健康" }
+          ]
+        },
+        {
+          "key": "abnormal_pods",
+          "title": "异常Pod列表",
+          "subtitle": "展示非Running状态或频繁重启的Pod",
+          "readOnly": true,
+          "columns": [
+            { "key": "namespace", "label": "命名空间" },
+            { "key": "podName", "label": "Pod名称" },
+            { "key": "status", "label": "状态" },
+            { "key": "restarts", "label": "重启次数" },
+            { "key": "cpuUsage", "label": "CPU使用" },
+            { "key": "memUsage", "label": "内存使用" },
+            { "key": "reason", "label": "异常原因" }
+          ],
+          "rows": [
+            { "namespace": "production", "podName": "order-svc-7d8b9-xk2p9", "status": "OOMKilled", "restarts": "8", "cpuUsage": "120m", "memUsage": "512Mi", "reason": "内存超出Limit" },
+            { "namespace": "production", "podName": "payment-svc-5c6b7-lm3q1", "status": "CrashLoopBackOff", "restarts": "6", "cpuUsage": "45m", "memUsage": "128Mi", "reason": "应用启动失败" },
+            { "namespace": "test", "podName": "mock-server-9f4d2-np8w3", "status": "Pending", "restarts": "0", "cpuUsage": "—", "memUsage": "—", "reason": "资源不足调度" },
+            { "namespace": "monitoring", "podName": "prometheus-0", "status": "Running", "restarts": "3", "cpuUsage": "280m", "memUsage": "2.1Gi", "reason": "内存压力重启" },
+            { "namespace": "production", "podName": "cache-svc-3b2a1-jk9s4", "status": "Terminating", "restarts": "0", "cpuUsage": "—", "memUsage": "—", "reason": "优雅停机超时" }
+          ]
+        }
+      ]
+    },
+    "/monitor/middlewareMetrics": {
+      "title": "数据库与中间件采集",
+      "breadcrumb": ["监控管理", "监控数据采集", "数据库与中间件采集"],
+      "intro": "通过JDBC/JMX/API采集MySQL、Redis、Kafka、Nginx及Elasticsearch、RabbitMQ、ZooKeeper等常用中间件的关键性能指标，支持多实例管理、SQL性能分析和消费延迟告警。",
+      "kind": "platformModule",
+      "stats": [
+        { "label": "MySQL实例", "value": "8", "hint": "主从共计" },
+        { "label": "Redis实例", "value": "6", "hint": "含集群模式" },
+        { "label": "Kafka集群", "value": "2", "hint": "生产/测试" },
+        { "label": "Nginx实例", "value": "12", "hint": "含LB节点" }
+      ],
+      "tables": [
+        {
+          "key": "middleware_list",
+          "title": "中间件采集列表",
+          "readOnly": true,
+          "columns": [
+            { "key": "name", "label": "实例名称" },
+            { "key": "type", "label": "类型" },
+            { "key": "host", "label": "地址" },
+            { "key": "version", "label": "版本" },
+            { "key": "collectMethod", "label": "采集方式" },
+            { "key": "interval", "label": "采集周期" },
+            { "key": "status", "label": "状态" }
+          ],
+          "rows": [
+            { "name": "mysql-master-01", "type": "MySQL", "host": "10.10.2.11:3306", "version": "8.0.32", "collectMethod": "JDBC", "interval": "60s", "status": "采集正常" },
+            { "name": "mysql-slave-01", "type": "MySQL", "host": "10.10.2.12:3306", "version": "8.0.32", "collectMethod": "JDBC", "interval": "60s", "status": "采集正常" },
+            { "name": "redis-primary", "type": "Redis", "host": "10.10.4.11:6379", "version": "7.0.8", "collectMethod": "INFO", "interval": "30s", "status": "采集正常" },
+            { "name": "redis-replica", "type": "Redis", "host": "10.10.4.12:6379", "version": "7.0.8", "collectMethod": "INFO", "interval": "30s", "status": "采集正常" },
+            { "name": "kafka-prod-cluster", "type": "Kafka", "host": "10.10.5.11:9092", "version": "3.4.0", "collectMethod": "JMX", "interval": "60s", "status": "采集正常" },
+            { "name": "kafka-test-cluster", "type": "Kafka", "host": "10.10.5.21:9092", "version": "3.4.0", "collectMethod": "JMX", "interval": "60s", "status": "采集异常" },
+            { "name": "nginx-lb-01", "type": "Nginx", "host": "10.10.1.1:80", "version": "1.24.0", "collectMethod": "stub_status", "interval": "30s", "status": "采集正常" },
+            { "name": "elasticsearch-01", "type": "Elasticsearch", "host": "10.10.6.11:9200", "version": "8.7.0", "collectMethod": "REST API", "interval": "60s", "status": "采集正常" }
+          ]
+        },
+        {
+          "key": "middleware_metrics",
+          "title": "关键性能指标",
+          "subtitle": "近期各中间件关键指标快照",
+          "readOnly": true,
+          "columns": [
+            { "key": "instance", "label": "实例" },
+            { "key": "metric", "label": "指标" },
+            { "key": "value", "label": "当前值" },
+            { "key": "threshold", "label": "告警阈值" },
+            { "key": "status", "label": "状态" }
+          ],
+          "rows": [
+            { "instance": "mysql-master-01", "metric": "QPS", "value": "3421", "threshold": "5000", "status": "正常" },
+            { "instance": "mysql-master-01", "metric": "慢查询/min", "value": "12", "threshold": "100", "status": "正常" },
+            { "instance": "redis-primary", "metric": "内存使用率", "value": "72%", "threshold": "80%", "status": "正常" },
+            { "instance": "redis-primary", "metric": "命中率", "value": "98.6%", "threshold": "90%", "status": "正常" },
+            { "instance": "kafka-prod-cluster", "metric": "消费Lag", "value": "1243", "threshold": "10000", "status": "正常" },
+            { "instance": "kafka-test-cluster", "metric": "消费Lag", "value": "—", "threshold": "10000", "status": "异常" },
+            { "instance": "nginx-lb-01", "metric": "QPS", "value": "8342", "threshold": "20000", "status": "正常" },
+            { "instance": "nginx-lb-01", "metric": "错误率", "value": "0.3%", "threshold": "5%", "status": "正常" }
+          ]
+        }
+      ]
+    },
+    "/monitor/logCollection": {
+      "title": "日志采集管理",
+      "breadcrumb": ["监控管理", "监控数据采集", "日志采集管理"],
+      "intro": "整合多源日志（File/Syslog/Docker）统一采集汇聚为结构化事件，支持字段提取（正则/Grok）、编码自动识别、采集过滤、限速、容错重发，并提供采集任务的全生命周期状态监控与告警联动。",
+      "kind": "platformModule",
+      "stats": [
+        { "label": "采集任务", "value": "0", "hint": "File / Syslog / Docker" },
+        { "label": "运行中", "value": "0", "hint": "正常采集" },
+        { "label": "日均日志量", "value": "—", "hint": "近7日平均" },
+        { "label": "异常任务", "value": "0", "hint": "需检查" }
+      ],
+      "tables": [
+        {
+          "key": "log_collectors",
+          "title": "采集任务列表",
+          "subtitle": "展示所有日志采集任务及运行状态",
+          "readOnly": true,
+          "columns": [
+            { "key": "name", "label": "任务名称" },
+            { "key": "sourceType", "label": "来源类型" },
+            { "key": "sourcePath", "label": "采集路径" },
+            { "key": "targetHost", "label": "目标端" },
+            { "key": "encoding", "label": "编码" },
+            { "key": "linesCollected", "label": "累计采集行数" },
+            { "key": "status", "label": "状态" },
+            { "key": "description", "label": "说明" }
+          ],
+          "rows": []
+        }
+      ]
+    },
+    "/monitor/dataStorage": {
+      "title": "告警历史与时序数据",
+      "breadcrumb": ["监控管理", "数据存储与处理", "告警历史与时序数据"],
+      "intro": "持久化存储所有监控指标的时序数据和告警历史记录，提供高并发写入与快速查询能力，支持多级存储（热-温-冷）自动迁移数据，并提供存储容量统计与预测预警。",
+      "kind": "platformModule",
+      "stats": [
+        { "label": "时序存储容量", "value": "4.6TB", "hint": "当前已用空间" },
+        { "label": "当日写入", "value": "1.2亿", "hint": "数据点/天" },
+        { "label": "查询延迟P99", "value": "28ms", "hint": "近1小时" },
+        { "label": "数据保留", "value": "90天", "hint": "热存储策略" }
+      ],
+      "tables": [
+        {
+          "key": "storage_nodes",
+          "title": "存储节点状态",
+          "readOnly": true,
+          "columns": [
+            { "key": "node", "label": "节点" },
+            { "key": "role", "label": "角色" },
+            { "key": "used", "label": "已用" },
+            { "key": "total", "label": "总量" },
+            { "key": "writeRate", "label": "写入速率" },
+            { "key": "queryRate", "label": "查询速率" },
+            { "key": "status", "label": "状态" }
+          ],
+          "rows": [
+            { "node": "tsdb-node-01", "role": "主节点", "used": "1.8TB", "total": "4TB", "writeRate": "42K/s", "queryRate": "830/s", "status": "健康" },
+            { "node": "tsdb-node-02", "role": "副本", "used": "1.8TB", "total": "4TB", "writeRate": "41K/s", "queryRate": "210/s", "status": "健康" },
+            { "node": "tsdb-node-03", "role": "副本", "used": "1.0TB", "total": "4TB", "writeRate": "38K/s", "queryRate": "180/s", "status": "健康" }
+          ]
+        },
+        {
+          "key": "alert_history_summary",
+          "title": "告警历史统计（近7日）",
+          "readOnly": true,
+          "columns": [
+            { "key": "date", "label": "日期" },
+            { "key": "total", "label": "告警总数" },
+            { "key": "critical", "label": "严重" },
+            { "key": "warning", "label": "警告" },
+            { "key": "resolved", "label": "已处理" },
+            { "key": "avgResolveMin", "label": "平均处理(分钟)" }
+          ],
+          "rows": [
+            { "date": "2026-03-12", "total": "47", "critical": "8", "warning": "39", "resolved": "39", "avgResolveMin": "23" },
+            { "date": "2026-03-11", "total": "52", "critical": "11", "warning": "41", "resolved": "49", "avgResolveMin": "28" },
+            { "date": "2026-03-10", "total": "38", "critical": "5", "warning": "33", "resolved": "38", "avgResolveMin": "19" },
+            { "date": "2026-03-09", "total": "61", "critical": "14", "warning": "47", "resolved": "55", "avgResolveMin": "35" },
+            { "date": "2026-03-08", "total": "43", "critical": "7", "warning": "36", "resolved": "43", "avgResolveMin": "21" },
+            { "date": "2026-03-07", "total": "29", "critical": "3", "warning": "26", "resolved": "29", "avgResolveMin": "15" },
+            { "date": "2026-03-06", "total": "35", "critical": "6", "warning": "29", "resolved": "35", "avgResolveMin": "18" }
+          ]
+        }
+      ]
+    },
+    "/monitor/dataGovernance": {
+      "title": "数据归档与治理",
+      "breadcrumb": ["监控管理", "数据存储与处理", "数据归档与治理"],
+      "intro": "管理指标数据的存储策略、归档计划和生命周期，支持按指标类型、标签、时间范围设置差异化保留策略，提供数据压缩、冷热分层、归档执行记录和存储成本分析。",
+      "kind": "platformModule",
+      "stats": [
+        { "label": "归档策略", "value": "12", "hint": "活跃策略数" },
+        { "label": "待归档数据", "value": "380GB", "hint": "本周待处理" },
+        { "label": "已归档总量", "value": "2.4TB", "hint": "对象存储" },
+        { "label": "下次归档", "value": "凌晨2:00", "hint": "每日自动执行" }
+      ],
+      "tables": [
+        {
+          "key": "archive_policies",
+          "title": "归档策略列表",
+          "readOnly": true,
+          "columns": [
+            { "key": "policyName", "label": "策略名称" },
+            { "key": "targetType", "label": "数据类型" },
+            { "key": "hotDays", "label": "热存储(天)" },
+            { "key": "warmDays", "label": "温存储(天)" },
+            { "key": "coldDays", "label": "冷存储(天)" },
+            { "key": "compress", "label": "压缩" },
+            { "key": "status", "label": "状态" }
+          ],
+          "rows": [
+            { "policyName": "基础指标归档策略", "targetType": "主机指标", "hotDays": "30", "warmDays": "90", "coldDays": "365", "compress": "ZSTD", "status": "启用" },
+            { "policyName": "网络指标归档策略", "targetType": "网络指标", "hotDays": "14", "warmDays": "60", "coldDays": "180", "compress": "ZSTD", "status": "启用" },
+            { "policyName": "告警历史归档策略", "targetType": "告警记录", "hotDays": "90", "warmDays": "365", "coldDays": "730", "compress": "GZIP", "status": "启用" },
+            { "policyName": "日志数据归档策略", "targetType": "日志数据", "hotDays": "7", "warmDays": "30", "coldDays": "90", "compress": "ZSTD", "status": "启用" },
+            { "policyName": "容器指标归档策略", "targetType": "K8s指标", "hotDays": "14", "warmDays": "60", "coldDays": "180", "compress": "ZSTD", "status": "启用" }
+          ]
+        },
+        {
+          "key": "archive_history",
+          "title": "归档执行记录（近10次）",
+          "readOnly": true,
+          "columns": [
+            { "key": "executedAt", "label": "执行时间" },
+            { "key": "policy", "label": "策略" },
+            { "key": "dataSize", "label": "归档量" },
+            { "key": "duration", "label": "耗时" },
+            { "key": "status", "label": "状态" }
+          ],
+          "rows": [
+            { "executedAt": "2026-03-12 02:00", "policy": "基础指标归档策略", "dataSize": "82GB", "duration": "14min", "status": "成功" },
+            { "executedAt": "2026-03-11 02:00", "policy": "基础指标归档策略", "dataSize": "79GB", "duration": "13min", "status": "成功" },
+            { "executedAt": "2026-03-12 02:05", "policy": "日志数据归档策略", "dataSize": "124GB", "duration": "22min", "status": "成功" },
+            { "executedAt": "2026-03-11 02:05", "policy": "日志数据归档策略", "dataSize": "118GB", "duration": "21min", "status": "成功" },
+            { "executedAt": "2026-03-10 02:00", "policy": "网络指标归档策略", "dataSize": "18GB", "duration": "4min", "status": "成功" }
+          ]
+        }
+      ]
+    },
+    "/monitor/alertRules": {
+      "title": "告警规则管理",
+      "breadcrumb": ["监控管理", "告警与通知", "告警规则管理"],
+      "intro": "支持阈值告警、日志关键字匹配、频率告警和组合复合条件等多种告警规则，提供告警静默、抑制、路由分发、维护窗口和SLA统计，结合值班策略实现智能告警降噪。",
+      "kind": "platformModule",
+      "stats": [
+        { "label": "告警规则", "value": "0", "hint": "全部规则" },
+        { "label": "已启用", "value": "0", "hint": "生效中" },
+        { "label": "今日触发", "value": "47", "hint": "告警事件数" },
+        { "label": "告警抑制", "value": "12", "hint": "降噪处理数" }
+      ],
+      "tables": [
+        {
+          "key": "alert_rules",
+          "title": "告警规则列表",
+          "readOnly": true,
+          "columns": [
+            { "key": "name", "label": "规则名称" },
+            { "key": "metricType", "label": "指标类型" },
+            { "key": "conditionExpr", "label": "触发条件" },
+            { "key": "severity", "label": "严重级别" },
+            { "key": "enabled", "label": "状态" },
+            { "key": "notifyGroup", "label": "通知组" },
+            { "key": "description", "label": "说明" }
+          ],
+          "rows": []
+        }
+      ]
+    },
+    "/monitor/notifyChannels": {
+      "title": "通知渠道配置",
+      "breadcrumb": ["监控管理", "告警与通知", "通知渠道配置"],
+      "intro": "集中管理邮件、短信、电话、即时通讯和Webhook等告警通知渠道，支持通知模板自定义、发送频率控制和渠道可用性探测，提供通知发送记录与失败重试机制。",
+      "kind": "platformModule",
+      "stats": [
+        { "label": "通知渠道", "value": "8", "hint": "已配置渠道" },
+        { "label": "启用中", "value": "7", "hint": "正常可用" },
+        { "label": "今日发送", "value": "234", "hint": "通知总条数" },
+        { "label": "发送失败", "value": "3", "hint": "需排查" }
+      ],
+      "tables": [
+        {
+          "key": "notify_channels",
+          "title": "通知渠道列表",
+          "readOnly": true,
+          "columns": [
+            { "key": "channelName", "label": "渠道名称" },
+            { "key": "channelType", "label": "类型" },
+            { "key": "config", "label": "配置信息" },
+            { "key": "sentToday", "label": "今日发送" },
+            { "key": "failToday", "label": "今日失败" },
+            { "key": "status", "label": "状态" }
+          ],
+          "rows": [
+            { "channelName": "企业微信-运维群", "channelType": "企业微信", "config": "AgentId: 1000001", "sentToday": "98", "failToday": "0", "status": "正常" },
+            { "channelName": "钉钉-告警机器人", "channelType": "钉钉", "config": "Webhook已配置", "sentToday": "67", "failToday": "2", "status": "正常" },
+            { "channelName": "SMTP邮件服务", "channelType": "邮件", "config": "smtp.company.com:465", "sentToday": "42", "failToday": "1", "status": "正常" },
+            { "channelName": "短信告警通道", "channelType": "短信", "config": "阿里云短信服务", "sentToday": "18", "failToday": "0", "status": "正常" },
+            { "channelName": "电话语音告警", "channelType": "电话", "config": "PSTN网关", "sentToday": "3", "failToday": "0", "status": "正常" },
+            { "channelName": "Webhook-ITSM", "channelType": "Webhook", "config": "http://itsm.internal/alert", "sentToday": "6", "failToday": "0", "status": "正常" },
+            { "channelName": "飞书-基础设施组", "channelType": "飞书", "config": "App ID已配置", "sentToday": "0", "failToday": "0", "status": "正常" },
+            { "channelName": "Slack-DevOps", "channelType": "Slack", "config": "Workspace已配置", "sentToday": "0", "failToday": "0", "status": "已停用" }
+          ]
+        }
+      ]
+    },
+    "/monitor/alertHistory": {
+      "title": "告警历史查询",
+      "breadcrumb": ["监控管理", "告警与通知", "告警历史查询"],
+      "intro": "提供告警事件的全量历史查询，支持按时间、级别、来源、标签等多维度筛选，展示告警触发、处理、关闭的完整生命周期，并提供告警统计分析报表和趋势图。",
+      "kind": "platformModule",
+      "stats": [
+        { "label": "今日告警", "value": "47", "hint": "全级别" },
+        { "label": "严重告警", "value": "8", "hint": "灾难+严重" },
+        { "label": "已处理", "value": "39", "hint": "关闭或解决" },
+        { "label": "平均处理时长", "value": "23分钟", "hint": "今日统计" }
+      ],
+      "tables": [
+        {
+          "key": "alert_events",
+          "title": "近期告警事件",
+          "readOnly": true,
+          "columns": [
+            { "key": "triggeredAt", "label": "触发时间" },
+            { "key": "ruleName", "label": "告警规则" },
+            { "key": "source", "label": "告警来源" },
+            { "key": "severity", "label": "级别" },
+            { "key": "status", "label": "状态" },
+            { "key": "handler", "label": "处理人" },
+            { "key": "resolvedAt", "label": "处理时间" }
+          ],
+          "rows": [
+            { "triggeredAt": "2026-03-12 14:32", "ruleName": "CPU利用率过高", "source": "prod-db-01", "severity": "严重", "status": "已处理", "handler": "管理员", "resolvedAt": "2026-03-12 14:54" },
+            { "triggeredAt": "2026-03-12 13:18", "ruleName": "Kafka消费Lag过大", "source": "kafka-test-cluster", "severity": "严重", "status": "处理中", "handler": "演示用户", "resolvedAt": "—" },
+            { "triggeredAt": "2026-03-12 11:47", "ruleName": "服务探测失败", "source": "PROBE-AUTH-SVC", "severity": "严重", "status": "已处理", "handler": "管理员", "resolvedAt": "2026-03-12 12:03" },
+            { "triggeredAt": "2026-03-12 10:21", "ruleName": "磁盘使用率过高", "source": "prod-db-01", "severity": "警告", "status": "已处理", "handler": "管理员", "resolvedAt": "2026-03-12 10:48" },
+            { "triggeredAt": "2026-03-12 09:55", "ruleName": "Pod频繁重启", "source": "order-svc-7d8b9-xk2p9", "severity": "严重", "status": "已处理", "handler": "演示用户", "resolvedAt": "2026-03-12 10:22" },
+            { "triggeredAt": "2026-03-12 08:34", "ruleName": "Redis内存使用率高", "source": "redis-primary", "severity": "警告", "status": "已处理", "handler": "管理员", "resolvedAt": "2026-03-12 08:51" },
+            { "triggeredAt": "2026-03-12 07:12", "ruleName": "HTTP 5xx错误率高", "source": "payment-svc", "severity": "严重", "status": "已处理", "handler": "管理员", "resolvedAt": "2026-03-12 07:43" },
+            { "triggeredAt": "2026-03-12 06:03", "ruleName": "网络接口错包率异常", "source": "DEV-AGG-SW01", "severity": "警告", "status": "已处理", "handler": "管理员", "resolvedAt": "2026-03-12 06:28" }
+          ]
+        }
+      ]
+    },
+    "/monitor/onCallMgmt": {
+      "title": "值班与响应管理",
+      "breadcrumb": ["监控管理", "告警与通知", "值班与响应管理"],
+      "intro": "管理告警响应的值班人员排班，支持多值班组配置、跨组轮转和告警路由，提供响应记录统计和MTTR分析，确保7x24小时告警有效响应。",
+      "kind": "platformModule",
+      "stats": [
+        { "label": "值班组", "value": "4", "hint": "在管理中" },
+        { "label": "当前值班", "value": "1人", "hint": "今日负责人" },
+        { "label": "本月响应", "value": "156次", "hint": "已处理告警" },
+        { "label": "平均响应", "value": "4.2分钟", "hint": "MTTR本月" }
+      ],
+      "tables": [
+        {
+          "key": "oncall_schedule",
+          "title": "值班排班（本周）",
+          "readOnly": true,
+          "columns": [
+            { "key": "date", "label": "日期" },
+            { "key": "weekday", "label": "星期" },
+            { "key": "group", "label": "值班组" },
+            { "key": "person", "label": "值班人" },
+            { "key": "shift", "label": "班次" },
+            { "key": "status", "label": "状态" }
+          ],
+          "rows": [
+            { "date": "2026-03-09", "weekday": "周一", "group": "基础设施组", "person": "管理员", "shift": "00:00-23:59", "status": "已值班" },
+            { "date": "2026-03-10", "weekday": "周二", "group": "基础设施组", "person": "演示用户", "shift": "00:00-23:59", "status": "已值班" },
+            { "date": "2026-03-11", "weekday": "周三", "group": "数据库组", "person": "演示用户", "shift": "00:00-23:59", "status": "已值班" },
+            { "date": "2026-03-12", "weekday": "周四", "group": "数据库组", "person": "演示用户", "shift": "00:00-23:59", "status": "今日值班" },
+            { "date": "2026-03-13", "weekday": "周五", "group": "应用运维组", "person": "管理员", "shift": "00:00-23:59", "status": "待值班" }
+          ]
+        },
+        {
+          "key": "response_records",
+          "title": "近期响应记录",
+          "readOnly": true,
+          "columns": [
+            { "key": "alertName", "label": "告警名称" },
+            { "key": "triggeredAt", "label": "触发时间" },
+            { "key": "responder", "label": "响应人" },
+            { "key": "responseMin", "label": "响应时长(min)" },
+            { "key": "resolveMin", "label": "处理时长(min)" },
+            { "key": "result", "label": "结果" }
+          ],
+          "rows": [
+            { "alertName": "CPU利用率过高", "triggeredAt": "03-12 14:32", "responder": "管理员", "responseMin": "3", "resolveMin": "22", "result": "已解决" },
+            { "alertName": "服务探测失败", "triggeredAt": "03-12 11:47", "responder": "管理员", "responseMin": "2", "resolveMin": "16", "result": "已解决" },
+            { "alertName": "Pod频繁重启", "triggeredAt": "03-12 09:55", "responder": "演示用户", "responseMin": "5", "resolveMin": "27", "result": "已解决" },
+            { "alertName": "HTTP 5xx错误率高", "triggeredAt": "03-12 07:12", "responder": "管理员", "responseMin": "4", "resolveMin": "31", "result": "已解决" }
+          ]
+        }
+      ]
+    },
+    "/monitor/dashboards": {
+      "title": "看板管理",
+      "breadcrumb": ["监控管理", "可视化", "看板管理"],
+      "intro": "提供可视化看板的创建、编辑和权限管理，支持拖拽布局、图表复用、模板克隆和分享链接，内置基础设施、应用性能、K8s集群等开箱即用看板模板。",
+      "kind": "platformModule",
+      "stats": [
+        { "label": "看板总数", "value": "18", "hint": "全部看板" },
+        { "label": "今日访问", "value": "312次", "hint": "PV统计" },
+        { "label": "图表组件", "value": "124个", "hint": "跨看板汇总" },
+        { "label": "分享链接", "value": "6个", "hint": "公开访问" }
+      ],
+      "tables": [
+        {
+          "key": "dashboards",
+          "title": "看板列表",
+          "readOnly": true,
+          "columns": [
+            { "key": "name", "label": "看板名称" },
+            { "key": "category", "label": "分类" },
+            { "key": "charts", "label": "图表数" },
+            { "key": "creator", "label": "创建人" },
+            { "key": "shared", "label": "是否共享" },
+            { "key": "visitToday", "label": "今日访问" },
+            { "key": "updatedAt", "label": "最近更新" }
+          ],
+          "rows": [
+            { "name": "基础设施总览", "category": "基础设施", "charts": "16", "creator": "管理员", "shared": "是", "visitToday": "87", "updatedAt": "2026-03-10" },
+            { "name": "K8s集群监控", "category": "容器", "charts": "12", "creator": "管理员", "shared": "是", "visitToday": "64", "updatedAt": "2026-03-11" },
+            { "name": "数据库性能", "category": "数据库", "charts": "10", "creator": "演示用户", "shared": "是", "visitToday": "48", "updatedAt": "2026-03-09" },
+            { "name": "网络设备监控", "category": "网络", "charts": "8", "creator": "管理员", "shared": "是", "visitToday": "42", "updatedAt": "2026-03-08" },
+            { "name": "应用性能监控", "category": "APM", "charts": "14", "creator": "管理员", "shared": "是", "visitToday": "37", "updatedAt": "2026-03-12" },
+            { "name": "告警统计分析", "category": "告警", "charts": "9", "creator": "管理员", "shared": "是", "visitToday": "34", "updatedAt": "2026-03-12" },
+            { "name": "日志分析看板", "category": "日志", "charts": "7", "creator": "演示用户", "shared": "否", "visitToday": "0", "updatedAt": "2026-03-01" }
+          ]
+        }
+      ]
+    },
+    "/monitor/topology": {
+      "title": "拓扑图管理",
+      "breadcrumb": ["监控管理", "可视化", "拓扑图管理"],
+      "intro": "基于CMDB数据和流量数据自动构建网络与应用调用拓扑，实时标注异常节点和链路状态，支持多层级展开、拓扑业务指标叠加、历史拓扑回溯和拓扑变更对比分析。",
+      "kind": "platformModule",
+      "stats": [
+        { "label": "拓扑图", "value": "5", "hint": "已配置图谱" },
+        { "label": "纳管节点", "value": "187", "hint": "设备+服务+Pod" },
+        { "label": "拓扑链路", "value": "243", "hint": "已发现链路" },
+        { "label": "异常节点", "value": "3", "hint": "当前告警" }
+      ],
+      "tables": [
+        {
+          "key": "topology_list",
+          "title": "拓扑图列表",
+          "readOnly": true,
+          "columns": [
+            { "key": "name", "label": "拓扑图名称" },
+            { "key": "type", "label": "类型" },
+            { "key": "nodes", "label": "节点数" },
+            { "key": "links", "label": "链路数" },
+            { "key": "abnormal", "label": "异常节点" },
+            { "key": "autoRefresh", "label": "自动刷新" },
+            { "key": "updatedAt", "label": "最近更新" }
+          ],
+          "rows": [
+            { "name": "数据中心物理网络拓扑", "type": "网络拓扑", "nodes": "68", "links": "94", "abnormal": "1", "autoRefresh": "1分钟", "updatedAt": "2026-03-12 14:30" },
+            { "name": "核心业务调用拓扑", "type": "应用拓扑", "nodes": "52", "links": "87", "abnormal": "2", "autoRefresh": "30秒", "updatedAt": "2026-03-12 14:45" },
+            { "name": "K8s服务网格拓扑", "type": "服务网格", "nodes": "34", "links": "41", "abnormal": "0", "autoRefresh": "30秒", "updatedAt": "2026-03-12 14:44" },
+            { "name": "多云网络互联拓扑", "type": "云网络", "nodes": "21", "links": "15", "abnormal": "0", "autoRefresh": "5分钟", "updatedAt": "2026-03-12 12:00" },
+            { "name": "安全域隔离拓扑", "type": "安全拓扑", "nodes": "12", "links": "6", "abnormal": "0", "autoRefresh": "手动", "updatedAt": "2026-03-10 09:00" }
+          ]
+        },
+        {
+          "key": "abnormal_links",
+          "title": "异常链路",
+          "readOnly": true,
+          "columns": [
+            { "key": "sourceNode", "label": "源节点" },
+            { "key": "targetNode", "label": "目标节点" },
+            { "key": "linkType", "label": "链路类型" },
+            { "key": "latency", "label": "延迟" },
+            { "key": "errorRate", "label": "错误率" },
+            { "key": "status", "label": "状态" }
+          ],
+          "rows": [
+            { "sourceNode": "payment-svc", "targetNode": "auth-svc", "linkType": "HTTP", "latency": "1240ms", "errorRate": "8.3%", "status": "异常" },
+            { "sourceNode": "order-svc", "targetNode": "mysql-master-01", "linkType": "JDBC", "latency": "320ms", "errorRate": "1.2%", "status": "警告" },
+            { "sourceNode": "kafka-test-cluster", "targetNode": "consumer-group-A", "linkType": "Kafka", "latency": "—", "errorRate": "—", "status": "断连" }
+          ]
+        }
+      ]
+    },
+    "/monitor/charts": {
+      "title": "图表与大屏",
+      "breadcrumb": ["监控管理", "可视化", "图表与大屏"],
+      "intro": "提供折线图、饼图、热力图、仪表盘等丰富图表组件，支持时间范围选择、数据钻取、告警标注和图表嵌入分享。内置多套运维大屏模板，支持大屏全屏展示和自动轮播。",
+      "kind": "platformModule",
+      "stats": [
+        { "label": "图表总数", "value": "48", "hint": "所有图表组件" },
+        { "label": "大屏", "value": "6", "hint": "专项大屏" },
+        { "label": "今日访问", "value": "312次", "hint": "图表PV" },
+        { "label": "图表模板", "value": "24套", "hint": "开箱即用" }
+      ],
+      "tables": [
+        {
+          "key": "bigscreens",
+          "title": "大屏列表",
+          "readOnly": true,
+          "columns": [
+            { "key": "name", "label": "大屏名称" },
+            { "key": "resolution", "label": "分辨率" },
+            { "key": "charts", "label": "图表数" },
+            { "key": "autoPlay", "label": "自动轮播" },
+            { "key": "shared", "label": "是否公开" },
+            { "key": "visitToday", "label": "今日访问" }
+          ],
+          "rows": [
+            { "name": "基础设施监控大屏", "resolution": "1920x1080", "charts": "12", "autoPlay": "否", "shared": "是", "visitToday": "64" },
+            { "name": "网络流量大屏", "resolution": "3840x2160", "charts": "8", "autoPlay": "30s", "shared": "是", "visitToday": "48" },
+            { "name": "应用监控大屏", "resolution": "1920x1080", "charts": "10", "autoPlay": "否", "shared": "是", "visitToday": "42" },
+            { "name": "告警态势大屏", "resolution": "1920x1080", "charts": "9", "autoPlay": "否", "shared": "是", "visitToday": "38" },
+            { "name": "K8s运行大屏", "resolution": "3840x2160", "charts": "14", "autoPlay": "1min", "shared": "是", "visitToday": "32" },
+            { "name": "数据中心PUE大屏", "resolution": "1920x1080", "charts": "6", "autoPlay": "否", "shared": "否", "visitToday": "0" }
+          ]
+        },
+        {
+          "key": "chart_templates",
+          "title": "图表模板库",
+          "readOnly": true,
+          "columns": [
+            { "key": "templateName", "label": "模板名称" },
+            { "key": "chartType", "label": "图表类型" },
+            { "key": "category", "label": "适用场景" },
+            { "key": "usedCount", "label": "使用次数" }
+          ],
+          "rows": [
+            { "templateName": "主机CPU趋势图", "chartType": "折线图", "category": "基础设施", "usedCount": "34" },
+            { "templateName": "内存使用仪表盘", "chartType": "仪表盘", "category": "基础设施", "usedCount": "28" },
+            { "templateName": "告警级别分布", "chartType": "饼图", "category": "告警", "usedCount": "22" },
+            { "templateName": "服务调用热力图", "chartType": "热力图", "category": "APM", "usedCount": "19" },
+            { "templateName": "K8s资源使用率", "chartType": "条形图", "category": "容器", "usedCount": "17" },
+            { "templateName": "接口响应时间P99", "chartType": "折线图", "category": "APM", "usedCount": "15" }
+          ]
+        }
+      ]
+    },
+    "/monitor/networkDevices": {
+      "title": "网络设备指标采集",
+      "breadcrumb": [
+        "监控管理",
+        "监控数据采集",
+        "网络设备指标采集"
+      ],
+      "intro": "通过SNMP/SSH协议自动发现并采集路由器、交换机、防火墙等网络设备的性能指标，包括接口流量、错包率、CPU/内存利用率、BGP/OSPF邻居状态等，支持自定义采集模板和动态调整采集周期。",
+      "kind": "platformModule",
+      "stats": [
+        { "label": "网络设备总数", "value": "0", "hint": "路由器 / 交换机 / 防火墙" },
+        { "label": "采集正常", "value": "0", "hint": "SNMP/SSH 采集成功" },
+        { "label": "采集模板", "value": "0", "hint": "自定义采集指标集" },
+        { "label": "待纳管设备", "value": "0", "hint": "已发现未录入" }
+      ],
+      "tables": [
+        {
+          "key": "network_devices",
+          "title": "网络设备列表",
+          "subtitle": "展示已录入设备及近期指标采集状态",
+          "readOnly": true,
+          "columns": [
+            { "key": "name", "label": "设备名称" },
+            { "key": "ip", "label": "IP 地址" },
+            { "key": "deviceType", "label": "设备类型" },
+            { "key": "vendor", "label": "厂商" },
+            { "key": "protocol", "label": "协议" },
+            { "key": "port", "label": "端口" },
+            { "key": "status", "label": "采集状态" },
+            { "key": "lastCollectedAt", "label": "最近采集" },
+            { "key": "description", "label": "描述" }
+          ],
+          "rows": []
+        },
+        {
+          "key": "metric_snapshots",
+          "title": "近期指标快照",
+          "subtitle": "展示最近一次采集的各设备性能指标数据",
+          "readOnly": true,
+          "columns": [
+            { "key": "device", "label": "设备" },
+            { "key": "metric", "label": "指标名称" },
+            { "key": "value", "label": "采集值" },
+            { "key": "time", "label": "采集时间" }
+          ],
+          "rows": []
+        }
+      ]
+    },
     "/serveSetting/systemSetting": {
       "title": "系统设置",
       "breadcrumb": [

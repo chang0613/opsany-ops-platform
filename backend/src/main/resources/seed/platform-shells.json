@@ -938,5 +938,181 @@
         ]
       }
     }
+  },
+  "monitor": {
+    "shell": {
+      "productName": "监控管理",
+      "platformButton": "平台导航",
+      "topNav": ["控制台", "工作台", "消息", "支持"],
+      "basePath": "/o/monitor",
+      "platformKey": "monitor",
+      "user": {
+        "account": "demo",
+        "displayName": "演示用户"
+      }
+    },
+    "menu": [
+      {
+        "group": "",
+        "items": [
+          { "label": "概览", "route": "/" }
+        ]
+      },
+      {
+        "group": "监控数据采集",
+        "items": [
+          { "label": "采集概览", "route": "/collection/overview" },
+          { "label": "网络设备指标采集", "route": "/collection/networkDevices" },
+          { "label": "采集模板管理", "route": "/collection/templates" }
+        ]
+      },
+      {
+        "group": "告警管理",
+        "items": [
+          { "label": "告警规则", "route": "/alert/rules" },
+          { "label": "告警历史", "route": "/alert/history" }
+        ]
+      },
+      {
+        "group": "平台",
+        "items": [
+          { "label": "系统设置", "route": "/setting/system" }
+        ]
+      }
+    ],
+    "pages": {
+      "/": {
+        "title": "概览",
+        "breadcrumb": ["监控管理", "概览"],
+        "intro": "统一呈现网络设备采集状态、指标快照与告警汇总，切换平台后左侧菜单与首页模块都会同步切换。",
+        "kind": "platformOverview",
+        "stats": [
+          { "label": "网络设备总数", "value": "0", "hint": "路由器 / 交换机 / 防火墙" },
+          { "label": "采集正常", "value": "0", "hint": "SNMP/SSH 采集成功" },
+          { "label": "采集模板", "value": "0", "hint": "自定义采集指标集" },
+          { "label": "待纳管设备", "value": "0", "hint": "自动发现未录入" }
+        ],
+        "cards": [
+          { "title": "网络设备指标采集", "desc": "通过 SNMP/SSH 自动发现路由器、交换机、防火墙并周期采集性能指标。", "meta": "接口流量 / CPU / 内存", "accent": "blue", "route": "/collection/networkDevices" },
+          { "title": "采集模板管理", "desc": "自定义 OID 列表与采集周期，支持动态调整采集频率。", "meta": "周期可动态调整", "accent": "teal", "route": "/collection/templates" },
+          { "title": "告警规则", "desc": "基于采集指标配置阈值告警，支持多通道通知。", "meta": "短信 / 邮件 / 钉钉", "accent": "gold", "route": "/alert/rules" }
+        ],
+        "tables": [
+          {
+            "title": "最近采集指标快照",
+            "subtitle": "展示各设备最近一次采集到的关键指标值。",
+            "columns": ["设备", "指标名称", "当前值", "采集时间"],
+            "rows": [],
+            "emptyText": "暂无采集数据，请先添加设备并触发采集"
+          }
+        ]
+      },
+      "/collection/overview": {
+        "title": "采集概览",
+        "breadcrumb": ["监控管理", "监控数据采集", "采集概览"],
+        "intro": "汇总所有采集任务的运行状态与指标覆盖情况，支持按协议和设备类型筛选。",
+        "kind": "platformModule",
+        "filters": ["全部", "SNMP", "SSH"],
+        "stats": [
+          { "label": "总采集任务", "value": "0", "hint": "活跃中" },
+          { "label": "成功率", "value": "0%", "hint": "最近 24h" },
+          { "label": "平均延迟", "value": "0ms", "hint": "响应时延" },
+          { "label": "指标点数", "value": "0", "hint": "当前周期" }
+        ],
+        "cards": [
+          { "title": "SNMP 采集", "desc": "通过标准 SNMP v1/v2c/v3 协议采集网络设备 OID 指标。", "meta": "端口 161", "accent": "blue" },
+          { "title": "SSH 采集", "desc": "通过 SSH 登录设备执行命令采集指标，适用于 CLI 设备。", "meta": "端口 22", "accent": "green" }
+        ],
+        "tables": [
+          {
+            "title": "采集任务列表",
+            "subtitle": "按设备和协议汇总当前采集任务状态。",
+            "columns": ["设备名称", "IP 地址", "协议", "采集周期", "上次采集", "状态"],
+            "rows": [
+              ["Cisco-路由器", "192.168.1.1", "SNMP v2c", "300s", "-", "待采集"],
+              ["Huawei-交换机", "192.168.1.2", "SNMP v2c", "300s", "-", "待采集"]
+            ],
+            "emptyText": "暂无采集任务"
+          }
+        ]
+      },
+      "/collection/networkDevices": {
+        "title": "网络设备指标采集",
+        "breadcrumb": ["监控管理", "监控数据采集", "网络设备指标采集"],
+        "intro": "通过 SNMP/SSH 等协议自动发现并采集路由器、交换机、防火墙等网络设备的性能指标，包括接口流量、错包率、CPU/内存利用率、BGP/OSPF 邻居状态等，支持自定义采集模板和采集周期动态调整。",
+        "kind": "networkDeviceCollection",
+        "tabs": ["全部设备(0)", "路由器(0)", "交换机(0)", "防火墙(0)", "采集正常(0)", "采集异常(0)"],
+        "columns": ["设备名称", "IP 地址", "设备类型", "厂商", "协议", "端口", "状态", "最近采集", "描述"],
+        "rows": [],
+        "emptyText": "暂无网络设备，请点击「添加设备」或「自动发现」"
+      },
+      "/collection/templates": {
+        "title": "采集模板管理",
+        "breadcrumb": ["监控管理", "监控数据采集", "采集模板管理"],
+        "intro": "自定义网络设备采集模板，配置 OID 指标列表与采集周期，支持按设备类型分组管理，采集周期可动态调整无需重启。",
+        "kind": "collectionTemplates",
+        "columns": ["模板名称", "适用设备", "协议", "采集周期", "状态", "描述"],
+        "rows": [],
+        "emptyText": "暂无采集模板，请点击「新建模板」"
+      },
+      "/alert/rules": {
+        "title": "告警规则",
+        "breadcrumb": ["监控管理", "告警管理", "告警规则"],
+        "intro": "基于采集指标配置阈值告警规则，支持接口流量超限、CPU 过载、BGP 邻居断连等场景。",
+        "kind": "platformModule",
+        "actions": ["新建告警规则"],
+        "searchPlaceholder": "搜索规则名称或指标",
+        "filters": ["全部", "已启用", "已停用"],
+        "tables": [
+          {
+            "title": "告警规则列表",
+            "columns": ["规则名称", "指标类型", "触发条件", "告警通道", "状态", "更新时间"],
+            "rows": [
+              ["CPU 过载告警", "CPU 利用率", "> 90%", "邮件/钉钉", "已启用", "2026-03-01"],
+              ["接口流量超限", "接口流量(Mbps)", "> 800", "短信/邮件", "已启用", "2026-03-01"],
+              ["BGP 邻居断连", "BGP 邻居状态", "!= Established", "短信/钉钉", "已启用", "2026-03-01"],
+              ["内存利用率过高", "内存利用率(%)", "> 85%", "邮件", "已停用", "2026-02-28"]
+            ]
+          }
+        ]
+      },
+      "/alert/history": {
+        "title": "告警历史",
+        "breadcrumb": ["监控管理", "告警管理", "告警历史"],
+        "intro": "查询历史告警事件，支持按设备、时间范围和告警级别筛选，并可导出告警报告。",
+        "kind": "platformModule",
+        "searchPlaceholder": "搜索设备名称或告警内容",
+        "filters": ["全部", "严重", "重要", "警告", "已恢复"],
+        "tables": [
+          {
+            "title": "告警事件列表",
+            "columns": ["告警时间", "设备", "指标", "告警值", "级别", "状态", "持续时长"],
+            "rows": [
+              ["2026-03-11 14:32", "Cisco-路由器", "CPU 利用率(%)", "93%", "严重", "已恢复", "5min"],
+              ["2026-03-10 22:10", "Huawei-交换机", "接口流量(Mbps)", "856Mbps", "重要", "已恢复", "12min"]
+            ]
+          }
+        ]
+      },
+      "/setting/system": {
+        "title": "系统设置",
+        "breadcrumb": ["监控管理", "平台", "系统设置"],
+        "intro": "配置监控平台全局参数，包括采集超时、重试策略和 SNMP 默认团体字符串。",
+        "kind": "platformModule",
+        "tables": [
+          {
+            "title": "全局采集参数",
+            "columns": ["参数名", "当前值", "说明"],
+            "rows": [
+              ["SNMP 超时(s)", "5", "单次 SNMP 请求超时时间"],
+              ["SNMP 重试次数", "3", "超时后自动重试次数"],
+              ["SSH 连接超时(s)", "10", "SSH 握手超时时间"],
+              ["默认采集周期(s)", "300", "未绑定模板时的采集频率"],
+              ["最大并发采集数", "50", "同时发起的最大采集任务数"]
+            ]
+          }
+        ]
+      }
+    }
   }
 }
