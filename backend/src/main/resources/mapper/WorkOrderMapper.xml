@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrder">
+        <id column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="title" property="title"/>
+        <result column="type" property="type"/>
+        <result column="creator_username" property="creatorUsername"/>
+        <result column="creator_display_name" property="creatorDisplayName"/>
+        <result column="progress" property="progress"/>
+        <result column="status" property="status"/>
+        <result column="priority" property="priority"/>
+        <result column="service_name" property="serviceName"/>
+        <result column="description" property="description"/>
+        <result column="estimated_at" property="estimatedAt"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="process_code" property="processCode"/>
+        <result column="current_node_code" property="currentNodeCode"/>
+        <result column="current_node_name" property="currentNodeName"/>
+        <result column="current_handler" property="currentHandler"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrder" useGeneratedKeys="true" keyProperty="id">
+        insert into work_orders(
+            order_no, title, type, creator_username, creator_display_name, progress, status, priority,
+            service_name, description, estimated_at, created_at, updated_at, process_code, current_node_code,
+            current_node_name, current_handler
+        ) values (
+            #{orderNo}, #{title}, #{type}, #{creatorUsername}, #{creatorDisplayName}, #{progress}, #{status}, #{priority},
+            #{serviceName}, #{description}, #{estimatedAt}, #{createdAt}, #{updatedAt}, #{processCode}, #{currentNodeCode},
+            #{currentNodeName}, #{currentHandler}
+        )
+    </insert>
+
+    <update id="updateFlowState" parameterType="com.opsany.replica.domain.WorkOrder">
+        update work_orders set
+            progress = #{progress},
+            status = #{status},
+            priority = #{priority},
+            estimated_at = #{estimatedAt},
+            updated_at = #{updatedAt},
+            current_node_code = #{currentNodeCode},
+            current_node_name = #{currentNodeName},
+            current_handler = #{currentHandler}
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="update" parameterType="com.opsany.replica.domain.WorkOrder">
+        update work_orders set
+            title = #{title},
+            type = #{type},
+            priority = #{priority},
+            service_name = #{serviceName},
+            description = #{description},
+            estimated_at = #{estimatedAt},
+            updated_at = #{updatedAt}
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="deleteByOrderNo">
+        update work_orders set status = 'DELETED', updated_at = NOW()
+        where order_no = #{orderNo}
+    </update>
+
+    <select id="findByOrderNo" resultMap="BaseResultMap">
+        select id, order_no, title, type, creator_username, creator_display_name, progress, status, priority,
+            service_name, description, estimated_at, created_at, updated_at, process_code, current_node_code,
+            current_node_name, current_handler
+        from work_orders where order_no = #{orderNo} limit 1
+    </select>
+
+    <select id="findTop10ByCreatorUsernameOrderByCreatedAtDesc" resultMap="BaseResultMap">
+        select id, order_no, title, type, creator_username, creator_display_name, progress, status, priority,
+            service_name, description, estimated_at, created_at, updated_at, process_code, current_node_code,
+            current_node_name, current_handler
+        from work_orders where creator_username = #{creatorUsername}
+        order by created_at desc limit 10
+    </select>
+
+    <select id="findTop20OrderByCreatedAtDesc" resultMap="BaseResultMap">
+        select id, order_no, title, type, creator_username, creator_display_name, progress, status, priority,
+            service_name, description, estimated_at, created_at, updated_at, process_code, current_node_code,
+            current_node_name, current_handler
+        from work_orders order by created_at desc limit 20
+    </select>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select id, order_no, title, type, creator_username, creator_display_name, progress, status, priority,
+            service_name, description, estimated_at, created_at, updated_at, process_code, current_node_code,
+            current_node_name, current_handler
+        from work_orders
+        <where>
+            <if test="creatorUsername != null and creatorUsername != ''">
+                and creator_username = #{creatorUsername}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+            <if test="priority != null and priority != ''">
+                and priority = #{priority}
+            </if>
+            <if test="serviceName != null and serviceName != ''">
+                and service_name = #{serviceName}
+            </if>
+            <if test="searchKeyword != null and searchKeyword != ''">
+                and (title like concat('%', #{searchKeyword}, '%') or order_no like concat('%', #{searchKeyword}, '%'))
+            </if>
+        </where>
+        order by created_at desc
+    </select>
+
+    <select id="countByCreatorUsername" resultType="long">
+        select count(1) from work_orders where creator_username = #{creatorUsername}
+    </select>
+
+    <select id="countByServiceName" resultType="long">
+        select count(1) from work_orders where service_name = #{serviceName}
+    </select>
+
+    <select id="count" resultType="long">
+        select count(1) from work_orders
+    </select>
+
+    <select id="countByCondition" resultType="long">
+        select count(1) from work_orders
+        <where>
+            <if test="creatorUsername != null and creatorUsername != ''">
+                and creator_username = #{creatorUsername}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+            <if test="priority != null and priority != ''">
+                and priority = #{priority}
+            </if>
+        </where>
+    </select>
+
+    <select id="findPaged" resultMap="BaseResultMap">
+        select id, order_no, title, type, creator_username, creator_display_name, progress, status, priority,
+            service_name, description, estimated_at, created_at, updated_at, process_code, current_node_code,
+            current_node_name, current_handler
+        from work_orders
+        <where>
+            <if test="creatorUsername != null and creatorUsername != ''">
+                and creator_username = #{creatorUsername}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+            <if test="priority != null and priority != ''">
+                and priority = #{priority}
+            </if>
+            <if test="serviceName != null and serviceName != ''">
+                and service_name = #{serviceName}
+            </if>
+            <if test="searchKeyword != null and searchKeyword != ''">
+                and (title like concat('%', #{searchKeyword}, '%') or order_no like concat('%', #{searchKeyword}, '%'))
+            </if>
+        </where>
+        order by created_at desc
+        limit #{offset}, #{limit}
+    </select>
+</mapper>

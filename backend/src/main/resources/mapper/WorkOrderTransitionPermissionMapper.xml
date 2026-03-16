@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderTransitionPermissionRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderTransitionPermission">
+        <id column="id" property="id"/>
+        <result column="from_status" property="fromStatus"/>
+        <result column="to_status" property="toStatus"/>
+        <result column="role_code" property="roleCode"/>
+        <result column="allow_creator" property="allowCreator"/>
+        <result column="allow_handler" property="allowHandler"/>
+        <result column="allow_admin" property="allowAdmin"/>
+        <result column="is_auto_transition" property="isAutoTransition"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderTransitionPermission" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_transition_permission(from_status, to_status, role_code, allow_creator, allow_handler, allow_admin, is_auto_transition, created_at)
+        values (#{fromStatus}, #{toStatus}, #{roleCode}, #{allowCreator}, #{allowHandler}, #{allowAdmin}, #{isAutoTransition}, #{createdAt})
+    </insert>
+
+    <delete id="deleteById">
+        delete from work_order_transition_permission where id = #{id}
+    </delete>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select id, from_status, to_status, role_code, allow_creator, allow_handler, allow_admin, is_auto_transition, created_at
+        from work_order_transition_permission where id = #{id}
+    </select>
+
+    <select id="findByFromStatus" resultMap="BaseResultMap">
+        select id, from_status, to_status, role_code, allow_creator, allow_handler, allow_admin, is_auto_transition, created_at
+        from work_order_transition_permission where from_status = #{fromStatus}
+    </select>
+
+    <select id="findByRoleCode" resultMap="BaseResultMap">
+        select id, from_status, to_status, role_code, allow_creator, allow_handler, allow_admin, is_auto_transition, created_at
+        from work_order_transition_permission where role_code = #{roleCode}
+    </select>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select id, from_status, to_status, role_code, allow_creator, allow_handler, allow_admin, is_auto_transition, created_at
+        from work_order_transition_permission order by id asc
+    </select>
+
+    <select id="count" resultType="long">
+        select count(1) from work_order_transition_permission
+    </select>
+</mapper>

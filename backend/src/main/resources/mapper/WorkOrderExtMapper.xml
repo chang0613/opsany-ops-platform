@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderExtRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderExt">
+        <id column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="source" property="source"/>
+        <result column="solution" property="solution"/>
+        <result column="is_requester_confirmed" property="isRequesterConfirmed"/>
+        <result column="requester_confirmed_at" property="requesterConfirmedAt"/>
+        <result column="is_merged" property="isMerged"/>
+        <result column="is_split" property="isSplit"/>
+        <result column="merged_to_order_no" property="mergedToOrderNo"/>
+        <result column="original_order_no" property="originalOrderNo"/>
+        <result column="close_reason" property="closeReason"/>
+        <result column="reject_reason" property="rejectReason"/>
+        <result column="auto_close_at" property="autoCloseAt"/>
+        <result column="last_reminder_at" property="lastReminderAt"/>
+        <result column="reminder_count" property="reminderCount"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderExt" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_ext(order_no, source, solution, is_requester_confirmed, requester_confirmed_at, is_merged, is_split, merged_to_order_no, original_order_no, close_reason, reject_reason, auto_close_at, last_reminder_at, reminder_count, created_at, updated_at)
+        values (#{orderNo}, #{source}, #{solution}, #{isRequesterConfirmed}, #{requesterConfirmedAt}, #{isMerged}, #{isSplit}, #{mergedToOrderNo}, #{originalOrderNo}, #{closeReason}, #{rejectReason}, #{autoCloseAt}, #{lastReminderAt}, #{reminderCount}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update" parameterType="com.opsany.replica.domain.WorkOrderExt">
+        update work_order_ext set
+            source = #{source},
+            solution = #{solution},
+            is_requester_confirmed = #{isRequesterConfirmed},
+            requester_confirmed_at = #{requesterConfirmedAt},
+            is_merged = #{isMerged},
+            is_split = #{isSplit},
+            merged_to_order_no = #{mergedToOrderNo},
+            original_order_no = #{originalOrderNo},
+            close_reason = #{closeReason},
+            reject_reason = #{rejectReason},
+            auto_close_at = #{autoCloseAt},
+            last_reminder_at = #{lastReminderAt},
+            reminder_count = #{reminderCount},
+            updated_at = #{updatedAt}
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="updateSolution">
+        update work_order_ext set solution = #{solution}, updated_at = NOW()
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="updateReminderCount">
+        update work_order_ext set reminder_count = reminder_count + 1, last_reminder_at = NOW(), updated_at = NOW()
+        where order_no = #{orderNo}
+    </update>
+
+    <select id="findByOrderNo" resultMap="BaseResultMap">
+        select id, order_no, source, solution, is_requester_confirmed, requester_confirmed_at, is_merged, is_split, merged_to_order_no, original_order_no, close_reason, reject_reason, auto_close_at, last_reminder_at, reminder_count, created_at, updated_at
+        from work_order_ext where order_no = #{orderNo}
+    </select>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select id, order_no, source, solution, is_requester_confirmed, requester_confirmed_at, is_merged, is_split, merged_to_order_no, original_order_no, close_reason, reject_reason, auto_close_at, last_reminder_at, reminder_count, created_at, updated_at
+        from work_order_ext order by created_at desc
+    </select>
+
+    <select id="count" resultType="long">
+        select count(1) from work_order_ext
+    </select>
+</mapper>

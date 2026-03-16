@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderMergeRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderMerge">
+        <id column="id" property="id"/>
+        <result column="master_order_no" property="masterOrderNo"/>
+        <result column="merged_order_no" property="mergedOrderNo"/>
+        <result column="merge_reason" property="mergeReason"/>
+        <result column="operator_username" property="operatorUsername"/>
+        <result column="operator_display_name" property="operatorDisplayName"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderMerge" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_merge(master_order_no, merged_order_no, merge_reason, operator_username, operator_display_name, created_at)
+        values (#{masterOrderNo}, #{mergedOrderNo}, #{mergeReason}, #{operatorUsername}, #{operatorDisplayName}, #{createdAt})
+    </insert>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select id, master_order_no, merged_order_no, merge_reason, operator_username, operator_display_name, created_at
+        from work_order_merge where id = #{id}
+    </select>
+
+    <select id="findByMergedOrderNo" resultMap="BaseResultMap">
+        select id, master_order_no, merged_order_no, merge_reason, operator_username, operator_display_name, created_at
+        from work_order_merge where merged_order_no = #{mergedOrderNo}
+    </select>
+
+    <select id="findByMasterOrderNo" resultMap="BaseResultMap">
+        select id, master_order_no, merged_order_no, merge_reason, operator_username, operator_display_name, created_at
+        from work_order_merge where master_order_no = #{masterOrderNo} order by created_at desc
+    </select>
+
+    <select id="countByMasterOrderNo" resultType="long">
+        select count(1) from work_order_merge where master_order_no = #{masterOrderNo}
+    </select>
+</mapper>

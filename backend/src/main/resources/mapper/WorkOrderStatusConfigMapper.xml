@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderStatusConfigRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderStatusConfig">
+        <id column="id" property="id"/>
+        <result column="status_code" property="statusCode"/>
+        <result column="status_name" property="statusName"/>
+        <result column="status_type" property="statusType"/>
+        <result column="color" property="color"/>
+        <result column="sort_order" property="sortOrder"/>
+        <result column="is_initial" property="isInitial"/>
+        <result column="is_final" property="isFinal"/>
+        <result column="enabled" property="enabled"/>
+        <result column="description" property="description"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderStatusConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_status_config(status_code, status_name, status_type, color, sort_order, is_initial, is_final, enabled, description, created_at, updated_at)
+        values (#{statusCode}, #{statusName}, #{statusType}, #{color}, #{sortOrder}, #{isInitial}, #{isFinal}, #{enabled}, #{description}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update" parameterType="com.opsany.replica.domain.WorkOrderStatusConfig">
+        update work_order_status_config set
+            status_code = #{statusCode},
+            status_name = #{statusName},
+            status_type = #{statusType},
+            color = #{color},
+            sort_order = #{sortOrder},
+            is_initial = #{isInitial},
+            is_final = #{isFinal},
+            enabled = #{enabled},
+            description = #{description},
+            updated_at = #{updatedAt}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from work_order_status_config where id = #{id}
+    </delete>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select id, status_code, status_name, status_type, color, sort_order, is_initial, is_final, enabled, description, created_at, updated_at
+        from work_order_status_config where id = #{id}
+    </select>
+
+    <select id="findByStatusCode" resultMap="BaseResultMap">
+        select id, status_code, status_name, status_type, color, sort_order, is_initial, is_final, enabled, description, created_at, updated_at
+        from work_order_status_config where status_code = #{statusCode}
+    </select>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select id, status_code, status_name, status_type, color, sort_order, is_initial, is_final, enabled, description, created_at, updated_at
+        from work_order_status_config order by sort_order asc
+    </select>
+
+    <select id="findEnabled" resultMap="BaseResultMap">
+        select id, status_code, status_name, status_type, color, sort_order, is_initial, is_final, enabled, description, created_at, updated_at
+        from work_order_status_config where enabled = 1 order by sort_order asc
+    </select>
+
+    <select id="findInitialStatus" resultMap="BaseResultMap">
+        select id, status_code, status_name, status_type, color, sort_order, is_initial, is_final, enabled, description, created_at, updated_at
+        from work_order_status_config where is_initial = 1 limit 1
+    </select>
+
+    <select id="count" resultType="long">
+        select count(1) from work_order_status_config
+    </select>
+</mapper>

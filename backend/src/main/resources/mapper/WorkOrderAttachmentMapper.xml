@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderAttachmentRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderAttachment">
+        <id column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="file_name" property="fileName"/>
+        <result column="file_path" property="filePath"/>
+        <result column="file_size" property="fileSize"/>
+        <result column="file_type" property="fileType"/>
+        <result column="file_extension" property="fileExtension"/>
+        <result column="upload_username" property="uploadUsername"/>
+        <result column="upload_display_name" property="uploadDisplayName"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderAttachment" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_attachment(
+            order_no, file_name, file_path, file_size, file_type, file_extension, upload_username, upload_display_name, created_at
+        ) values (
+            #{orderNo}, #{fileName}, #{filePath}, #{fileSize}, #{fileType}, #{fileExtension}, #{uploadUsername}, #{uploadDisplayName}, #{createdAt}
+        )
+    </insert>
+
+    <delete id="deleteById">
+        delete from work_order_attachment where id = #{id}
+    </delete>
+
+    <delete id="deleteByOrderNo">
+        delete from work_order_attachment where order_no = #{orderNo}
+    </delete>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select id, order_no, file_name, file_path, file_size, file_type, file_extension, upload_username, upload_display_name, created_at
+        from work_order_attachment where id = #{id}
+    </select>
+
+    <select id="findByOrderNo" resultMap="BaseResultMap">
+        select id, order_no, file_name, file_path, file_size, file_type, file_extension, upload_username, upload_display_name, created_at
+        from work_order_attachment where order_no = #{orderNo} order by created_at desc
+    </select>
+
+    <select id="countByOrderNo" resultType="long">
+        select count(1) from work_order_attachment where order_no = #{orderNo}
+    </select>
+
+    <select id="sumFileSizeByOrderNo" resultType="long">
+        select COALESCE(sum(file_size), 0) from work_order_attachment where order_no = #{orderNo}
+    </select>
+</mapper>

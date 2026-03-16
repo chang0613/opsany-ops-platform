@@ -106,7 +106,25 @@ public class OrderLifecycleService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "工单不存在");
         }
         List<WorkOrderHistory> histories = workOrderHistoryRepository.findByOrderNo(orderNo);
-        return new WorkOrderDetailResponse(order, histories);
+        return WorkOrderDetailResponse.builder()
+            .orderNo(order.getOrderNo())
+            .title(order.getTitle())
+            .type(order.getType())
+            .creatorUsername(order.getCreatorUsername())
+            .creatorDisplayName(order.getCreatorDisplayName())
+            .progress(order.getProgress())
+            .status(order.getStatus())
+            .priority(order.getPriority())
+            .serviceName(order.getServiceName())
+            .description(order.getDescription())
+            .estimatedAt(order.getEstimatedAt())
+            .createdAt(order.getCreatedAt() != null ? order.getCreatedAt().toString() : null)
+            .updatedAt(order.getUpdatedAt() != null ? order.getUpdatedAt().toString() : null)
+            .processCode(order.getProcessCode())
+            .currentNodeCode(order.getCurrentNodeCode())
+            .currentNodeName(order.getCurrentNodeName())
+            .currentHandler(order.getCurrentHandler())
+            .build();
     }
 
     @Transactional

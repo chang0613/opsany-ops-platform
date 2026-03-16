@@ -3,10 +3,12 @@ package com.opsany.replica.dto;
 import javax.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateWorkOrderRequest {
@@ -22,4 +24,7 @@ public class CreateWorkOrderRequest {
     private String serviceName;
     private String description;
     private String priority;
+
+    private String source;
+    private String sourceRefId;
 }

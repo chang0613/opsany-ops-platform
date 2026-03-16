@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderAutoCloseConfigRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderAutoCloseConfig">
+        <id column="id" property="id"/>
+        <result column="config_key" property="configKey"/>
+        <result column="status" property="status"/>
+        <result column="days_after" property="daysAfter"/>
+        <result column="action" property="action"/>
+        <result column="enabled" property="enabled"/>
+        <result column="description" property="description"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderAutoCloseConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_auto_close_config(config_key, status, days_after, action, enabled, description, created_at, updated_at)
+        values (#{configKey}, #{status}, #{daysAfter}, #{action}, #{enabled}, #{description}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update" parameterType="com.opsany.replica.domain.WorkOrderAutoCloseConfig">
+        update work_order_auto_close_config set
+            config_key = #{configKey},
+            status = #{status},
+            days_after = #{daysAfter},
+            action = #{action},
+            enabled = #{enabled},
+            description = #{description},
+            updated_at = #{updatedAt}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from work_order_auto_close_config where id = #{id}
+    </delete>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select id, config_key, status, days_after, action, enabled, description, created_at, updated_at
+        from work_order_auto_close_config where id = #{id}
+    </select>
+
+    <select id="findByStatusAndEnabled" resultMap="BaseResultMap">
+        select id, config_key, status, days_after, action, enabled, description, created_at, updated_at
+        from work_order_auto_close_config where status = #{status} and enabled = 1 limit 1
+    </select>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select id, config_key, status, days_after, action, enabled, description, created_at, updated_at
+        from work_order_auto_close_config order by id asc
+    </select>
+
+    <select id="findEnabled" resultMap="BaseResultMap">
+        select id, config_key, status, days_after, action, enabled, description, created_at, updated_at
+        from work_order_auto_close_config where enabled = 1 order by id asc
+    </select>
+
+    <select id="count" resultType="long">
+        select count(1) from work_order_auto_close_config
+    </select>
+</mapper>

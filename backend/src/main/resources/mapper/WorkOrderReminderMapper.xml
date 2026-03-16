@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderReminderRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderReminder">
+        <id column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="reminder_type" property="reminderType"/>
+        <result column="reminder_username" property="reminderUsername"/>
+        <result column="reminder_display_name" property="reminderDisplayName"/>
+        <result column="reminder_content" property="reminderContent"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderReminder" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_reminder(order_no, reminder_type, reminder_username, reminder_display_name, reminder_content, created_at)
+        values (#{orderNo}, #{reminderType}, #{reminderUsername}, #{reminderDisplayName}, #{reminderContent}, #{createdAt})
+    </insert>
+
+    <delete id="deleteById">
+        delete from work_order_reminder where id = #{id}
+    </delete>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select id, order_no, reminder_type, reminder_username, reminder_display_name, reminder_content, created_at
+        from work_order_reminder where id = #{id}
+    </select>
+
+    <select id="findByOrderNo" resultMap="BaseResultMap">
+        select id, order_no, reminder_type, reminder_username, reminder_display_name, reminder_content, created_at
+        from work_order_reminder where order_no = #{orderNo} order by created_at asc
+    </select>
+
+    <select id="findByOrderNoOrderByCreatedAtDesc" resultMap="BaseResultMap">
+        select id, order_no, reminder_type, reminder_username, reminder_display_name, reminder_content, created_at
+        from work_order_reminder where order_no = #{orderNo} order by created_at desc
+    </select>
+
+    <select id="countByOrderNo" resultType="long">
+        select count(1) from work_order_reminder where order_no = #{orderNo}
+    </select>
+
+    <select id="countTodayByUsername" resultType="long">
+        select count(1) from work_order_reminder
+        where reminder_username = #{username}
+        and DATE(created_at) = CURDATE()
+    </select>
+</mapper>

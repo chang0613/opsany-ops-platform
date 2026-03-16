@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderSourceRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderSource">
+        <id column="id" property="id"/>
+        <result column="source_code" property="sourceCode"/>
+        <result column="source_name" property="sourceName"/>
+        <result column="enabled" property="enabled"/>
+        <result column="sort_order" property="sortOrder"/>
+        <result column="description" property="description"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderSource" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_source(source_code, source_name, enabled, sort_order, description, created_at)
+        values (#{sourceCode}, #{sourceName}, #{enabled}, #{sortOrder}, #{description}, #{createdAt})
+    </insert>
+
+    <update id="update" parameterType="com.opsany.replica.domain.WorkOrderSource">
+        update work_order_source set
+            source_code = #{sourceCode},
+            source_name = #{sourceName},
+            enabled = #{enabled},
+            sort_order = #{sortOrder},
+            description = #{description}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from work_order_source where id = #{id}
+    </delete>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select id, source_code, source_name, enabled, sort_order, description, created_at
+        from work_order_source where id = #{id}
+    </select>
+
+    <select id="findBySourceCode" resultMap="BaseResultMap">
+        select id, source_code, source_name, enabled, sort_order, description, created_at
+        from work_order_source where source_code = #{sourceCode}
+    </select>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select id, source_code, source_name, enabled, sort_order, description, created_at
+        from work_order_source order by sort_order asc
+    </select>
+
+    <select id="findEnabled" resultMap="BaseResultMap">
+        select id, source_code, source_name, enabled, sort_order, description, created_at
+        from work_order_source where enabled = 1 order by sort_order asc
+    </select>
+
+    <select id="count" resultType="long">
+        select count(1) from work_order_source
+    </select>
+</mapper>

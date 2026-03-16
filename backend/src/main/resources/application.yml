@@ -31,6 +31,7 @@ mybatis:
     map-underscore-to-camel-case: true
     jdbc-type-for-null: 'NULL'
   type-aliases-package: com.opsany.replica.domain
+  mapper-locations: classpath:mapper/**/*.xml
 
 server:
   port: ${SERVER_PORT:8080}

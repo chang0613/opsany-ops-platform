@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderSatisfactionRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderSatisfaction">
+        <id column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="score" property="score"/>
+        <result column="score_label" property="scoreLabel"/>
+        <result column="comment" property="comment"/>
+        <result column="evaluator_username" property="evaluatorUsername"/>
+        <result column="evaluator_display_name" property="evaluatorDisplayName"/>
+        <result column="evaluated_at" property="evaluatedAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderSatisfaction" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_satisfaction(order_no, score, score_label, comment, evaluator_username, evaluator_display_name, evaluated_at)
+        values (#{orderNo}, #{score}, #{scoreLabel}, #{comment}, #{evaluatorUsername}, #{evaluatorDisplayName}, #{evaluatedAt})
+    </insert>
+
+    <update id="update" parameterType="com.opsany.replica.domain.WorkOrderSatisfaction">
+        update work_order_satisfaction set
+            score = #{score},
+            score_label = #{scoreLabel},
+            comment = #{comment},
+            evaluator_username = #{evaluatorUsername},
+            evaluator_display_name = #{evaluatorDisplayName},
+            evaluated_at = #{evaluatedAt}
+        where order_no = #{orderNo}
+    </update>
+
+    <select id="findByOrderNo" resultMap="BaseResultMap">
+        select id, order_no, score, score_label, comment, evaluator_username, evaluator_display_name, evaluated_at
+        from work_order_satisfaction where order_no = #{orderNo}
+    </select>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select id, order_no, score, score_label, comment, evaluator_username, evaluator_display_name, evaluated_at
+        from work_order_satisfaction order by evaluated_at desc
+    </select>
+
+    <select id="count" resultType="long">
+        select count(1) from work_order_satisfaction
+    </select>
+</mapper>

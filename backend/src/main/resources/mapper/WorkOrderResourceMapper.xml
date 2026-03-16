@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderResourceRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderResource">
+        <id column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="resource_type" property="resourceType"/>
+        <result column="resource_id" property="resourceId"/>
+        <result column="resource_name" property="resourceName"/>
+        <result column="resource_info" property="resourceInfo"/>
+        <result column="match_method" property="matchMethod"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderResource" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_resource(order_no, resource_type, resource_id, resource_name, resource_info, match_method, created_at)
+        values (#{orderNo}, #{resourceType}, #{resourceId}, #{resourceName}, #{resourceInfo}, #{matchMethod}, #{createdAt})
+    </insert>
+
+    <delete id="deleteById">
+        delete from work_order_resource where id = #{id}
+    </delete>
+
+    <delete id="deleteByOrderNo">
+        delete from work_order_resource where order_no = #{orderNo}
+    </delete>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select id, order_no, resource_type, resource_id, resource_name, resource_info, match_method, created_at
+        from work_order_resource where id = #{id}
+    </select>
+
+    <select id="findByOrderNo" resultMap="BaseResultMap">
+        select id, order_no, resource_type, resource_id, resource_name, resource_info, match_method, created_at
+        from work_order_resource where order_no = #{orderNo}
+    </select>
+
+    <select id="findByResourceType" resultMap="BaseResultMap">
+        select id, order_no, resource_type, resource_id, resource_name, resource_info, match_method, created_at
+        from work_order_resource where resource_type = #{resourceType}
+    </select>
+
+    <select id="countByOrderNo" resultType="long">
+        select count(1) from work_order_resource where order_no = #{orderNo}
+    </select>
+</mapper>

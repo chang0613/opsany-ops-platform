@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderHistoryRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderHistory">
+        <id column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="action" property="action"/>
+        <result column="from_status" property="fromStatus"/>
+        <result column="to_status" property="toStatus"/>
+        <result column="from_node_code" property="fromNodeCode"/>
+        <result column="to_node_code" property="toNodeCode"/>
+        <result column="operator_username" property="operatorUsername"/>
+        <result column="operator_display_name" property="operatorDisplayName"/>
+        <result column="comment" property="comment"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderHistory" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_histories(
+            order_no, action, from_status, to_status, from_node_code, to_node_code, operator_username,
+            operator_display_name, comment, created_at
+        ) values (
+            #{orderNo}, #{action}, #{fromStatus}, #{toStatus}, #{fromNodeCode}, #{toNodeCode}, #{operatorUsername},
+            #{operatorDisplayName}, #{comment}, #{createdAt}
+        )
+    </insert>
+
+    <select id="findByOrderNo" resultMap="BaseResultMap">
+        select id, order_no, action, from_status, to_status, from_node_code, to_node_code, operator_username,
+            operator_display_name, comment, created_at
+        from work_order_histories where order_no = #{orderNo} order by created_at asc
+    </select>
+
+    <select id="findByOrderNoOrderByCreatedAtDesc" resultMap="BaseResultMap">
+        select id, order_no, action, from_status, to_status, from_node_code, to_node_code, operator_username,
+            operator_display_name, comment, created_at
+        from work_order_histories where order_no = #{orderNo} order by created_at desc
+    </select>
+
+    <select id="countByOrderNo" resultType="long">
+        select count(1) from work_order_histories where order_no = #{orderNo}
+    </select>
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderSatisfactionConfigRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderSatisfactionConfig">
+        <id column="id" property="id"/>
+        <result column="score" property="score"/>
+        <result column="score_label" property="scoreLabel"/>
+        <result column="color" property="color"/>
+        <result column="sort_order" property="sortOrder"/>
+        <result column="enabled" property="enabled"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderSatisfactionConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_satisfaction_config(score, score_label, color, sort_order, enabled)
+        values (#{score}, #{scoreLabel}, #{color}, #{sortOrder}, #{enabled})
+    </insert>
+
+    <update id="update" parameterType="com.opsany.replica.domain.WorkOrderSatisfactionConfig">
+        update work_order_satisfaction_config set
+            score = #{score},
+            score_label = #{scoreLabel},
+            color = #{color},
+            sort_order = #{sortOrder},
+            enabled = #{enabled}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from work_order_satisfaction_config where id = #{id}
+    </delete>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select id, score, score_label, color, sort_order, enabled
+        from work_order_satisfaction_config where id = #{id}
+    </select>
+
+    <select id="findByScore" resultMap="BaseResultMap">
+        select id, score, score_label, color, sort_order, enabled
+        from work_order_satisfaction_config where score = #{score}
+    </select>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select id, score, score_label, color, sort_order, enabled
+        from work_order_satisfaction_config order by sort_order asc
+    </select>
+
+    <select id="findEnabled" resultMap="BaseResultMap">
+        select id, score, score_label, color, sort_order, enabled
+        from work_order_satisfaction_config where enabled = 1 order by sort_order asc
+    </select>
+
+    <select id="count" resultType="long">
+        select count(1) from work_order_satisfaction_config
+    </select>
+</mapper>

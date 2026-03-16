@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderReminderConfigRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderReminderConfig">
+        <id column="id" property="id"/>
+        <result column="config_key" property="configKey"/>
+        <result column="min_interval_minutes" property="minIntervalMinutes"/>
+        <result column="max_daily_reminders" property="maxDailyReminders"/>
+        <result column="enabled" property="enabled"/>
+        <result column="description" property="description"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderReminderConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_reminder_config(config_key, min_interval_minutes, max_daily_reminders, enabled, description, created_at, updated_at)
+        values (#{configKey}, #{minIntervalMinutes}, #{maxDailyReminders}, #{enabled}, #{description}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update" parameterType="com.opsany.replica.domain.WorkOrderReminderConfig">
+        update work_order_reminder_config set
+            config_key = #{configKey},
+            min_interval_minutes = #{minIntervalMinutes},
+            max_daily_reminders = #{maxDailyReminders},
+            enabled = #{enabled},
+            description = #{description},
+            updated_at = #{updatedAt}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from work_order_reminder_config where id = #{id}
+    </delete>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select id, config_key, min_interval_minutes, max_daily_reminders, enabled, description, created_at, updated_at
+        from work_order_reminder_config where id = #{id}
+    </select>
+
+    <select id="findByConfigKey" resultMap="BaseResultMap">
+        select id, config_key, min_interval_minutes, max_daily_reminders, enabled, description, created_at, updated_at
+        from work_order_reminder_config where config_key = #{configKey}
+    </select>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select id, config_key, min_interval_minutes, max_daily_reminders, enabled, description, created_at, updated_at
+        from work_order_reminder_config order by id asc
+    </select>
+
+    <select id="count" resultType="long">
+        select count(1) from work_order_reminder_config
+    </select>
+</mapper>

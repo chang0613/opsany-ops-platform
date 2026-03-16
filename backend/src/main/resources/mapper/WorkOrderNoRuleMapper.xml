@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderNoRuleRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderNoRule">
+        <id column="id" property="id"/>
+        <result column="rule_name" property="ruleName"/>
+        <result column="prefix" property="prefix"/>
+        <result column="sequence_start" property="sequenceStart"/>
+        <result column="sequence_current" property="sequenceCurrent"/>
+        <result column="sequence_length" property="sequenceLength"/>
+        <result column="date_format" property="dateFormat"/>
+        <result column="enabled" property="enabled"/>
+        <result column="description" property="description"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="creator_username" property="creatorUsername"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderNoRule" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_no_rule(
+            rule_name, prefix, sequence_start, sequence_current, sequence_length, date_format, enabled, description,
+            created_at, updated_at, creator_username
+        ) values (
+            #{ruleName}, #{prefix}, #{sequenceStart}, #{sequenceCurrent}, #{sequenceLength}, #{dateFormat}, #{enabled}, #{description},
+            #{createdAt}, #{updatedAt}, #{creatorUsername}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.opsany.replica.domain.WorkOrderNoRule">
+        update work_order_no_rule set
+            rule_name = #{ruleName},
+            prefix = #{prefix},
+            sequence_start = #{sequenceStart},
+            sequence_length = #{sequenceLength},
+            date_format = #{dateFormat},
+            enabled = #{enabled},
+            description = #{description},
+            updated_at = #{updatedAt},
+            creator_username = #{creatorUsername}
+        where id = #{id}
+    </update>
+
+    <update id="updateSequenceCurrent">
+        update work_order_no_rule set
+            sequence_current = #{sequenceCurrent},
+            updated_at = NOW()
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from work_order_no_rule where id = #{id}
+    </delete>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select id, rule_name, prefix, sequence_start, sequence_current, sequence_length, date_format, enabled, description,
+            created_at, updated_at, creator_username
+        from work_order_no_rule where id = #{id}
+    </select>
+
+    <select id="findByRuleName" resultMap="BaseResultMap">
+        select id, rule_name, prefix, sequence_start, sequence_current, sequence_length, date_format, enabled, description,
+            created_at, updated_at, creator_username
+        from work_order_no_rule where rule_name = #{ruleName}
+    </select>
+
+    <select id="findByEnabledTrue" resultMap="BaseResultMap">
+        select id, rule_name, prefix, sequence_start, sequence_current, sequence_length, date_format, enabled, description,
+            created_at, updated_at, creator_username
+        from work_order_no_rule where enabled = 1 limit 1
+    </select>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select id, rule_name, prefix, sequence_start, sequence_current, sequence_length, date_format, enabled, description,
+            created_at, updated_at, creator_username
+        from work_order_no_rule order by id asc
+    </select>
+
+    <select id="count" resultType="long">
+        select count(1) from work_order_no_rule
+    </select>
+</mapper>

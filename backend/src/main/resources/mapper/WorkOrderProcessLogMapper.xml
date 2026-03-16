@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderProcessLogRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderProcessLog">
+        <id column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="log_type" property="logType"/>
+        <result column="content" property="content"/>
+        <result column="operator_username" property="operatorUsername"/>
+        <result column="operator_display_name" property="operatorDisplayName"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderProcessLog" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_process_log(order_no, log_type, content, operator_username, operator_display_name, created_at)
+        values (#{orderNo}, #{logType}, #{content}, #{operatorUsername}, #{operatorDisplayName}, #{createdAt})
+    </insert>
+
+    <delete id="deleteById">
+        delete from work_order_process_log where id = #{id}
+    </delete>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select id, order_no, log_type, content, operator_username, operator_display_name, created_at
+        from work_order_process_log where id = #{id}
+    </select>
+
+    <select id="findByOrderNo" resultMap="BaseResultMap">
+        select id, order_no, log_type, content, operator_username, operator_display_name, created_at
+        from work_order_process_log where order_no = #{orderNo} order by created_at desc
+    </select>
+
+    <select id="findByOrderNoAndLogType" resultMap="BaseResultMap">
+        select id, order_no, log_type, content, operator_username, operator_display_name, created_at
+        from work_order_process_log where order_no = #{orderNo} and log_type = #{logType} order by created_at desc
+    </select>
+
+    <select id="countByOrderNo" resultType="long">
+        select count(1) from work_order_process_log where order_no = #{orderNo}
+    </select>
+</mapper>

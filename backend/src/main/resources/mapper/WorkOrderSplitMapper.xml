@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.opsany.replica.repository.WorkOrderSplitRepository">
+
+    <resultMap id="BaseResultMap" type="com.opsany.replica.domain.WorkOrderSplit">
+        <id column="id" property="id"/>
+        <result column="source_order_no" property="sourceOrderNo"/>
+        <result column="new_order_no" property="newOrderNo"/>
+        <result column="split_content" property="splitContent"/>
+        <result column="split_reason" property="splitReason"/>
+        <result column="operator_username" property="operatorUsername"/>
+        <result column="operator_display_name" property="operatorDisplayName"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.opsany.replica.domain.WorkOrderSplit" useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_split(source_order_no, new_order_no, split_content, split_reason, operator_username, operator_display_name, created_at)
+        values (#{sourceOrderNo}, #{newOrderNo}, #{splitContent}, #{splitReason}, #{operatorUsername}, #{operatorDisplayName}, #{createdAt})
+    </insert>
+
+    <select id="findById" resultMap="BaseResultMap">
+        select id, source_order_no, new_order_no, split_content, split_reason, operator_username, operator_display_name, created_at
+        from work_order_split where id = #{id}
+    </select>
+
+    <select id="findByNewOrderNo" resultMap="BaseResultMap">
+        select id, source_order_no, new_order_no, split_content, split_reason, operator_username, operator_display_name, created_at
+        from work_order_split where new_order_no = #{newOrderNo}
+    </select>
+
+    <select id="findBySourceOrderNo" resultMap="BaseResultMap">
+        select id, source_order_no, new_order_no, split_content, split_reason, operator_username, operator_display_name, created_at
+        from work_order_split where source_order_no = #{sourceOrderNo} order by created_at desc
+    </select>
+
+    <select id="countBySourceOrderNo" resultType="long">
+        select count(1) from work_order_split where source_order_no = #{sourceOrderNo}
+    </select>
+</mapper>
