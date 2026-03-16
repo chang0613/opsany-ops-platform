@@ -28,3 +28,12 @@ app:
     consumer-enabled: false
     publish-enabled: false
     fallback-on-publish-failure: true
+  ai:
+    provider: ${APP_AI_PROVIDER:mock}
+    knowledge-context-enabled: true
+    bigmodel:
+      api-key: ${BIGMODEL_API_KEY:}
+      base-url: ${BIGMODEL_BASE_URL:https://open.bigmodel.cn/api/v1/agents}
+      agent-id: ${BIGMODEL_AGENT_ID:service_check_agent}
+      connect-timeout-ms: ${BIGMODEL_CONNECT_TIMEOUT_MS:10000}
+      read-timeout-ms: ${BIGMODEL_READ_TIMEOUT_MS:60000}

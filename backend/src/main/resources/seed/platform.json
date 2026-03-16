@@ -2060,6 +2060,33 @@
           "tag": "维护"
         }
       ]
+    },
+    "/ai/assistant": {
+      "title": "对话式运维助手",
+      "breadcrumb": [
+        "AI赋能",
+        "对话式运维助手"
+      ],
+      "intro": "面向监控/日志/工单/CMDB 的对话式运维助手。当前默认使用 Mock Provider，后续可切换到真实大模型接口。",
+      "kind": "aiAssistant"
+    },
+    "/ai/insights": {
+      "title": "智能诊断与洞察",
+      "breadcrumb": [
+        "AI赋能",
+        "智能诊断与洞察"
+      ],
+      "intro": "统一承载基线检测、日志聚类、根因推荐、告警摘要等 AI 任务的执行与结果沉淀。",
+      "kind": "aiInsights"
+    },
+    "/ai/knowledge": {
+      "title": "智能知识库",
+      "breadcrumb": [
+        "AI赋能",
+        "智能知识库"
+      ],
+      "intro": "从告警/工单/处理记录中沉淀知识条目，并支持语义检索与相似问题匹配（当前为基础版本）。",
+      "kind": "aiKnowledge"
     }
   },
   "shell": {

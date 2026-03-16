@@ -19,6 +19,7 @@ public class AppProperties {
     private Cache cache = new Cache();
     private Seed seed = new Seed();
     private Messaging messaging = new Messaging();
+    private Ai ai = new Ai();
 
     @Getter
     @Setter
@@ -52,5 +53,23 @@ public class AppProperties {
         private boolean consumerEnabled = false;
         private boolean publishEnabled = false;
         private boolean fallbackOnPublishFailure = true;
+    }
+
+    @Getter
+    @Setter
+    public static class Ai {
+        private String provider = "mock";
+        private boolean knowledgeContextEnabled = true;
+        private BigModel bigmodel = new BigModel();
+    }
+
+    @Getter
+    @Setter
+    public static class BigModel {
+        private String apiKey;
+        private String baseUrl = "https://open.bigmodel.cn/api/v1/agents";
+        private String agentId = "service_check_agent";
+        private long connectTimeoutMs = 10000;
+        private long readTimeoutMs = 60000;
     }
 }

@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import LoginView from './views/LoginView.vue'
-import WorkbenchView from './views/WorkbenchView.vue'
+import AiAssistantView from './views/ai/AiAssistantView.vue'
+import AiInsightsView from './views/ai/AiInsightsView.vue'
+import AiKnowledgeView from './views/ai/AiKnowledgeView.vue'
 import { getToken } from './lib/session'
 
 const router = createRouter({
@@ -13,9 +15,24 @@ const router = createRouter({
       component: LoginView,
     },
     {
+      path: '/ai/assistant',
+      name: 'ai-assistant',
+      component: AiAssistantView,
+    },
+    {
+      path: '/ai/insights',
+      name: 'ai-insights',
+      component: AiInsightsView,
+    },
+    {
+      path: '/ai/knowledge',
+      name: 'ai-knowledge',
+      component: AiKnowledgeView,
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'workbench',
-      component: WorkbenchView,
+      component: () => import('./views/WorkbenchView.vue'),
     },
   ],
 })

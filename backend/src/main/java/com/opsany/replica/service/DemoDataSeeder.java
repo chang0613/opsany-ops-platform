@@ -213,6 +213,9 @@ public class DemoDataSeeder implements ApplicationRunner {
     private void seedMenus() {
         List<MenuPermission> menus = Arrays.asList(
             menu("WORKBENCH_OVERVIEW", "工作台", 1, "概览", "/", "概", 1, "workbench:view"),
+            menu("AI_ASSISTANT", "AI赋能", 6, "对话式运维助手", "/ai/assistant", "AI", 1, "ai:chat"),
+            menu("AI_INSIGHTS", "AI赋能", 6, "智能诊断与洞察", "/ai/insights", "洞", 2, "ai:insights"),
+            menu("AI_KNOWLEDGE", "AI赋能", 6, "智能知识库", "/ai/knowledge", "知", 3, "ai:knowledge"),
             menu("SERVICE_PORTAL", "运维中心", 2, "服务门户", "/personSetting/serviceFolder", "服", 1, "portal:view"),
             menu("WORK_ORDER_MANAGE", "运维中心", 2, "工单管理", "/personSetting/orderManage", "工", 2, "order:view"),
             menu("TASK_MANAGE", "运维中心", 2, "任务管理", "/personSetting/taskManage", "任", 3, "task:view"),

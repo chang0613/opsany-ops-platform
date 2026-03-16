@@ -51,6 +51,15 @@ app:
     consumer-enabled: ${RABBITMQ_CONSUMER_ENABLED:false}
     publish-enabled: ${RABBITMQ_PUBLISH_ENABLED:false}
     fallback-on-publish-failure: ${RABBITMQ_FALLBACK_ON_FAILURE:true}
+  ai:
+    provider: ${APP_AI_PROVIDER:mock}
+    knowledge-context-enabled: ${APP_AI_KNOWLEDGE_CONTEXT_ENABLED:true}
+    bigmodel:
+      api-key: ${BIGMODEL_API_KEY:}
+      base-url: ${BIGMODEL_BASE_URL:https://open.bigmodel.cn/api/v1/agents}
+      agent-id: ${BIGMODEL_AGENT_ID:service_check_agent}
+      connect-timeout-ms: ${BIGMODEL_CONNECT_TIMEOUT_MS:10000}
+      read-timeout-ms: ${BIGMODEL_READ_TIMEOUT_MS:60000}
 
 logging:
   level:
